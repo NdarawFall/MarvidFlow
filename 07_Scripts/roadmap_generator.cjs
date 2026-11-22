@@ -3,9 +3,9 @@
  * Générateur et Gestionnaire de la Feuille de Route Unique MarvidFlow (Production IA)
  * 
  * RÈGLE D'OR : Un seul fichier unique "09_Pages/feuille_de_route.md".
- * 1. L'IA réfléchit, analyse le sujet et conçoit une feuille de route sur-mesure (scénario, 3-5s par plan, stickers, B-rolls).
+ * 1. ZÉRO TEMPLATE DE SECOURS FIGÉ : L'IA réfléchit, analyse le sujet et conçoit elle-même le scénario et le découpage.
  * 2. Visualisation et édition directe dans le grand modal ou dans un éditeur.
- * 3. Validation par l'utilisateur -> vidage automatique du fichier pour la session suivante.
+ * 3. Validation par l'utilisateur -> transmission intégrale au pipeline de création puis réinitialisation.
  */
 
 const fs = require('fs');
@@ -16,157 +16,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const ROADMAP_PATH = path.join(ROOT_DIR, '09_Pages', 'feuille_de_route.md');
 
 /**
- * Détecte la thématique dominante à partir du prompt et du style
- */
-function detectTheme(prompt = '', style = '') {
-    const text = `${prompt} ${style}`.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (/\b(claude|anthropic|saas|ia|ai|code|dev|logiciel|software|terminal|tech|startup|api|application|app)\b/.test(text)) {
-        return 'saas_tech';
-    }
-    if (/\b(histoire|guerre|vox|documentaire|militaire|empire|siecle|bataille|revolution|archive|enquete)\b/.test(text)) {
-        return 'vox_documentary';
-    }
-    if (/\b(produit|ecommerce|e-commerce|boutique|vente|mode|shopping|marque|luxe|montre|sneakers)\b/.test(text)) {
-        return 'ecommerce_product';
-    }
-    return 'modern_explainer';
-}
-
-/**
- * Génère une feuille de route de secours dynamique et intelligente adaptée au sujet
- */
-function buildSmartFallbackRoadmap(payload) {
-    const prompt = payload.prompt || 'Présentation Produit & Solution';
-    const format = payload.format || '16:9';
-    const style = payload.style || payload.template || 'saas';
-    const audioSetup = payload.audioSetup || 'full_mix';
-    const theme = detectTheme(prompt, style);
-    const nowStr = new Date().toLocaleString('fr-FR', { timeZone: 'UTC', dateStyle: 'full', timeStyle: 'medium' });
-
-    let title = '';
-    let concept = '';
-    let visualRules = [];
-    let colorPalette = '';
-    let scenes = [];
-    let stickers = [];
-    let brolls = [];
-    let soundDesign = {};
-
-    if (theme === 'saas_tech') {
-        const isClaude = prompt.toLowerCase().includes('claude');
-        const subjectName = isClaude ? 'Claude 3.5 Sonnet' : 'votre Solution SaaS';
-        title = isClaude ? 'Claude 3.5 Sonnet — L’Intelligence Artificielle Nouvelle Génération' : `${prompt} — Plateforme SaaS Moderne`;
-        concept = `Spot publicitaire tech épuré au rythme percutant démontrant la puissance, la rapidité et l'élégance de ${subjectName} dans le quotidien des développeurs et créateurs.`;
-        visualRules = [
-            'Cartes d’interface en verre dépoli (Glassmorphism sombre #111827 avec flou backdrop 16px et bordure subtile)',
-            'Typographie tech géométrique 80/20 avec hiérarchie stricte et contrastes élevés',
-            'Stickers d’icônes et fenêtres de terminal détourés avec contour blanc papier physique (3px) et effet pendule cloche',
-            'Effet Pendule Continu (balancement doux ±1.8° sur transform-origin: 50% 0%)',
-            'Continuité temporelle absolue (zéro temps mort, plans courts de 3 à 4.5s)'
-        ];
-        colorPalette = 'Dominante 60% Obsidian (#090d16), Secondaire 30% Slate Glass (#1e293b/80), Accent 10% Ambre Claude (#f59e0b) ou Cyan électrique (#38bdf8)';
-        scenes = [
-            { id: 1, start: '0.0s', end: '4.0s', dur: '4.0s', format: 'Mockup UI Glassmorphism & Terminal', voiceover: `Et si la programmation devenait aussi fluide et naturelle qu'une simple conversation ?`, animation: 'Zoom Ken Burns doux (1.0 -> 1.05) + Pulsation néon' },
-            { id: 2, start: '4.0s', end: '8.0s', dur: '4.0s', format: 'Chiffre Clé Monumental & Badge', voiceover: `Découvrez la puissance brute d'une intelligence pensée pour résoudre les problèmes les plus complexes.`, animation: 'Compteur dynamique + Balancement pendulaire' },
-            { id: 3, start: '8.0s', end: '12.2s', dur: '4.2s', format: 'B-Roll Vidéo Réel (Mains Dev & Clavier)', voiceover: `Une vitesse d'exécution fulgurante, une compréhension contextuelle hors pair, et zéro friction.`, animation: 'Transition Cut rythmée + Vignette cinéma sombre' },
-            { id: 4, start: '12.2s', end: '16.5s', dur: '4.3s', format: 'Sticker Papier Découpé (Puce IA & Logo)', voiceover: `Des lignes de code générées avec une précision chirurgicale en une fraction de seconde.`, animation: 'Effet Pendule Cloche (rotate ±1.8°) + Contour blanc 3px' },
-            { id: 5, start: '16.5s', end: '21.0s', dur: '4.5s', format: 'Capture UI Animée & Flux de Données', voiceover: `Adoptez le nouveau standard de productivité pour propulser vos projets à la vitesse supérieure.`, animation: 'Défilement fluide de code + reflets ambrés' },
-            { id: 6, start: '21.0s', end: '25.0s', dur: '4.0s', format: 'Call to Action Monumental Glassmorphism', voiceover: `Passez à l'action dès aujourd'hui. L'avenir du code commence maintenant.`, animation: 'Zoom avant puissant + Flash lumineux final' }
-        ];
-        stickers = [
-            { role: 'Badge Logo Claude / Sparkle IA', promptEn: 'Futuristic minimalist glowing Anthropic Claude spark emblem, modern tech aesthetic, sleek glass texture with vibrant amber and obsidian accents, solid bright green screen background (#00FF00), crisp white paper cutout sticker border outline (3px solid white stroke), subtle edge shadow --ar 1:1 --v 6.1', usage: 'Sticker découpé en haut d’écran avec balancement pendulaire doux.' },
-            { role: 'Fenêtre de Terminal de Code Moderne', promptEn: 'Isometric floating dark code editor window terminal mockup, colorful syntax highlighting, glowing amber cursor, solid bright green screen background (#00FF00), clean white paper cutout sticker contour (4px white border), realistic drop shadow --ar 4:3 --v 6.1', usage: 'Apparition centrale avec zoom avant puis flottaison douce.' },
-            { role: 'Badge Indicateur de Performance 10x', promptEn: 'Modern glowing badge sticker with typography 10x FASTER and glowing neon cybernetic circuit lines, solid bright green screen background (#00FF00), crisp white sticker border contour, vector 3D tech style --ar 1:1 --v 6.1', usage: 'Pop d’apparition dynamique en angle supérieur droit.' }
-        ];
-        brolls = [
-            { plan: 'Plan 1 & 3', query: 'software developer typing mechanical keyboard dark room neon glow 4k', desc: 'Gros plan cinématographique de mains expertes tapant du code sur clavier rétroéclairé.' },
-            { plan: 'Plan 2', query: 'abstract cyber data flow glowing digital network nodes 4k', desc: 'Flux abstrait de données lumineuses et de particules symbolisant la puissance de calcul.' },
-            { plan: 'Plan 5', query: 'modern minimalist dual monitor tech workspace aesthetic setup', desc: 'Bureau de développeur moderne avec écran ultra-large affichant du code.' }
-        ];
-        soundDesign = {
-            musicGenre: 'Tech Ambient Synthwave moderne & épuré (115 BPM, beat électronique subtil)',
-            mixConfig: 'Voix normalisée à -14 LUFS, Ducking musical -18 dB sous la voix, Fondu de sortie 2.5s',
-            sfx: ['Whoosh futuriste à l’apparition', 'Frappes de clavier mécanique discrètes', 'Swoosh fluide entre les plans', 'Carillon de validation final']
-        };
-    } else if (theme === 'vox_documentary') {
-        title = `${prompt} — L'Enquête Documentaire Vox`;
-        concept = `Format documentaire immersif style Vox combinant fonds papier vélin chaleureux, stickers découpés avec bordure blanche physique et analyse visuelle percutante.`;
-        visualRules = [
-            'Fond Papier Vélin Chaud (Dégradé #faf8f5 vers #f4f0e6 avec texture de fibre naturelle)',
-            'Stickers Découpage Papier Blanc (.vox-paper-cutout avec bordure blanche 4px et ombre portée)',
-            'Effet Pendule Continu (balancement cloche -1.8deg à +1.8deg sur transform-origin: 50% 0%)',
-            'Texte Épuré au Strict Minimum (mots-clés, dates, pourcentages, zéro pavé)',
-            'Continuité Temporelle Absolue (zéro écran blanc ni trou temporel)'
-        ];
-        colorPalette = 'Dominante 60% Papier Vélin (#faf8f5), Secondaire 30% Encre de Chine (#1e293b), Accent 10% Rouge Archives (#dc2626) ou Jaune Surligneur (#facc15)';
-        scenes = [
-            { id: 1, start: '0.0s', end: '4.2s', dur: '4.2s', format: 'Ken Burns Plein Écran & Carte', voiceover: `Derrière les apparences, un événement méconnu a totalement transformé le cours de cette histoire.`, animation: 'Zoom Ken Burns lent (1.0 -> 1.08) + Grain papier' },
-            { id: 2, start: '4.2s', end: '8.5s', dur: '4.3s', format: 'Sticker Papier Découpé & Pendule', voiceover: `Voici les faits, les chiffres et les décisions qui ont tout changé.`, animation: 'Effet Pendule Cloche (rotate ±1.8°) + Contour blanc 4px' },
-            { id: 3, start: '8.5s', end: '13.0s', dur: '4.5s', format: 'Document d’Archive Surligné', voiceover: `Des documents historiques authentiques révèlent ce qui s'est réellement passé en coulisses.`, animation: 'Trait de surligneur progressif jaune + tampon d’archive' },
-            { id: 4, start: '13.0s', end: '17.5s', dur: '4.5s', format: 'B-Roll Vidéo Réel (yt-dlp)', voiceover: `Un bouleversement colossal dont les répercussions se font encore ressentir aujourd'hui.`, animation: 'Vidéo d’archive 60 FPS désaturée 15%' },
-            { id: 5, start: '17.5s', end: '22.0s', dur: '4.5s', format: 'Chiffre Clé Monumental 2D', voiceover: `Une leçon fondamentale que l'histoire nous rappelle encore et toujours.`, animation: 'Compteur 2D monumental + dérive Ken Burns' }
-        ];
-        stickers = [
-            { role: 'Figure Historique / Personnage Clé', promptEn: `Detailed illustration of key historical figure related to ${prompt}, dramatic chiaroscuro lighting, solid bright green screen background (#00FF00), crisp white paper cutout sticker border outline (4px solid white stroke), archival documentary art style --ar 1:1 --v 6.1`, usage: 'Sticker suspendu au sommet avec balancement pendulaire continu.' },
-            { role: 'Objet Symbolique / Carte Vintage', promptEn: `Vintage symbolic artifact or historical map related to ${prompt}, aged parchment texture, solid bright green screen background (#00FF00), clean white paper cutout sticker contour, vector documentary style --ar 1:1 --v 6.1`, usage: 'Apparition centrale avec zoom progressif.' }
-        ];
-        brolls = [
-            { plan: 'Plan 1 & 4', query: 'archival historical documentary footage vintage 1940s 1950s cinematic', desc: 'Extrait vidéo d’époque ou d’actualités avec patine et grain d’archive.' }
-        ];
-        soundDesign = {
-            musicGenre: 'Documentaire journalistique introspectif (Cordes subtiles, piano acoustique, 95 BPM)',
-            mixConfig: 'Voix normalisée à -14 LUFS, Ducking musical -18 dB sous la voix, Fondu de sortie 2.5s',
-            sfx: ['Bruit de papier manipulé', 'Clic d’obturateur photo vintage', 'Graves d’impact documentaire']
-        };
-    } else {
-        title = `${prompt} — Présentation Dynamique`;
-        concept = `Vidéo explicative rythmée et moderne combinant graphismes contemporains, voix off percutante et animations fluides.`;
-        visualRules = [
-            'Typographie 80/20 avec contrastes nets',
-            'Transitions franches et cadencées (3 à 5 secondes par plan)',
-            'Stickers animés avec contour physique blanc et mouvement continu',
-            'Animation sans discontinuité temporelle'
-        ];
-        colorPalette = 'Dominante 60% Neutre moderne (#0f172a), Secondaire 30% Carte contrastée (#1e293b), Accent 10% Couleur vive (#3b82f6)';
-        scenes = [
-            { id: 1, start: '0.0s', end: '4.0s', dur: '4.0s', format: 'Ken Burns Plein Écran', voiceover: `Vous êtes-vous déjà demandé comment transformer radicalement votre approche ?`, animation: 'Zoom Ken Burns doux (1.0 -> 1.06)' },
-            { id: 2, start: '4.0s', end: '8.2s', dur: '4.2s', format: 'Sticker Papier Découpé Flottant', voiceover: `Voici la solution qui simplifie tout, étape par étape.`, animation: 'Effet Pendule Cloche (rotate ±1.8°)' },
-            { id: 3, start: '8.2s', end: '12.5s', dur: '4.3s', format: 'Chiffre Clé & Graphique 2D', voiceover: `Des résultats mesurables, concrets et immédiatement visibles.`, animation: 'Apparition pop dynamique avec rebond' },
-            { id: 4, start: '12.5s', end: '17.0s', dur: '4.5s', format: 'B-Roll Vidéo Réel', voiceover: `Une méthode éprouvée pour gagner du temps et démultiplier votre impact.`, animation: 'Dérive latérale vidéo HD' },
-            { id: 5, start: '17.0s', end: '21.0s', dur: '4.0s', format: 'Call to Action Monumental', voiceover: `Prêt à franchir le pas ? Découvrez la différence dès aujourd'hui.`, animation: 'Zoom avant immersif + Accent lumineux' }
-        ];
-        stickers = [
-            { role: 'Illustration Symbolique', promptEn: `Modern clean 3D illustration related to ${prompt}, solid bright green screen background (#00FF00), crisp white paper cutout sticker contour (3px solid white stroke), vibrant colors --ar 1:1 --v 6.1`, usage: 'Sticker découpé avec balancement pendulaire doux.' }
-        ];
-        brolls = [
-            { plan: 'Plan 4', query: 'modern productivity collaboration creative workspace 4k', desc: 'Plan vidéo lumineux et professionnel illustrant le succès et la simplicité.' }
-        ];
-        soundDesign = {
-            musicGenre: 'Corporate Upbeat & Électro douce (120 BPM, énergie positive)',
-            mixConfig: 'Voix normalisée à -14 LUFS, Ducking musical -18 dB sous la voix, Fondu de sortie 2.5s',
-            sfx: ['Whoosh fluide', 'Clic dynamique', 'Note de confirmation']
-        };
-    }
-
-    return renderMarkdownDocument({
-        title,
-        concept,
-        prompt,
-        style,
-        format,
-        audioSetup,
-        nowStr,
-        visualRules,
-        colorPalette,
-        scenes,
-        stickers,
-        brolls,
-        soundDesign
-    });
-}
-
-/**
- * Transforme la structure générée par l'IA (JSON) en Markdown soigné
+ * Transforme la structure générée par l'IA (JSON) en Markdown soigné et lisible
  */
 function formatAiRoadmapToMarkdown(aiData, payload) {
     const prompt = payload.prompt || 'Sujet Vidéo';
@@ -178,15 +28,34 @@ function formatAiRoadmapToMarkdown(aiData, payload) {
     const title = aiData.project_title || aiData.title || `${prompt} — Production Vidéo IA`;
     const concept = aiData.concept_summary || aiData.concept || aiData.pitch || `Concept créatif vidéo optimisé pour le format ${format} avec direction artistique ${style}.`;
 
+    const isSaas = (style === 'saas' || /saas|claude|chatgpt|app|logiciel|tech|api|ia\b/i.test(prompt));
+    const isVox = (style === 'vox' || style === 'documentaire' || /histoire|vox|guerre|siècle|archive/i.test(prompt));
+
     const visDir = aiData.visual_direction || {};
     let visualRules = Array.isArray(visDir.artistic_rules) ? visDir.artistic_rules : (Array.isArray(aiData.artistic_rules) ? aiData.artistic_rules : []);
     if (visualRules.length === 0) {
-        visualRules = [
-            'Hiérarchie visuelle 80/20 avec typographie épurée',
-            'Stickers découpés avec bordure papier blanche (3-4px) et effet pendule cloche',
-            'Rythme soutenu de 3 à 5 secondes par plan (aucun écran blanc ni scène statique)',
-            'Continuité temporelle absolue démarrant à 0.00s pile'
-        ];
+        if (isSaas) {
+            visualRules = [
+                'Interface moderne et épurée utilisant les codes shadcn/ui et le glassmorphism',
+                'Hiérarchie visuelle 80/20 avec typographie épurée (Outfit pour les titres / chiffres, Inter pour les libellés)',
+                'Animations fluides GSAP en courbes en S et compteurs dynamiques en direct (zéro artifice lourd)',
+                'Cadence rythmée de 3 à 5 secondes par plan avec zéro écran blanc ni scène statique'
+            ];
+        } else if (isVox) {
+            visualRules = [
+                'Direction artistique documentaire Vox avec éléments détourés et texture d\'archives',
+                'Hiérarchie visuelle 80/20 avec typographie épurée',
+                'Rythme soutenu de 3 à 5 secondes par plan',
+                'Continuité temporelle absolue démarrant à 0.00s pile'
+            ];
+        } else {
+            visualRules = [
+                'Direction artistique soignée et moderne adaptée au sujet',
+                'Typographie épurée et hiérarchisée (maximum 2 familles de polices)',
+                'Animations fluides et dynamiques avec transitions cinématiques',
+                'Rythme soutenu de 3 à 5 secondes par plan'
+            ];
+        }
     }
     const colorPalette = visDir.color_palette || aiData.color_palette || 'Dominante 60% Obsidian (#090d16), Secondaire 30% Slate (#1e293b), Accent 10% Vif (#f59e0b)';
 
@@ -196,9 +65,9 @@ function formatAiRoadmapToMarkdown(aiData, payload) {
     const scenes = rawScenes.map((sc, idx) => {
         const id = sc.scene_number || sc.id || (idx + 1);
         let dur = parseFloat(sc.duration_sec || sc.duration || 4.0);
-        if (isNaN(dur) || dur < 2.5 || dur > 7.0) dur = 4.0;
-        const start = sc.timecode ? sc.timecode.split('-')[0].trim() : `${currentTime.toFixed(1)}s`;
-        const end = sc.timecode && sc.timecode.includes('-') ? sc.timecode.split('-')[1].trim() : `${(currentTime + dur).toFixed(1)}s`;
+        if (isNaN(dur) || dur < 2.0 || dur > 8.0) dur = 4.0;
+        const start = sc.timecode ? sc.timecode.split(/[-–à]/)[0].trim() : `${currentTime.toFixed(1)}s`;
+        const end = sc.timecode && sc.timecode.match(/[-–à]/) ? sc.timecode.split(/[-–à]/)[1].trim() : `${(currentTime + dur).toFixed(1)}s`;
         currentTime += dur;
 
         return {
@@ -206,28 +75,28 @@ function formatAiRoadmapToMarkdown(aiData, payload) {
             start,
             end,
             dur: `${dur.toFixed(1)}s`,
-            format: sc.visual_format || sc.format || 'Mockup UI & Ken Burns',
+            format: sc.visual_format || sc.format || (isSaas ? 'Dashboard UI Glassmorphism' : 'Scène Visuelle Cinématique'),
             voiceover: sc.voice_over || sc.voiceover || sc.text || 'Texte de la voix off...',
-            animation: sc.animation_active || sc.animation || 'Zoom Ken Burns doux + Balancement cloche',
+            animation: sc.animation_active || sc.animation || (isSaas ? 'Entrée fluide GSAP + Compteur animé' : 'Zoom dynamique doux'),
             visualDesc: sc.visual_description || sc.visual || '',
             broll: sc.broll_suggestion || sc.broll || ''
         };
     });
 
-    // Normalisation des stickers fond vert
-    const rawStickers = Array.isArray(aiData.stickers_green_screen) ? aiData.stickers_green_screen : (Array.isArray(aiData.stickers) ? aiData.stickers : []);
-    const stickers = rawStickers.map((stk, idx) => {
-        if (typeof stk === 'string') {
+    // Normalisation des assets nécessaires
+    const rawAssets = Array.isArray(aiData.assets_needed) ? aiData.assets_needed : (Array.isArray(aiData.stickers_green_screen) ? aiData.stickers_green_screen : (Array.isArray(aiData.stickers) ? aiData.stickers : []));
+    const assets = rawAssets.map((ast, idx) => {
+        if (typeof ast === 'string') {
             return {
-                role: `Élément Graphique ${idx + 1}`,
-                promptEn: `${stk}, solid bright green screen background (#00FF00), crisp white paper cutout sticker border outline (3px solid white stroke) --ar 1:1 --v 6.1`,
-                usage: 'Sticker découpé avec effet pendule cloche flottant.'
+                role: `Composant Visuel ${idx + 1}`,
+                desc: ast,
+                integration: 'Intégration animée et harmonieuse dans la scène.'
             };
         }
         return {
-            role: stk.role || `Sticker Graphique ${idx + 1}`,
-            promptEn: stk.prompt_en || stk.promptEn || stk.prompt || `${prompt} graphic element, solid bright green screen background (#00FF00), crisp white paper cutout sticker contour --ar 1:1`,
-            usage: stk.usage || 'Apparition dynamique et effet de balancier pendulaire au sommet.'
+            role: ast.role || `Composant Visuel ${idx + 1}`,
+            desc: ast.visual_description || ast.prompt_en || ast.promptEn || ast.prompt || ast.desc || `${prompt} élément graphique`,
+            integration: ast.integration || ast.usage || 'Apparition fluide avec effet d\'échelle ou translation.'
         };
     });
 
@@ -239,17 +108,19 @@ function formatAiRoadmapToMarkdown(aiData, payload) {
         }
         return {
             plan: br.plan || (br.scene_number ? `Plan ${br.scene_number}` : `Plan ${idx + 1}`),
-            query: br.search_query || br.query || br.keywords || `${prompt} b-roll footage`,
-            desc: br.description || br.desc || 'Séquence vidéo réelle dynamique 60 FPS.'
+            query: br.search_query || br.query || br.keywords || `${prompt} b-roll`,
+            desc: br.description || br.desc || 'Séquence vidéo réelle d\'ambiance 60 FPS.'
         };
     });
 
     // Normalisation sound design
     const snd = aiData.sound_design || {};
+    const defaultMusic = isSaas ? 'Tech Synth Minimaliste & Percutant (118 BPM)' : 'Ambiance dynamique immersive (115 BPM)';
+    const defaultSfx = isSaas ? ['Whoosh d’ouverture', 'Frappes de clavier subtiles', 'Bip de confirmation système', 'Riser final'] : ['Whoosh d’ouverture', 'Impact subtil', 'Carillon final'];
     const soundDesign = {
-        musicGenre: snd.music_genre || snd.musicMood || 'Tech Ambient dynamique moderne (115 BPM)',
+        musicGenre: snd.music_genre || snd.musicMood || defaultMusic,
         mixConfig: snd.audio_mix || 'Voix normalisée à -14 LUFS, Ducking musical -18 dB sous la voix, Fondu de sortie 2.5s',
-        sfx: Array.isArray(snd.sound_effects) ? snd.sound_effects : (Array.isArray(snd.sfx) ? snd.sfx : ['Whoosh d’ouverture', 'Frappes subtiles', 'Carillon final'])
+        sfx: Array.isArray(snd.sound_effects) ? snd.sound_effects : (Array.isArray(snd.sfx) ? snd.sfx : defaultSfx)
     };
 
     return renderMarkdownDocument({
@@ -263,9 +134,13 @@ function formatAiRoadmapToMarkdown(aiData, payload) {
         visualRules,
         colorPalette,
         scenes,
-        stickers,
+        assets,
         brolls,
-        soundDesign
+        soundDesign,
+        payload: payload || {},
+        visDir: visDir || {},
+        isSaas,
+        isVox
     });
 }
 
@@ -284,16 +159,20 @@ function renderMarkdownDocument(params) {
         visualRules,
         colorPalette,
         scenes,
-        stickers,
+        assets = (params.assets || params.stickers || []),
         brolls,
-        soundDesign
+        soundDesign,
+        payload = {},
+        visDir = {},
+        isSaas = false,
+        isVox = false
     } = params;
 
     let totalDurationSec = 0;
     scenes.forEach(s => {
         totalDurationSec += parseFloat(s.dur) || 4.0;
     });
-    totalDurationSec = Math.max(15, Math.round(totalDurationSec));
+    totalDurationSec = Math.max(5, Math.round(totalDurationSec));
 
     let scenesTable = `| N° | Timecode | Durée | Format Visuel Recommandé | Texte Voix Off (Percutant & Rythmé) | Animation Active |\n`;
     scenesTable += `| :--- | :--- | :---: | :--- | :--- | :--- |\n`;
@@ -302,19 +181,51 @@ function renderMarkdownDocument(params) {
         scenesTable += `| **${sc.id}** | \`${sc.start} - ${sc.end}\` | **${sc.dur}** | **${sc.format}** | ${sc.voiceover.replace(/\|/g, '-')} | \`${sc.animation}\` |\n`;
     });
 
-    let stickersBlock = stickers.map((stk, idx) => `
-#### ${idx + 1}. ${stk.role}
-* **Usage dans le montage** : ${stk.usage}
-* **Prompt Flow / Midjourney / FLUX (Fond vert + contour papier blanc)** :
-\`\`\`text
-${stk.promptEn}
-\`\`\`
+    const assetsTitle = isSaas 
+        ? '## 🖼️ 4. Assets & Composants Graphiques Requis'
+        : (isVox ? '## 🖼️ 4. Documents & Visuels d\'Archives Requis' : '## 🖼️ 4. Éléments Graphiques & Visuels Requis');
+
+    let assetsBlock = '';
+    if (assets.length > 0) {
+        assetsBlock = assets.map((ast, idx) => `
+#### ${idx + 1}. ${ast.role}
+* **Description visuelle** : ${ast.desc}
+* **Intégration dans la scène** : ${ast.integration}
 `).join('\n');
+    } else {
+        assetsBlock = isSaas 
+            ? `* **Logo officiel** : Logo vectoriel SVG officiel intégré dans l'en-tête ou sur une carte d'interface.\n* **Composants d'interface** : Cartes glassmorphism, dashboard de métriques animées et terminal de code.`
+            : `* **Éléments visuels** : Éléments vectoriels et compositions cinématiques adaptées au sujet.`;
+    }
 
     let brollsBlock = brolls.map(br => `* **${br.plan}** : *${br.desc}* — Recherche : \`${br.query}\``).join('\n');
 
     let rulesBlock = visualRules.map((r, idx) => `${idx + 1}. **${r}**`).join('\n');
     let sfxList = Array.isArray(soundDesign.sfx) ? soundDesign.sfx.map(x => `\`${x}\``).join(', ') : 'Whoosh, Clavier, Swoosh';
+
+    // Description et choix du fond d'écran
+    const isUserBgFree = (!payload.backgroundType || payload.backgroundType === 'auto' || payload.backgroundType === 'libre' || payload.backgroundType === 'ai');
+    let userBgDescription = 'Décision IA (Libre)';
+    if (isUserBgFree) {
+        if (visDir.background_choice && visDir.background_css) {
+            userBgDescription = `Libre (Choix IA : ${visDir.background_choice} — CSS: ${visDir.background_css})`;
+        } else if (visDir.background_css) {
+            userBgDescription = `Libre (Choix IA — CSS: ${visDir.background_css})`;
+        } else {
+            userBgDescription = 'Libre (Ambiance et fond adaptés au sujet par l\'IA)';
+        }
+    } else if (payload.backgroundType === 'white') {
+        userBgDescription = 'Fond blanc épuré (#ffffff)';
+    } else if (payload.backgroundType === 'black') {
+        userBgDescription = 'Fond noir profond (#000000)';
+    } else if (payload.backgroundType === 'solid') {
+        userBgDescription = `Fond uni (${payload.backgroundColor || '#111827'})`;
+    } else if (payload.backgroundType === 'gradient') {
+        const colors = Array.isArray(payload.gradientColors) && payload.gradientColors.length > 0
+            ? payload.gradientColors.join(' vers ')
+            : 'Blanc (#ffffff) vers Orange (#ff6600)';
+        userBgDescription = `Dégradé personnalisé : ${colors} (${payload.backgroundGradient || 'linear-gradient'})`;
+    }
 
     return `# 📋 FEUILLE DE ROUTE DE PRODUCTION IA — MARVIDFLOW
 > **Document de cadrage unique généré par l'IA avant toute mise en production.**
@@ -329,6 +240,7 @@ ${stk.promptEn}
 * **Concept & Vision** : ${concept}
 * **Style Artistique** : **${String(style).toUpperCase()}**
 * **Format & Ratio** : \`${format}\`
+* **Arrière-plan & Fond Vidéo** : \`${userBgDescription}\`
 * **Configuration Audio** : \`${audioSetup}\` (${soundDesign.mixConfig})
 * **Durée Totale Estimée** : **${totalDurationSec}s** (${Math.floor(totalDurationSec / 60)} min ${totalDurationSec % 60}s)
 * **Nombre de Séquences Découpées** : **${scenes.length} plans** (Cadence vive : 3 à 5s par plan, **zéro écran blanc**)
@@ -346,9 +258,9 @@ ${scenesTable}
 
 ---
 
-## 🖼️ 4. Prompts d'Illustrations Fond Vert (Stickers Contour Papier Blanc)
-*Générez ces éléments dans Flow, Midjourney ou Leonardo, téléchargez-les et déposez-les dans l'application :*
-${stickersBlock}
+${assetsTitle}
+*Éléments graphiques et visuels spécifiques conçus pour cette production :*
+${assetsBlock}
 
 ---
 
@@ -373,7 +285,168 @@ ${brollsBlock}
 }
 
 /**
- * Génère la feuille de route via l'IA (Kombo Multi-modèles) et l'écrit dans le fichier unique 09_Pages/feuille_de_route.md
+ * Extrait proprement une valeur CSS valide depuis une chaîne
+ */
+function extractCssValue(str) {
+    if (!str || typeof str !== 'string') return '#090d16';
+    const trimmed = str.trim();
+    const cssPrefixMatch = trimmed.match(/CSS:\s*([^`*\n]+)/i);
+    let candidate = cssPrefixMatch ? cssPrefixMatch[1].trim() : trimmed;
+    const gradMatch = candidate.match(/(?:linear|radial)-gradient\([\s\S]+?\)(?=\s*(?:\)|$|;|\n))/i) 
+                   || candidate.match(/(?:linear|radial)-gradient\([\s\S]+/i);
+    if (gradMatch) {
+        let grad = gradMatch[0].trim().replace(/[`*]/g, '').trim();
+        let open = (grad.match(/\(/g) || []).length;
+        let close = (grad.match(/\)/g) || []).length;
+        while (close > open && grad.endsWith(')')) {
+            grad = grad.slice(0, -1).trim();
+            close--;
+        }
+        while (close < open) {
+            grad += ')';
+            close++;
+        }
+        return grad;
+    }
+    const hexMatch = candidate.match(/#[0-9a-fA-F]{3,8}/);
+    if (hexMatch) return hexMatch[0];
+    const rgbMatch = candidate.match(/rgba?\([^)]+\)/i);
+    if (rgbMatch) return rgbMatch[0];
+    return candidate.replace(/[`*]/g, '').trim();
+}
+
+/**
+ * Décode et analyse le document Markdown de la feuille de route pour le transmettre au moteur de vidéo
+ */
+function parseRoadmapMarkdown(md) {
+    if (!md || typeof md !== 'string' || md.length < 50) return null;
+
+    const result = {
+        title: '',
+        prompt: '',
+        concept: '',
+        style: '',
+        format: '16:9',
+        audioSetup: 'full_mix',
+        targetDuration: 20,
+        theme: {
+            primaryColor: '#090d16',
+            secondaryColor: '#1e293b',
+            accentColor: '#f59e0b',
+            fontTitle: 'Outfit',
+            fontBody: 'Inter'
+        },
+        scenes: [],
+        stickers: [],
+        brolls: [],
+        soundDesign: {}
+    };
+
+    const titleMatch = md.match(/\*\s*\*\*Titre du Projet\*\*\s*:\s*\*\*?([^\n*]+)\*\*?/i);
+    if (titleMatch) result.title = titleMatch[1].trim();
+
+    const promptMatch = md.match(/\*\s*\*\*Sujet & Prompt\*\*\s*:\s*[«"']?([^\n»"']+)[»"']?/i);
+    if (promptMatch) result.prompt = promptMatch[1].trim();
+
+    const conceptMatch = md.match(/\*\s*\*\*Concept & Vision\*\*\s*:\s*([^\n]+)/i);
+    if (conceptMatch) result.concept = conceptMatch[1].trim();
+
+    const styleMatch = md.match(/\*\s*\*\*Style Artistique\*\*\s*:\s*\*\*?([^\n*]+)\*\*?/i);
+    if (styleMatch) result.style = styleMatch[1].trim().toLowerCase();
+
+    const formatMatch = md.match(/\*\s*\*\*Format & Ratio\*\*\s*:\s*`?([^\n`]+)`?/i);
+    if (formatMatch) result.format = formatMatch[1].trim();
+
+    const audioMatch = md.match(/\*\s*\*\*Configuration Audio\*\*\s*:\s*`?([^\n`]+)`?/i);
+    if (audioMatch) result.audioSetup = audioMatch[1].trim();
+
+    // Extraire l'arrière-plan décidé ou spécifié
+    const bgMatch = md.match(/\*\s*\*\*Arrière-plan & Fond Vidéo\*\*\s*:\s*`?([^\n`]+)`?/i);
+    if (bgMatch) {
+        const rawBg = bgMatch[1].trim();
+        const extractedCss = extractCssValue(rawBg);
+        result.background = {
+            global: extractedCss,
+            description: rawBg
+        };
+    }
+
+    // Extraire les scènes du tableau
+    const lines = md.split('\n');
+    let insideScenesTable = false;
+
+    lines.forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed.includes('## 🎬 3. Découpage Séquentiel') || trimmed.includes('Découpage Séquentiel Plan par Plan')) {
+            insideScenesTable = true;
+            return;
+        }
+        if (insideScenesTable && trimmed.startsWith('## ')) {
+            insideScenesTable = false;
+            return;
+        }
+
+        if (insideScenesTable && trimmed.startsWith('|') && trimmed.includes('|')) {
+            const parts = trimmed.split('|').map(p => p.trim());
+            if (parts.length >= 7 && /^\*\*(\d+)\*\*$/.test(parts[1])) {
+                const id = parseInt(parts[1].replace(/\*/g, ''), 10);
+                const tcStr = parts[2].replace(/[`\s]/g, '');
+                const tcParts = tcStr.split(/[-–à]/);
+                const timeStart = parseFloat(tcParts[0]) || 0;
+                const timeEnd = parseFloat(tcParts[1]) || (timeStart + 4.0);
+                const duration = Math.max(2.0, +(timeEnd - timeStart).toFixed(1));
+                const visualFormat = parts[4].replace(/\*/g, '').trim();
+                const voiceLine = parts[5].trim();
+                const animation = parts[6].replace(/[`*]/g, '').trim();
+
+                const headline = visualFormat || `Plan ${id}`;
+                const concept = `${visualFormat} — ${animation}`;
+
+                result.scenes.push({
+                    id,
+                    timeStart,
+                    timeEnd,
+                    duration,
+                    visualFormat,
+                    headline,
+                    headlineAccent: '',
+                    subtitle: visualFormat,
+                    voiceLine,
+                    concept,
+                    animationActive: animation,
+                    transitionOut: {
+                        type: 'object_zoom_portal',
+                        triggerElement: 'element_cle',
+                        description: 'Transition cinématique'
+                    }
+                });
+            }
+        }
+    });
+
+    if (result.scenes.length > 0) {
+        result.targetDuration = result.scenes[result.scenes.length - 1].timeEnd;
+        result.narration = result.scenes.map(s => s.voiceLine).filter(Boolean).join(' ');
+    }
+
+    // Extraire les assets et éléments graphiques
+    const assetBlocks = [...md.matchAll(/####\s*\d+\.\s*([^\n]+)[\s\S]*?(?:\*+Description visuelle\*+:\s*([^\n]+)[\s\S]*?\*+Intégration[^\n*]*\*+:\s*([^\n]+)|\*+Usage[^\n*]*\*+:\s*([^\n]+)[\s\S]*?```(?:text)?\s*([\s\S]*?)```)/gi)];
+    assetBlocks.forEach(ab => {
+        result.stickers.push({
+            role: ab[1].trim(),
+            desc: (ab[2] || ab[5] || '').trim(),
+            integration: (ab[3] || ab[4] || '').trim(),
+            usage: (ab[3] || ab[4] || '').trim(),
+            promptEn: (ab[5] || ab[2] || '').trim()
+        });
+    });
+
+    return result;
+}
+
+/**
+ * Génère la feuille de route via l'IA (Kombo Multi-modèles) SANS AUCUN TEMPLATE STATIQUE DE SECOURS.
+ * L'IA DOIT RÉFLÉCHIR ET PRODUIRE LE PLAN.
  */
 async function generateRoadmap(payload) {
     let md = '';
@@ -382,8 +455,52 @@ async function generateRoadmap(payload) {
     const formatText = payload.format || '16:9';
     const scriptText = payload.customScript || payload.script || '';
 
-    try {
-        const systemPrompt = `Tu es le Directeur Artistique et Réalisateur en chef de MarvidFlow (expert vidéo motion design, formats SaaS Commercials et documentaires Vox).
+    // Détection de durée éventuelle dans le prompt (ex: "video de 5s", "10 secondes", "30s")
+    let requestedDurationSec = 24;
+    const durMatch = promptText.match(/(\d+)\s*(?:secondes?|secs?|s)\b/i);
+    if (durMatch) {
+        const parsed = parseInt(durMatch[1], 10);
+        if (parsed >= 4 && parsed <= 120) {
+            requestedDurationSec = parsed;
+        }
+    }
+
+    // Description du fond d'écran choisi
+    const isUserBgFree = (!payload.backgroundType || payload.backgroundType === 'auto' || payload.backgroundType === 'libre' || payload.backgroundType === 'ai');
+    let userBgDescription = 'Libre (Décision IA)';
+    let bgRule = '';
+    let fallbackCss = '#090d16';
+
+    if (isUserBgFree) {
+        userBgDescription = 'Libre (L\'IA doit réfléchir et imaginer le fond le plus immersif et adapté au sujet)';
+        bgRule = `3. MODE LIBRE POUR L'ARRIÈRE-PLAN :
+   - L'utilisateur a laissé le choix du fond libre à l'IA. Tu DOIS impérativement réfléchir au sujet et décider d'un arrière-plan SUR-MESURE qui sublime la narration (ex: dégradé cosmique sombre pour l'astronomie, fond vélin chaud #faf8f5 pour l'histoire, verre anthracite sombre pour du SaaS/code, dégradé émeraude/or pour la finance, etc.).
+   - INTERDICTION d'utiliser tout le temps le même fond ! Varie les styles, les dégradés et les textures en fonction du thème précis.
+   - Renseigne impérativement dans "visual_direction" les champs "background_choice" (nom évocateur) et "background_css" (CSS valide, ex: linear-gradient(...) ou #faf8f5 ou #090d16).`;
+    } else {
+        if (payload.backgroundType === 'white') {
+            userBgDescription = 'Fond blanc épuré (#ffffff)';
+            fallbackCss = '#ffffff';
+        } else if (payload.backgroundType === 'black') {
+            userBgDescription = 'Fond noir profond (#000000)';
+            fallbackCss = '#000000';
+        } else if (payload.backgroundType === 'solid') {
+            userBgDescription = `Fond uni (${payload.backgroundColor || '#111827'})`;
+            fallbackCss = payload.backgroundColor || '#111827';
+        } else if (payload.backgroundType === 'gradient') {
+            const colors = Array.isArray(payload.gradientColors) && payload.gradientColors.length > 0
+                ? payload.gradientColors.join(' vers ')
+                : 'Blanc (#ffffff) vers Orange (#ff6600)';
+            userBgDescription = `Dégradé personnalisé : ${colors} (${payload.backgroundGradient || 'linear-gradient'})`;
+            fallbackCss = payload.backgroundGradient || 'linear-gradient(135deg, #ffffff 0%, #ff6600 100%)';
+        }
+        bgRule = `3. RESPECT DU FOND CHOISI PAR L'UTILISATEUR :
+   - L'utilisateur a explicitement imposé : ${userBgDescription}.
+   - Tu DOIS STRICTEMENT respecter ce fond et concevoir la palette chromatique 60/30/10 et le contraste des cartes pour s'harmoniser parfaitement avec lui.
+   - Renseigne dans "visual_direction" : "background_choice": "${userBgDescription}", "background_css": "${fallbackCss}".`;
+    }
+
+    const systemPrompt = `Tu es le Directeur Artistique et Réalisateur en chef de MarvidFlow (expert vidéo motion design, formats SaaS Commercials et documentaires Vox).
 Ta mission est de concevoir une FEUILLE DE ROUTE DE PRODUCTION VIDÉO (Production Roadmap) complète, créative et ultra-détaillée.
 
 IMPORTANT: Tu dois STRICTEMENT retourner un objet JSON valide conforme au schéma suivant (sans texte conversationnel ni bloc de code englobant):
@@ -392,82 +509,83 @@ IMPORTANT: Tu dois STRICTEMENT retourner un objet JSON valide conforme au schém
   "concept_summary": "Résumé captivant du concept et de l'approche créative",
   "style": "${styleText}",
   "format": "${formatText}",
-  "duration_total": 24,
+  "duration_total": ${requestedDurationSec},
   "visual_direction": {
     "style_name": "Nom du style visuel",
+    "background_choice": "Description du fond visuel (imaginé par l'IA en mode Libre ou reprenant le choix utilisateur)",
+    "background_css": "Valeur CSS valide pour background (ex: linear-gradient(135deg, #0f172a, #1e1b4b) ou #faf8f5 ou #090d16 ou #ffffff)",
     "artistic_rules": [
       "Règle 1 adaptée au sujet précis",
       "Règle 2 adaptée au sujet précis",
       "Règle 3 adaptée au sujet précis",
       "Règle 4 adaptée au sujet précis"
     ],
-    "color_palette": "Palette 60/30/10 précise adaptée au sujet (codes HEX et description)"
+    "color_palette": "Palette 60/30/10 précise adaptée au sujet et au fond choisi (codes HEX et description)"
   },
   "scenes": [
     {
       "scene_number": 1,
       "timecode": "0.0s - 4.0s",
       "duration_sec": 4.0,
-      "visual_format": "Mockup UI Glassmorphism / Ken Burns Plein Écran / Sticker Flottant Pendule / B-Roll Pur",
+      "visual_format": "Format visuel adapté (ex: Dashboard UI Glassmorphism / Mockup Produit / Hero Stat / Terminal de Code)",
       "visual_description": "Description concrète et précise des visuels affichés à l'écran",
-      "voice_over": "Texte exact de la voix off pour cette scène (direct, percutant, humain)",
-      "animation_active": "Effet d'animation précis (ex: Zoom Ken Burns doux + Balancement cloche)",
-      "broll_suggestion": "Idée de vidéo réelle d'ambiance ou d'action"
+      "voice_over": "Texte exact de la voix off pour cette scène (court, percutant, humain, sans pavé de texte)",
+      "animation_active": "Effet d'animation précis et adapté (ex: Entrée fluide GSAP en courbe S, compteur animé, révélation d'échelle)",
+      "broll_suggestion": "Idée de vidéo réelle d'ambiance ou de contexte"
     }
   ],
-  "stickers_green_screen": [
+  "assets_needed": [
     {
-      "role": "Rôle de l'élément (ex: Badge Logo Claude / Terminal de code / Puce IA)",
-      "prompt_en": "Prompt Midjourney/FLUX en anglais sur fond vert vif (#00FF00) avec contour papier blanc (3px solid white stroke)",
-      "usage": "Utilisation dans le montage (ex: balancement pendulaire doux au sommet)"
+      "role": "Rôle de l'élément (ex: Logo officiel SVG Claude / Dashboard de métriques 10x / Terminal de code interactif)",
+      "visual_description": "Description esthétique de l'élément visuel adapté au style",
+      "integration": "Intégration et animation dans la scène (ex: Barre supérieure, carte héroïque, apparition centrale)"
     }
   ],
   "brolls_needed": [
     {
       "scene_number": 1,
-      "search_query": "Mots-clés précis de recherche en anglais pour banques de vidéos (4k)",
+      "search_query": "Mots-clés précis de recherche en anglais pour banques de vidéos (ex: developer coding dark room, modern tech workspace)",
       "description": "Description du plan vidéo réel"
     }
   ],
   "sound_design": {
     "music_genre": "Style musical suggéré (BPM, ambiance, instruments)",
     "audio_mix": "Voix normalisée à -14 LUFS, Ducking musical -18 dB sous la voix",
-    "sound_effects": ["Whoosh", "Clavier", "Transition", "Carillon"]
+    "sound_effects": ["Whoosh d'ouverture", "Frappes de clavier", "Riser final"]
   }
 }
 
 RÈGLES D'OR DE RÉALISATION :
-1. Génère impérativement entre 5 et 7 scènes rythmées (durée totale 20s à 30s). Chaque scène DOIT durer entre 3 et 5 secondes maximum (aucun temps mort).
-2. Le sujet exact est : "${promptText}". La vidéo doit être 100% pensée et rédigée autour de ce sujet précis (s'il s'agit de Claude / SaaS, parle de Claude AI, de productivité dev, d'interface moderne, de code, d'accélération 10x ; s'il s'agit d'un autre sujet, adapte scrupuleusement le contenu).
-3. Voix off captivante, humaine et percutante. Zéro blabla creux.`;
+1. Découpe en séquences vives de 3 à 5 secondes chacune. Pour une durée totale de ${requestedDurationSec}s, génère le nombre approprié de plans (ex: pour 24s -> 6 plans de 4s ; pour 5s -> 1 à 2 plans vifs).
+2. Le sujet exact est : "${promptText}". La vidéo doit être 100% pensée, personnalisée et rédigée autour de ce sujet précis.
+3. ADAPTATION TOTALE AU STYLE :
+   - Si le sujet est SaaS / Tech : La direction artistique DOIT être SaaS moderne (tokens shadcn/ui, glassmorphism, dashboards, chiffres clés, logos vectoriels). AUCUN sticker de personnage d'archive ni fond vert papier découpé !
+   - Zéro animation mécanique forcée : l'animation doit servir la narration (courbes en S GSAP, compteurs de stats, transitions nettes).
+${bgRule}
+4. ZÉRO MUR DE TEXTE : Chaque réplique de voix off doit être concise, directe et naturelle.`;
 
-        const userPrompt = `Conçois la feuille de route complète pour ce projet :
+    const userPrompt = `Conçois la feuille de route complète pour ce projet :
 - Sujet / Prompt : "${promptText}"
 - Style artistique : ${styleText}
 - Format vidéo : ${formatText}
+- Arrière-plan & fond vidéo choisi : ${userBgDescription}
 - Configuration audio : ${payload.audioSetup || 'Mix complet (Voix + Musique)'}
-- Script fourni par l'utilisateur : ${scriptText ? `"${scriptText}"` : 'Aucun (l’IA doit rédiger le scénario intégral)'}
+- Script fourni par l'utilisateur : ${scriptText ? `"${scriptText}"` : 'Aucun (l’IA doit concevoir le scénario intégral)'}
 
 Génère l'objet JSON complet :`;
 
-        const preferredAi = payload.preferredAi || 'kombo';
-        const aiResponse = await callAiKombo(systemPrompt, userPrompt, 0.7, preferredAi);
+    const preferredAi = payload.preferredAi || 'kombo';
+    const aiResponse = await callAiKombo(systemPrompt, userPrompt, 0.7, preferredAi);
 
-        if (aiResponse && typeof aiResponse === 'object' && Array.isArray(aiResponse.scenes) && aiResponse.scenes.length > 0) {
-            console.log(`[Roadmap AI] Feuille de route générée avec succès via l'IA (${aiResponse.scenes.length} scènes).`);
-            md = formatAiRoadmapToMarkdown(aiResponse, payload);
-        } else if (typeof aiResponse === 'string' && aiResponse.includes('# 📋 FEUILLE DE ROUTE')) {
-            md = aiResponse.trim().replace(/^```markdown\s*/i, '').replace(/```$/i, '').trim();
-        } else {
-            console.warn('[Roadmap AI] Réponse IA non conforme au schéma, utilisation du fallback intelligent.');
-            md = buildSmartFallbackRoadmap(payload);
-        }
-    } catch (e) {
-        console.warn('[Roadmap AI] Échec appel IA, bascule sur fallback intelligent :', e.message);
-        md = buildSmartFallbackRoadmap(payload);
+    if (aiResponse && typeof aiResponse === 'object' && Array.isArray(aiResponse.scenes) && aiResponse.scenes.length > 0) {
+        console.log(`[Roadmap AI] Feuille de route générée avec succès via l'IA (${aiResponse.scenes.length} scènes).`);
+        md = formatAiRoadmapToMarkdown(aiResponse, payload);
+    } else if (typeof aiResponse === 'string' && aiResponse.includes('# 📋 FEUILLE DE ROUTE')) {
+        md = aiResponse.trim().replace(/^```markdown\s*/i, '').replace(/```$/i, '').trim();
+    } else {
+        throw new Error("L'IA n'a pas retourné une structure de scènes valide pour la feuille de route.");
     }
 
-    // Assurer que le dossier 09_Pages existe
     const targetDir = path.dirname(ROADMAP_PATH);
     if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, { recursive: true });
@@ -524,6 +642,7 @@ module.exports = {
     saveRoadmap,
     validateAndClearRoadmap,
     getRoadmap,
-    buildSmartFallbackRoadmap,
+    parseRoadmapMarkdown,
+    extractCssValue,
     ROADMAP_PATH
 };

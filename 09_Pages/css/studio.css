@@ -573,6 +573,15 @@
             left: 0;
             transform-origin: 0 0;
             pointer-events: auto;
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        iframe#previewFrame::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
 

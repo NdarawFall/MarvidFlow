@@ -2187,7 +2187,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
             // Mise à jour des boutons : Réflexion active de l'IA sur le scénario et la DA
             btn.disabled = true;
-            btn.innerHTML = `<span>🧠 L'IA réfléchit et rédige la feuille de route...</span>`;
+            btn.innerHTML = `<span>🧠 Analyse du sujet et conception de la DA...</span>`;
 
             const btnRoadmap = document.getElementById('btnRoadmapTrigger');
             const btnRoadmapText = document.getElementById('btnRoadmapText');
@@ -2204,6 +2204,19 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 if (btnRoadmapText) btnRoadmapText.textContent = "Réflexion IA en cours... Conception du scénario et découpage...";
                 if (btnRoadmapBadge) btnRoadmapBadge.style.display = 'none';
             }
+
+            let thinkStep = 0;
+            const thinkStages = [
+                '🧠 Gemini analyse le prompt et calibre la tonalité...',
+                '🎨 Choix des contrastes, polices et arrière-plan...',
+                '📐 Découpage séquentiel plan par plan et prompts d’assets...',
+                '📋 Rédaction de la feuille de route sur-mesure...'
+            ];
+            const thinkingInterval = setInterval(() => {
+                thinkStep = (thinkStep + 1) % thinkStages.length;
+                btn.innerHTML = `<span>${thinkStages[thinkStep]}</span>`;
+                if (btnRoadmapText) btnRoadmapText.textContent = thinkStages[thinkStep];
+            }, 1200);
 
             const useTemplate = (currentSelectedStyle !== 'none');
             const channelId = currentChannelId;
@@ -2307,6 +2320,8 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     throw new Error(`Le serveur n'a pas renvoyé de JSON valide (${response.status}) : ${respText.slice(0, 100)}`);
                 }
 
+                clearInterval(thinkingInterval);
+
                 if (!result.success) {
                     throw new Error(result.error || 'Erreur lors de la génération de la feuille de route.');
                 }
@@ -2335,6 +2350,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 openRoadmapModal(result.content);
 
             } catch (err) {
+                clearInterval(thinkingInterval);
                 console.error('[Roadmap Error]:', err);
                 showAppNotice(`Impossible de générer la feuille de route :\n${err.message}`, 'Génération Interrompue', 'error');
                 btn.disabled = false;
@@ -2514,11 +2530,14 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
 
             try {
+                const roadmapContent = textarea ? textarea.value : '';
+                payload.roadmapContent = roadmapContent;
+
                 // RÈGLE FORMELLE : Valider puis VIDER le fichier unique feuille_de_route.md
                 await fetch('/api/validate-roadmap', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: textarea ? textarea.value : '' })
+                    body: JSON.stringify({ content: roadmapContent })
                 });
 
                 // Sauvegarder dans localStorage pour la page de process
@@ -2556,33 +2575,13 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         if (btnRoadmapEl) {
             btnRoadmapEl.addEventListener('click', (e) => {
                 e.preventDefault();
-                openRoadmapModal();
-            });
-        }
-
-        // Vérifier au chargement si une feuille de route existe déjà
-        (async () => {
-            try {
-                const resp = await fetch('/api/get-roadmap');
-                const data = await resp.json();
-                if (data && data.content && data.content.trim().length > 60 && !data.content.startsWith('<!-- FEUILLE DE ROUTE RÉINITIALISÉE')) {
-                    if (btnRoadmapEl) {
-                        btnRoadmapEl.disabled = false;
-                        btnRoadmapEl.style.cursor = 'pointer';
-                        btnRoadmapEl.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.2))';
-                        btnRoadmapEl.style.border = '1px solid rgba(59, 130, 246, 0.5)';
-                        btnRoadmapEl.style.color = '#ffffff';
-                        btnRoadmapEl.style.boxShadow = '0 0 25px rgba(37, 99, 235, 0.4)';
-                        const btnIcon = document.getElementById('btnRoadmapIcon');
-                        const btnText = document.getElementById('btnRoadmapText');
-                        const btnBadge = document.getElementById('btnRoadmapBadge');
-                        if (btnIcon) btnIcon.textContent = '📄';
-                        if (btnText) btnText.textContent = 'Voir / Valider la Feuille de Route de Production';
-                        if (btnBadge) {
-                            btnBadge.style.display = 'inline-block';
-                            btnBadge.textContent = 'Prête';
-                        }
-                    }
+                if (!btnRoadmapEl.disabled) {
+                    openRoadmapModal();
                 }
-            } catch (e) {}
-        })();
+            });
+            // RÈGLE : Le bouton démarre STRICTEMENT désactivé en attente du clic « Créer la vidéo »
+            btnRoadmapEl.disabled = true;
+            btnRoadmapEl.style.cursor = 'not-allowed';
+            const btnBadge = document.getElementById('btnRoadmapBadge');
+            if (btnBadge) btnBadge.style.display = 'none';
+        }

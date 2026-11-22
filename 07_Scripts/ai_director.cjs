@@ -16,6 +16,57 @@ const path = require('path');
 const https = require('https');
 const { exec, execFile } = require('child_process');
 const { fetchFlag } = require('./fetch_flag.cjs');
+const { parseRoadmapMarkdown, getRoadmap, extractCssValue } = require('./roadmap_generator.cjs');
+
+/**
+ * Télécharge un logo vectoriel SVG officiel depuis Iconify Logos API si non disponible localement
+ */
+function downloadIconifySvg(iconName, destPath) {
+    return new Promise((resolve) => {
+        const url = `https://api.iconify.design/logos/${iconName}.svg`;
+        https.get(url, (res) => {
+            if (res.statusCode === 200) {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    if (data && data.includes('<svg')) {
+                        fs.writeFileSync(destPath, data, 'utf8');
+                        resolve(true);
+                        return;
+                    }
+                    resolve(false);
+                });
+            } else {
+                resolve(false);
+            }
+        }).on('error', () => resolve(false));
+    });
+}
+
+/**
+ * Télécharge un logo vectoriel SVG depuis Iconify Simple-Icons (3000+ marques tech et mondiales)
+ */
+function downloadIconifySimpleIcon(iconName, destPath) {
+    return new Promise((resolve) => {
+        const url = `https://api.iconify.design/simple-icons/${iconName}.svg`;
+        https.get(url, (res) => {
+            if (res.statusCode === 200) {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    if (data && data.includes('<svg')) {
+                        fs.writeFileSync(destPath, data, 'utf8');
+                        resolve(true);
+                        return;
+                    }
+                    resolve(false);
+                });
+            } else {
+                resolve(false);
+            }
+        }).on('error', () => resolve(false));
+    });
+}
 
 function execAsync(cmd, timeout = 25000) {
     return new Promise((resolve) => {
@@ -48,6 +99,11 @@ function loadSkillsDirectives() {
         }
         if (fs.existsSync(physicsSkillPath)) {
             text += '\n=== DIRECTIVES SKILL: ANIMATION 2D & PHYSIQUE GÉOMÉTRIQUE ===\n' + fs.readFileSync(physicsSkillPath, 'utf8') + '\n';
+        }
+
+        const handCursorPath = path.join(agentSkillsDir, 'hand_cursor_interaction', 'SKILL.md');
+        if (fs.existsSync(handCursorPath)) {
+            text += '\n=== DIRECTIVES SKILL: HAND CURSOR INTERACTION (Curseurs Mains Réalistes) ===\n' + fs.readFileSync(handCursorPath, 'utf8') + '\n';
         }
 
         const mySkillsDir = path.join(agentSkillsDir, 'My_Skills');
@@ -430,6 +486,11 @@ function sanitizeSceneCode(codeObj, sceneIndex) {
     // Règle 41 : Suppression des faux boutons d'action web (c'est une vidéo, pas un site)
     html = html.replace(/<button[^>]*>\s*(?:commencer|sign up|s'inscrire|en savoir plus|cliquez ici|télécharger|start free|get started|demo)[\s\S]*?<\/button>/gi, '');
 
+    // FIX CRITIQUE GSAP : Nettoyer toute redéclaration locale de timeline orpheline qui gèlerait l'animation
+    js = js.replace(/(?:const|let|var)\s+tl\s*=\s*gsap\.timeline\([^)]*\);?/g, '// [Master timeline reused]');
+    js = js.replace(/window\.tl\s*=\s*tl;?/g, '');
+    js = js.replace(/tl\.pause\(\);?/g, '');
+
     // Sécurité NaN dans le code GSAP
     if (js.includes('NaN')) {
         console.warn(`[Sanitizer] Détection de NaN dans le code GSAP scène ${sceneIndex}, nettoyage.`);
@@ -450,6 +511,7 @@ async function generateSceneCodeWithGemini({
     scenePlan,
     theme,
     baseBg,
+    isLight = false,
     format,
     width,
     height,
@@ -464,60 +526,58 @@ async function generateSceneCodeWithGemini({
     const transitionTrigger = scenePlan.transitionOut?.triggerElement || 'element-cle';
 
     const systemPrompt = `Tu es l'Expert Motion Designer et Réalisateur Vidéo en chef de AutoFrame.
-Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo fluide, moderne et hautement cinématique.
+Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo hautement dynamique, captivante et cinématique (style Vox / SaaS Commercial).
 
 ${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS :\n${skillsDirectives}\n` : ''}
 
 RÈGLES D'OR DE RÉALISATION ET DESIGN :
-1. ZÉRO ÉTIQUETTE POWERPOINT (RÈGLE 40) :
-   - Interdiction FORMELLE des badges didactiques : [ Étape 01 ], [ Scène X ], .tag-pill, ou faux textes HUD de télémétrie aux 4 coins.
-   - Une vidéo est un film, pas un diaporama. On montre l'action visuellement, on ne l'étiquette pas.
-2. ZÉRO BOUTON D'ACTION WEB (RÈGLE 41) :
-   - Ne JAMAIS placer de faux boutons cliquables interactifs (<button>Commencer</button>, <button>Sign up</button>).
-   - L'écran est un flux vidéo regardé par un spectateur, pas une landing page.
-3. TRANSITIONS CINÉMATIQUES MOTIVÉES ENTRE SCÈNES (RÈGLE 42) :
-   - Transition prévue pour sortir de cette scène vers la suivante : "${transitionType}" (déclenchée via "${transitionTrigger}").
-   - Ne PAS utiliser un simple fade-out noir systématique sur toutes les scènes !
-   - Si "object_zoom_portal" : La caméra zoome violemment sur l'élément clé (scale 1.0 -> 15.0, lueur ou flou) pour plonger dans la scène suivante.
-   - Si "whip_slide" : Balayage directionnel dynamique (x: -100% ou y: -100% avec motion blur) motivé par le mouvement d'un objet.
-   - Si "match_cut" : Raccord direct de forme/couleur entre la fin de cette scène et le début de la suivante.
-   - Si "hard_cut" : Coupure nette instantanée sur un temps fort ou percussion audio.
-   - Si "cinematic_dissolve" : Fondu croisé subtil et élégant.
-4. ANIMATION TYPOGRAPHIQUE MOT PAR MOT (TEXT ANIMATION) :
-   - Tout texte doit utiliser la double typographie (mot clé en police bold + mot d'accompagnement en police light/fashion).
-   - Apparition mot-à-mot synchronisée sur la voix off (${scenePlan.timeStart}s -> ${scenePlan.timeEnd}s).
-5. ZÉRO SCÈNE MORTE SANS VIE (RÈGLE 44) :
-   - Chaque scène DOIT VIVRE continuellement. Interdiction formelle des scènes inertes ou figées !
-   - Intégrer une dérive caméra subtile continue (slow push-in scale 1.0 -> 1.05 ou lent pan x/y), et des micro-mouvements d'ambiance (orbes diffuses oscillantes, compteurs actifs, curseurs clignotants).
-   - Seule exception autorisée : un court plateau cognitif ("Holding Phase" de 1.2s à 1.8s max) pour stabiliser le regard sur une métrique clé ou une punchline cruciale, avant de relancer le mouvement.
-6. DIVERSITÉ DES CARDS & ANIMATION INTERNE DÉCALÉE (RÈGLE 45) :
-   - Varier le style des cards selon le contexte :
-     * Flat / Bento Card Minimaliste : bordure fine nette (1px solid rgba(..., 0.08)), contraste maximal, fond neutre.
-     * Card 3D en perspective : relief spatial (transform: perspective(1000px) rotateX(...) rotateY(...)) réagissant à la caméra.
-     * Card Élevée / Ombrée (Elevated Shadow) : ombre portée douce multicouche (box-shadow: 0 12px 32px rgba(...)) avec respect absolu du contraste.
-   - INTERDICTION FORMELLE DE FAIRE APPARAÎTRE UNE CARD COMME UN BLOC FIGÉ MONOBLOC :
-     Chaque élément interne de la card (badge d'en-tête, icône, titre, chiffre/métrique, jauge de progression, sparkline) DOIT s'animer de manière décalée (stagger: 0.08s ou entrées séquencées).
-7. CHORÉGRAPHIE COGNITIVE : ANIMATION SÉQUENCÉE VS SIMULTANÉE (RÈGLE 47) :
-   - Si voix off : chaque mot ou élément animé apparaît pile au moment exact où la voix le prononce (l'œil suit l'oreille).
-   - Si sans voix off : animer selon l'ordre hiérarchique de lecture humaine (Titre -> Card/Objet -> Chiffre/Détail -> Conclusion). Le cerveau ne peut comprendre qu'un élément à la fois.
-   - Le mode SIMULTANÉ (tout en même temps) est STRICTEMENT RÉSERVÉ aux éléments d'ambiance globale où le spectateur n'a PAS besoin de comprendre chaque élément un par un (explosion de particules, confettis, pluie de logos secondaires en fond, grille d'arrière-plan).
-8. SUPERPOUVOIRS DESIGN & ANIMATION DISPONIBLES :
-   - TAILWIND CSS & DESIGN SYSTEM SHADCN/UI (flex, grid, gap, backdrop-blur-xl, rounded-xl/2xl, shadow-2xl).
-   - DRAPEAUX VECTORIELS SVG (Flagcdn ou Flag-Icons, AUCUN émoji brut).
-   - VRAIES CAPTURES DE SITES WEB (Microlink).
-   - ICÔNES LUCIDE VECTORIELLES (<i data-lucide="..."></i>).
-   - GSAP & ANIMEJS (instance 'tl' GSAP déterministe).
-
-RÈGLES TECHNIQUES MAÎTRESSES :
-1. ISOLATION STRICTE :
-   - Tout le code HTML de cette scène DOIT être encapsulé dans :
-     <div class="scene-container" id="scene_${sceneIndex}">...</div>
-   - Le CSS de cette scène DOIT être préfixé par #scene_${sceneIndex}.
-   - NE JAMAIS utiliser '!important'.
-2. GESTION DU TEMPS :
+1. ZÉRO ÉTIQUETTE POWERPOINT & ZÉRO BOUTON WEB FACTICE (RÈGLES 40 & 41) :
+   - Interdiction FORMELLE des badges didactiques : [ Étape 01 ], [ Scène X ], .tag-pill, ou faux textes HUD.
+   - Ne JAMAIS placer de faux boutons cliquables interactifs (<button>Commencer</button>). Une vidéo est un film, pas un site web.
+2. ZÉRO MUR DE TEXTE & ZÉRO BULLE DE CHAT BAVARDE :
+   - Une vidéo n'est pas un article de blog. INTERDICTION formelle d'afficher des paragraphes entiers ou des pavés de lecture !
+   - Le texte affiché à l'écran doit faire au maximum 3 à 7 mots : un mot d'impact, un grand chiffre clé (Hero Stat), ou un badge court.
+3. TYPOGRAPHIE ET COULEURS SUR LE FOND VIDÉO (JOSEPH EDIT SKILLS) :
+   - Fond de scène actif : ${baseBg}
+   ${isLight ? `
+   - THÈME CLAIR ACTIF : Le texte principal DOIT impérativement être FONCÉ (#09090b ou #18181b) pour assurer une lisibilité parfaite. Zéro texte blanc invisible sur fond clair !
+   - Couleur d'accentuation : ${accentColor} (pour les mots-clés ou chiffres mis en avant).
+   ` : `
+   - THÈME SOMBRE ACTIF : Le texte principal DOIT être BLANC (#ffffff).
+   - Couleur d'accentuation : ${accentColor}.
+   `}
+   - Maximum 2 polices : 1 Sans-serif moderne (Plus Jakarta Sans ou Outfit) + 1 Accent (Playfair Display italique ou Caveat).
+4. ANIMATION ET INTÉGRATION DES ÉLÉMENTS GRAPHIQUES & LOGOS :
+   - Adapte le style visuel au thème demandé :
+     * Thèmes SaaS / Tech / Produit : Éléments vectoriels nets, glassmorphism, lueurs douces (glow) et apparitions fluides sans artifice kitch.
+     * Thèmes Vox / Éditorial : Stickers découpés avec bordure papier blanche et texture vélin si le brief le spécifie.
+   - Liberté d'animation : Privilégie des micro-mouvements organiques (respiration, lévitation subtile, parallax ou scale progressif), sans forcer un balancement mécanique unique.
+5. CURSEUR MAIN INTERACTIF (HAND CURSOR INTERACTION) :
+   - Si une interaction humaine (clic, pointage, déplacement d'un élément) intervient, utilise les SVG officiels :
+     * 01_Assets/Icones/pointinghand_100160.svg (pour un clic ou pointage centré)
+     * 01_Assets/Icones/openhand_100161.svg / closedhand_100189.svg (pour une saisie ou un déplacement)
+6. CARTES ET COMPOSANTS UI :
+   ${isLight ? `
+   - Cartes claires modernes en verre dépoli (background: rgba(255, 255, 255, 0.90); backdrop-filter: blur(16px); border: 1px solid rgba(0, 0, 0, 0.10); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); color: #09090b;).
+   ` : `
+   - Cartes sombres modernes en verre dépoli (background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.40); color: #ffffff;).
+   `}
+7. ANIMATIONS S-CURVE GSAP & DÉPLACEMENT CONTINU :
+   - Apparitions fluides avec courbe en S (ease: "power3.out" ou "back.out(1.7)").
+   - Entrées séquencées (stagger: 0.1s) des éléments internes d'une carte, JAMAIS un bloc figé d'un seul coup.
+   - Dérive continue de caméra (slow push-in scale 1.0 -> 1.05) et micro-mouvements d'arrière-plan.
+8. RÈGLES CAPITALES THÈMES SAAS / TECH / IA (CHATGPT, CLAUDE, NOTION, API, CRM) :
+   - INTERDICTION FORMELLE ET ABSOLUE de concevoir un simulateur de chat bavard ou des bulles de messages dialogue (ex: 'Comment puis-je vous aider ? / Optimise mon code'). C'est ennuyeux, anti-cinématique et strictement interdit !
+   - CE QU'IL FAUT CONCEVOIR :
+     * Intégration soignée du LOGO OFFICIEL de la marque (dans la barre de navigation, au centre en révélation héroïque ou sur une carte d'interface moderne).
+     * Un DASHBOARD DE MÉTRIQUES EXPLOSIVES (Hero Stats en grille 2 ou 3 colonnes) : ex: '⚡ 10x Faster', '🚀 99.9% Accuracy', '📊 12ms Latency' avec compteurs animés GSAP ou Anime.js.
+     * Des cartes de flux ou de performance vivantes (barres de progression néon, badges 'PROD-READY', pastilles d'état vertes pulsantes).
+     * Si du code ou prompt est montré : un terminal dark moderne ultra-compact (3 lignes max avec syntax highlighting et curseur clignotant).
+9. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
    - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
    - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
+   - RÈGLE CAPITAL TIMELINE GSAP : NE JAMAIS DÉCLARER "const tl = ..." ou "let tl = ...". La timeline maîtresse 'tl' est DÉJÀ active globalement ! Attache directement tes tweens à 'tl' (ex: tl.from(...), tl.to(...), tl.set(...)).
 
 Réponds UNIQUEMENT par un objet JSON valide avec 3 champs :
 {
@@ -536,6 +596,8 @@ Réponds UNIQUEMENT par un objet JSON valide avec 3 champs :
 - Concept visuel : "${scenePlan.concept || ''}"
 - Transition de sortie : ${transitionType} sur ${transitionTrigger}
 - Format : ${format} (${width}x${height})
+- Arrière-plan de la vidéo : ${baseBg}
+- Thème de contraste : ${isLight ? 'Clair (texte foncé #09090b, cartes blanches translucides)' : 'Sombre (texte blanc #ffffff, cartes sombres)'}
 - Couleur accent : ${accentColor}
 - Assets disponibles à intégrer si pertinents :
 ${availableAssetsList.join('\n') || '- Générer des éléments vectoriels SVG.'}
@@ -773,6 +835,30 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     let templateDirectives = isUsingTemplate ? loadTemplateDirectives(chosenTemplate) : null;
 
     let plan = checkpoint.plan;
+
+    // VÉRIFICATION PRIORITAIRE : Feuille de route validée par l'utilisateur
+    if (!plan) {
+        let roadmapContent = payload.roadmapContent;
+        if (!roadmapContent || typeof roadmapContent !== 'string' || roadmapContent.length < 50) {
+            const currentRoadmap = getRoadmap();
+            if (currentRoadmap && currentRoadmap.exists && currentRoadmap.content && currentRoadmap.content.length > 50 && !currentRoadmap.content.startsWith('<!-- FEUILLE DE ROUTE RÉINITIALISÉE')) {
+                roadmapContent = currentRoadmap.content;
+            }
+        }
+
+        if (roadmapContent) {
+            try {
+                const parsedRoadmap = parseRoadmapMarkdown(roadmapContent);
+                if (parsedRoadmap && parsedRoadmap.scenes && parsedRoadmap.scenes.length > 0) {
+                    plan = parsedRoadmap;
+                    logAndSaveStep('step_init', 'Plan narratif issu de la feuille de route validée !', 18, `Feuille de route appliquée : "${plan.title}" (${plan.scenes.length} scènes découpées)`, 'success');
+                }
+            } catch (rmErr) {
+                console.warn("[Roadmap Parse Warning]:", rmErr.message);
+            }
+        }
+    }
+
     if (plan && plan.scenes && plan.scenes.length > 0) {
         logAndSaveStep('step_init', 'Plan narratif restauré depuis le point de contrôle', 15, `[Reprise] Plan existant réutilisé : "${plan.title}" (${plan.scenes.length} scènes)`, 'success');
     } else {
@@ -1112,41 +1198,108 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             }
         }
 
-        // Logos de marques
+        // =========================================================================
+        // LOGOS DE MARQUES & PRODUITS : Moteur de résolution universel et dynamique
+        // (Zéro dictionnaire restrictif : scan local + Iconify Logos + Simple-Icons + Brandfetch / Google Favicons HD)
+        // =========================================================================
         let brandDomain = plan.toolsNeeded?.brandDomain || detectedDomain;
-        if (!brandDomain) {
-            const brandDict = {
-                'rolex': 'rolex.com', 'nike': 'nike.com', 'apple': 'apple.com', 'tesla': 'tesla.com',
-                'google': 'google.com', 'amazon': 'amazon.com', 'meta': 'meta.com', 'microsoft': 'microsoft.com',
-                'spotify': 'spotify.com', 'netflix': 'netflix.com', 'adidas': 'adidas.com', 'bmw': 'bmw.com', 'audi': 'audi.com'
-            };
-            for (const [k, v] of Object.entries(brandDict)) {
-                if (new RegExp(`\\b${k}\\b`, 'i').test(normPromptPre)) { brandDomain = v; break; }
+        const brandAliases = {
+            'chatgpt': 'chatgpt.com',
+            'openai': 'openai.com',
+            'claude': 'anthropic.com',
+            'anthropic': 'anthropic.com'
+        };
+
+        const localLogosDir = path.join(ROOT_DIR, '01_Assets', 'Logos');
+        const promptWords = normPromptPre.toLowerCase().split(/[^a-z0-9_-]+/).filter(w => w.length >= 3);
+        const stopWords = new Set(['cree', 'creer', 'video', 'style', 'pour', 'avec', 'dans', 'sur', 'une', 'des', 'les', 'par', 'fait', 'fais', 'montre', 'intro', 'presentation', 'tout', 'tous']);
+
+        // 1. Scan dynamique des logos déjà présents localement dans 01_Assets/Logos/
+        if (fs.existsSync(localLogosDir)) {
+            const existingFiles = fs.readdirSync(localLogosDir);
+            for (const word of promptWords) {
+                if (stopWords.has(word)) continue;
+                const match = existingFiles.find(f => {
+                    const base = f.toLowerCase().replace(/\.[^.]+$/, '');
+                    return base === word || base === `${word}_symbol` || base === `${word}_logo` || base.startsWith(word + '_') || base.endsWith('_' + word);
+                });
+                if (match) {
+                    downloadedLogoPath = `${assetPrefix}/Logos/${match}`;
+                    logAndSaveStep('step_assets', `Logo officiel "${word}" détecté localement !`, 46, `Logo : ${downloadedLogoPath}`, 'success');
+                    break;
+                }
             }
         }
 
-        if (brandDomain) {
-            try {
-                const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs').replace(/\\/g, '/');
-                await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
-                const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/, '').toLowerCase().replace(/[\s_]/g, '-');
-                const cleanDomain = brandDomain.replace(/\./g, '_');
-
-                const candidates = [
-                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
-                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.png`),
-                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDomain}_favicon.png`),
-                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_favicon.png`)
-                ];
-                for (const cand of candidates) {
-                    if (fs.existsSync(cand)) {
-                        downloadedLogoPath = `${assetPrefix}/Logos/${path.basename(cand)}`;
-                        logAndSaveStep('step_assets', 'Logo officiel récupéré !', 46, `Logo officiel : ${downloadedLogoPath}`, 'success');
+        // 2. Si non trouvé localement, identifier le domaine ou le nom de la marque
+        if (!downloadedLogoPath) {
+            if (!brandDomain) {
+                for (const word of promptWords) {
+                    if (brandAliases[word]) {
+                        brandDomain = brandAliases[word];
                         break;
                     }
                 }
-            } catch (e) {
-                console.warn("Erreur brandfetch:", e.message);
+            }
+            if (!brandDomain) {
+                const candidateBrand = promptWords.find(w => !stopWords.has(w) && w.length >= 4);
+                if (candidateBrand) {
+                    brandDomain = `${candidateBrand}.com`;
+                }
+            }
+        }
+
+        // 3. Téléchargement universel : Iconify logos + Simple-Icons (3000+ marques) + Brandfetch (Google Favicons 256px)
+        if (!downloadedLogoPath && (brandDomain || promptWords.length > 0)) {
+            const candidateSlugs = [];
+            if (brandDomain) {
+                candidateSlugs.push(brandDomain.replace(/\..+$/, '').toLowerCase().replace(/[\s_]/g, '-'));
+            }
+            promptWords.filter(w => !stopWords.has(w)).forEach(w => {
+                if (!candidateSlugs.includes(w)) candidateSlugs.push(w);
+            });
+
+            // A. Essai direct Iconify Logos puis Simple-Icons
+            for (const cSlug of candidateSlugs) {
+                const targetSvgPath = path.join(ROOT_DIR, '01_Assets', 'Logos', `${cSlug}.svg`);
+                try {
+                    let ok = await downloadIconifySvg(cSlug, targetSvgPath);
+                    if (!ok) {
+                        ok = await downloadIconifySimpleIcon(cSlug, targetSvgPath);
+                    }
+                    if (ok && fs.existsSync(targetSvgPath)) {
+                        downloadedLogoPath = `${assetPrefix}/Logos/${cSlug}.svg`;
+                        logAndSaveStep('step_assets', `Logo vectoriel SVG officiel "${cSlug}" téléchargé !`, 47, `Logo : ${downloadedLogoPath}`, 'success');
+                        break;
+                    }
+                } catch (e) { }
+            }
+
+            // B. Si toujours pas trouvé, appeler brandfetch.cjs (Iconify + Google Favicons 256px pour TOUS les domaines)
+            if (!downloadedLogoPath && brandDomain) {
+                try {
+                    const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs').replace(/\\/g, '/');
+                    await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
+                    const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$|\.app$|\.so$/, '').toLowerCase().replace(/[\s_]/g, '-');
+                    const cleanDomain = brandDomain.replace(/\./g, '_');
+
+                    const candidates = [
+                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
+                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_symbol.svg`),
+                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.png`),
+                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDomain}_favicon.png`),
+                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_favicon.png`)
+                    ];
+                    for (const cand of candidates) {
+                        if (fs.existsSync(cand)) {
+                            downloadedLogoPath = `${assetPrefix}/Logos/${path.basename(cand)}`;
+                            logAndSaveStep('step_assets', 'Logo officiel récupéré !', 48, `Logo : ${downloadedLogoPath}`, 'success');
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Erreur brandfetch:", e.message);
+                }
             }
         }
 
@@ -1224,7 +1377,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     // Liste des assets formatée pour les prompts des scènes
     const availableAssetsList = [];
     if (downloadedWebCapturePath) availableAssetsList.push(`- Capture HD du site : "${downloadedWebCapturePath}"`);
-    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel : "${downloadedLogoPath}"`);
+    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel de marque disponible : "${downloadedLogoPath}" -> Intègre ce logo de manière élégante et adaptée au style de la scène (dans l'en-tête, sur une carte d'interface, au centre en révélation héroïque ou en signature visuelle).`);
     if (downloadedFlagPath) availableAssetsList.push(`- Drapeau national : "${downloadedFlagPath}"`);
     if (downloadedMapPath) availableAssetsList.push(`- Carte géographique : "${downloadedMapPath}"`);
     downloadedFootballLogos.forEach(fb => availableAssetsList.push(`- Blason club "${fb.name}" : "${fb.path}"`));
@@ -1232,16 +1385,46 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
 
     // Couleurs & Design
     const userBgType = payload.backgroundType;
-    const isAiDecidedBg = (!userBgType || userBgType === 'auto' || userBgType === 'ai');
-    let baseBg = isAiDecidedBg ? (plan.background?.global || '#000000') : (userBgType === 'white' ? '#ffffff' : (userBgType === 'solid' ? (payload.backgroundColor || '#111827') : '#000000'));
-    const isLight = isColorLight(baseBg);
+    const isAiDecidedBg = (!userBgType || userBgType === 'auto' || userBgType === 'ai' || userBgType === 'libre');
+    let stageBackgroundCss = '#090d16';
+    let isLight = false;
+
+    if (isAiDecidedBg) {
+        stageBackgroundCss = extractCssValue(plan.background?.global || '#090d16');
+        const cssLower = stageBackgroundCss.toLowerCase();
+        isLight = isColorLight(stageBackgroundCss) || cssLower.includes('#ffffff') || cssLower.includes('#faf8f5') || cssLower.includes('#f4f0e6');
+    } else if (userBgType === 'white') {
+        stageBackgroundCss = '#faf8f5';
+        isLight = true;
+    } else if (userBgType === 'black') {
+        stageBackgroundCss = '#000000';
+        isLight = false;
+    } else if (userBgType === 'solid') {
+        stageBackgroundCss = payload.backgroundColor || '#111827';
+        isLight = isColorLight(stageBackgroundCss);
+    } else if (userBgType === 'gradient') {
+        stageBackgroundCss = extractCssValue(payload.backgroundGradient || 'linear-gradient(135deg, #ffffff 0%, #ff6600 100%)');
+        const gradColors = Array.isArray(payload.gradientColors) && payload.gradientColors.length > 0
+            ? payload.gradientColors
+            : ['#ffffff', '#ff6600'];
+        const hasLight = gradColors.some(c => {
+            const hex = String(c).toLowerCase().trim();
+            return hex === '#ffffff' || hex === '#fff' || isColorLight(hex);
+        });
+        isLight = hasLight || stageBackgroundCss.toLowerCase().includes('#ffffff') || stageBackgroundCss.toLowerCase().includes('#fff');
+    } else {
+        stageBackgroundCss = extractCssValue(plan.background?.global || '#090d16');
+        isLight = isColorLight(stageBackgroundCss);
+    }
+
+    let baseBg = extractCssValue(stageBackgroundCss);
     const mainTextColor = isLight ? '#09090b' : '#ffffff';
     const mutedTextColor = isLight ? '#475569' : '#94a3b8';
-    const cardBgColor = isLight ? '#f8fafc' : '#0d1117';
-    const cardBorderColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.12)';
-    const accentColor = plan.theme?.accentColor || '#f59e0b';
-    const fontTitle = plan.theme?.fontTitle || 'Outfit';
-    const fontBody = plan.theme?.fontBody || 'Inter';
+    const cardBgColor = isLight ? 'rgba(255, 255, 255, 0.90)' : '#0d1117';
+    const cardBorderColor = isLight ? 'rgba(0, 0, 0, 0.10)' : 'rgba(255, 255, 255, 0.12)';
+    const accentColor = (Array.isArray(payload.gradientColors) && payload.gradientColors[1]) || plan.theme?.accentColor || '#f59e0b';
+    const fontTitle = plan.theme?.fontTitle || payload.font || 'Outfit';
+    const fontBody = plan.theme?.fontBody || payload.font || 'Inter';
 
     // =========================================================================
     // ÉTAPE 4 : DÉCOUPAGE ET GÉNÉRATION SCÈNE PAR SCÈNE (AVEC REPRISE)
@@ -1280,6 +1463,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                 scenePlan: currentScPlan,
                 theme: plan.theme,
                 baseBg,
+                isLight,
                 format,
                 width,
                 height,
@@ -1468,15 +1652,15 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     <style>
         :root {
             /* Design Tokens Officiels shadcn/ui */
-            --background: 240 10% 3.9%;
-            --foreground: 0 0% 98%;
-            --card: 240 10% 4.9%;
-            --card-foreground: 0 0% 98%;
-            --primary: 0 0% 98%;
-            --primary-foreground: 240 5.9% 10%;
-            --muted: 240 3.7% 15.9%;
-            --muted-foreground: 240 5% 64.9%;
-            --border: 240 3.7% 15.9%;
+            --background: ${isLight ? '0 0% 100%' : '240 10% 3.9%'};
+            --foreground: ${isLight ? '240 10% 3.9%' : '0 0% 98%'};
+            --card: ${isLight ? '0 0% 100%' : '240 10% 4.9%'};
+            --card-foreground: ${isLight ? '240 10% 3.9%' : '0 0% 98%'};
+            --primary: ${isLight ? '240 10% 3.9%' : '0 0% 98%'};
+            --primary-foreground: ${isLight ? '0 0% 98%' : '240 5.9% 10%'};
+            --muted: ${isLight ? '240 4.8% 95.9%' : '240 3.7% 15.9%'};
+            --muted-foreground: ${isLight ? '240 3.8% 46.1%' : '240 5% 64.9%'};
+            --border: ${isLight ? '240 5.9% 90%' : '240 3.7% 15.9%'};
             --radius: 0.75rem;
 
             --bg-base: ${baseBg};
@@ -1494,12 +1678,22 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
             background: #000000;
             font-family: var(--font-body);
             color: var(--text-main);
@@ -1550,7 +1744,9 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            overflow: hidden;
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
             background: var(--bg-base);
         }
 
@@ -1720,7 +1916,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
         window.__animeTimelines = [];
         try { if (window.lucide) lucide.createIcons(); } catch(e) {}
 
-        const tl = gsap.timeline({ paused: isIframeMode });
+        const tl = gsap.timeline({ paused: false });
         window.tl = tl;
 
         // Continuous Camera Motion
@@ -1731,6 +1927,14 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             ${allScenesGsap}
         } catch(e) {
             console.error("Erreur GSAP :", e);
+        }
+
+        // Dégel et lancement garanti de la timeline maîtresse
+        if (typeof gsap !== 'undefined' && gsap.globalTimeline && gsap.globalTimeline.paused()) {
+            gsap.globalTimeline.resume();
+        }
+        if (!isIframeMode) {
+            tl.play();
         }
 
         // Moteur de sous-titres
@@ -1875,6 +2079,9 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                 window.syncAudioTimeline(tl.time(), false);
             },
             play: () => {
+                if (typeof gsap !== 'undefined' && gsap.globalTimeline && gsap.globalTimeline.paused()) {
+                    gsap.globalTimeline.resume();
+                }
                 tl.play();
                 if (window.__animeTimelines && window.__animeTimelines.length > 0) {
                     window.__animeTimelines.forEach(atl => {
