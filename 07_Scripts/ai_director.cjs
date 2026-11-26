@@ -556,24 +556,30 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
    - Si une interaction humaine (clic, pointage, déplacement d'un élément) intervient, utilise les SVG officiels :
      * 01_Assets/Icones/pointinghand_100160.svg (pour un clic ou pointage centré)
      * 01_Assets/Icones/openhand_100161.svg / closedhand_100189.svg (pour une saisie ou un déplacement)
-6. CARTES ET COMPOSANTS UI :
+6. ICÔNES VECTORIELLES LUCIDE & LOGOS OFFICIELS (100% DISPONIBLES EN DIRECT) :
+   - Tu disposes de la librairie complète **Lucide Icons** chargée dans la page !
+   - Utilise simplement : `<i data-lucide="zap"></i>` ou toute autre icône de la suite : `sparkles`, `check`, `shield-check`, `trending-up`, `terminal`, `cpu`, `rocket`, `layers`, `activity`, `database`, `lock`, `play`, `star`, `code`, `box`, `arrow-right`, `globe`, `bar-chart-2`, etc.
+   - Tu peux leur donner des classes Tailwind de taille et couleur : `class="w-6 h-6 text-emerald-400 stroke-[2]"` ou `class="w-5 h-5 text-indigo-400 inline-block mr-2"`.
+   - Tu disposes aussi de **Iconify Web Component** pour les logos officiels : `<iconify-icon icon="logos:claude-icon" width="28"></iconify-icon>`, `<iconify-icon icon="logos:openai-icon" width="28"></iconify-icon>`, `<iconify-icon icon="logos:stripe" width="32"></iconify-icon>`, etc.
+   - RÈGLE D'OR DESIGN SAAS : Pour chaque métrique, badge de statut, bouton d'action ou liste de bénéfices, ACCOMPAGNE TOUJOURS le texte d'une icône Lucide ou d'un logo officiel. Zéro texte nu sans hiérarchie visuelle !
+7. CARTES ET COMPOSANTS UI :
    ${isLight ? `
    - Cartes claires modernes en verre dépoli (background: rgba(255, 255, 255, 0.90); backdrop-filter: blur(16px); border: 1px solid rgba(0, 0, 0, 0.10); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); color: #09090b;).
    ` : `
    - Cartes sombres modernes en verre dépoli (background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.40); color: #ffffff;).
    `}
-7. ANIMATIONS S-CURVE GSAP & DÉPLACEMENT CONTINU :
+8. ANIMATIONS S-CURVE GSAP & DÉPLACEMENT CONTINU :
    - Apparitions fluides avec courbe en S (ease: "power3.out" ou "back.out(1.7)").
    - Entrées séquencées (stagger: 0.1s) des éléments internes d'une carte, JAMAIS un bloc figé d'un seul coup.
    - Dérive continue de caméra (slow push-in scale 1.0 -> 1.05) et micro-mouvements d'arrière-plan.
-8. RÈGLES CAPITALES THÈMES SAAS / TECH / IA (CHATGPT, CLAUDE, NOTION, API, CRM) :
+9. RÈGLES CAPITALES THÈMES SAAS / TECH / IA (CHATGPT, CLAUDE, NOTION, API, CRM) :
    - INTERDICTION FORMELLE ET ABSOLUE de concevoir un simulateur de chat bavard ou des bulles de messages dialogue (ex: 'Comment puis-je vous aider ? / Optimise mon code'). C'est ennuyeux, anti-cinématique et strictement interdit !
    - CE QU'IL FAUT CONCEVOIR :
      * Intégration soignée du LOGO OFFICIEL de la marque (dans la barre de navigation, au centre en révélation héroïque ou sur une carte d'interface moderne).
      * Un DASHBOARD DE MÉTRIQUES EXPLOSIVES (Hero Stats en grille 2 ou 3 colonnes) : ex: '⚡ 10x Faster', '🚀 99.9% Accuracy', '📊 12ms Latency' avec compteurs animés GSAP ou Anime.js.
      * Des cartes de flux ou de performance vivantes (barres de progression néon, badges 'PROD-READY', pastilles d'état vertes pulsantes).
      * Si du code ou prompt est montré : un terminal dark moderne ultra-compact (3 lignes max avec syntax highlighting et curseur clignotant).
-9. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
+10. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
    - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
    - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
@@ -1609,8 +1615,10 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Flag Icons CSS (Drapeaux vectoriels parfaits partout sans lettres brutes) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
-    <!-- Lucide Icons (Composants graphiques shadcn) -->
+    <!-- Lucide Icons (Composants graphiques shadcn / UI) -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Iconify Web Component (200 000+ logos & icônes officielles) -->
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script>
         // Configuration Tailwind avec Design Tokens shadcn/ui
         if (typeof tailwind !== 'undefined') {
@@ -1748,6 +1756,17 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             scrollbar-width: none !important;
             -ms-overflow-style: none !important;
             background: var(--bg-base);
+        }
+
+        /* NORMALISATION LUCIDE ICONS & ICONIFY */
+        [data-lucide], svg.lucide {
+            display: inline-block;
+            vertical-align: middle;
+            stroke-width: 2;
+        }
+        iconify-icon {
+            display: inline-block;
+            vertical-align: middle;
         }
 
         /* CAMÉRA GLOBALE (Travelling continu) */
@@ -1915,6 +1934,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
 
         window.__animeTimelines = [];
         try { if (window.lucide) lucide.createIcons(); } catch(e) {}
+        setTimeout(() => { try { if (window.lucide) lucide.createIcons(); } catch(e) {} }, 50);
 
         const tl = gsap.timeline({ paused: false });
         window.tl = tl;
