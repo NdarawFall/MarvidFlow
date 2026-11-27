@@ -1357,11 +1357,11 @@ const server = http.createServer(async (req, res) => {
 
             const detectType = (ext) => {
                 ext = (ext || '').toLowerCase();
-                if (['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tiff', '.avif'].includes(ext)) return 'image';
-                if (['.mp4', '.webm', '.mov', '.avi', '.mkv'].includes(ext)) return 'video';
-                if (['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac'].includes(ext)) return 'audio';
-                if (['.svg'].includes(ext)) return 'vector';
-                return 'other';
+                if (['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tiff', '.avif'].includes(ext)) return 'Images';
+                if (['.mp4', '.webm', '.mov', '.avi', '.mkv'].includes(ext)) return 'Videos';
+                if (['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac'].includes(ext)) return 'Audios';
+                if (['.svg', '.ai', '.eps'].includes(ext)) return 'Vectors';
+                return 'Other';
             };
 
             const items = [];
@@ -1373,7 +1373,7 @@ const server = http.createServer(async (req, res) => {
                 const entries = fs.readdirSync(currentDir, { withFileTypes: true });
 
                 for (const entry of entries) {
-                    if (entry.name.startsWith('.') || entry.name === '.gitkeep') continue;
+                    if (entry.name.startsWith('.') || entry.name === '.gitkeep' || entry.name.endsWith('.b64')) continue;
                     const fullPath = path.join(currentDir, entry.name);
                     const subRel = relFromAssets ? `${relFromAssets}/${entry.name}` : entry.name;
 
@@ -1385,7 +1385,7 @@ const server = http.createServer(async (req, res) => {
                             const ext = path.extname(entry.name).toLowerCase();
                             const parts = subRel.split('/');
                             const category = parts[0] || 'Général';
-                            const subfolder = parts.length > 2 ? parts.slice(1, -1).join('/') : '';
+                            const subfolder = category;
                             const type = detectType(ext);
 
                             totalBytes += stats.size;
@@ -1395,7 +1395,7 @@ const server = http.createServer(async (req, res) => {
                                 id: `asset_${counter}_${path.basename(entry.name, ext)}`,
                                 name: entry.name,
                                 category: category,
-                                subfolder: subfolder || 'Racine',
+                                subfolder: subfolder,
                                 relativePath: `01_Assets/${subRel}`,
                                 url: `/01_Assets/${subRel.split('/').map(encodeURIComponent).join('/')}`,
                                 type: type,
@@ -1458,7 +1458,8 @@ const server = http.createServer(async (req, res) => {
                 success: true,
                 stats,
                 categories,
-                items
+                items,
+                assets: items
             });
             _assetsCatalogCache = payload;
             _assetsCatalogCacheTime = Date.now();

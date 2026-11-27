@@ -486,10 +486,11 @@
                 if (resAssets.status === 'fulfilled' && resAssets.value.ok) {
                     try {
                         const data = await resAssets.value.json();
-                        if (data.assets && Array.isArray(data.assets) && data.assets.length > 0) {
-                            if (data.assets.length !== assetsCatalogList.length) {
+                        const list = data.items || data.assets;
+                        if (list && Array.isArray(list) && list.length > 0) {
+                            if (list.length !== assetsCatalogList.length) {
                                 const assetBaseTime = Date.now();
-                                assetsCatalogList = data.assets.map((a, i) => ({
+                                assetsCatalogList = list.map((a, i) => ({
                                     ...a,
                                     id: a.id || ('asset_' + i + '_' + (a.name || '').replace(/[^a-zA-Z0-9]/g, '_')),
                                     timestamp: a.timestamp || (assetBaseTime - i * 3600000)
@@ -1706,17 +1707,19 @@
         }
 
         // --- OPTIMISATIONS HAUTE PERFORMANCE DU MODULE ASSETS (PAGINATION, LAZY LOADING, ZERO LAG) ---
-        let assetPageSize = 24;
-        let assetCurrentDisplayCount = 24;
+        let assetPageSize = 20;
+        let assetCurrentDisplayCount = 20;
         let assetInfiniteScrollBound = false;
         let isAssetScrollTicking = false;
+        let isAssetsLoadingMore = false;
+        let videoHoverTimeout = null;
         let currentFilteredAssetsList = [];
 
         function renderAssetCardItemHtml(item) {
             let previewHtml = '';
 
             if (item.type === 'Videos') {
-                // MINIATURE VIDÉO OPTIMISÉE SANS DÉCODEUR ACTIF (0ms de freeze, s'anime au survol)
+                // MINIATURE VIDÉO OPTIMISÉE SANS DÉCODEUR ACTIF (0ms de freeze, s'anime au survol après délai)
                 previewHtml = `
                     <div class="asset-video-thumb-container" onmouseenter="startAssetVideoHover(this, '${escapeJs(item.url)}')" onmouseleave="stopAssetVideoHover(this)">
                         <div class="asset-video-placeholder">
@@ -1728,10 +1731,10 @@
                     </div>
                 `;
             } else if (item.type === 'Images' || item.type === 'Vectors') {
-                // IMAGE AVEC LAZY LOADING ET DÉCODAGE ASYNCHRONE (chargement fluide 60fps)
-                previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">`;
+                // IMAGE AVEC LAZY LOADING, TAILLE FIXE ET DÉCODAGE ASYNCHRONE (zéro lag mémoire)
+                previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}" width="200" height="140" loading="lazy" decoding="async" onerror="this.onerror=null; this.style.display='none';">`;
             } else {
-                // AUDIO AVEC NOTE MUSICALE
+                // AUDIO OU AUTRE AVEC NOTE MUSICALE
                 previewHtml = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 32px; height: 32px; color: #ffffff;"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
@@ -1752,8 +1755,8 @@
                     <div class="asset-card-body">
                         <div class="asset-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
                         <div class="asset-meta-row">
-                            <span>${item.subfolder}</span>
-                            <span>${item.size || ''}</span>
+                            <span>${item.subfolder || item.category || ''}</span>
+                            <span>${item.size || item.sizeFormatted || ''}</span>
                         </div>
                     </div>
                 </div>
@@ -1775,22 +1778,30 @@
 
         function startAssetVideoHover(container, url) {
             if (!container || container.querySelector('video')) return;
-            const vid = document.createElement('video');
-            vid.src = url + '#t=0.5';
-            vid.muted = true;
-            vid.playsInline = true;
-            vid.preload = 'auto';
-            vid.style.width = '100%';
-            vid.style.height = '100%';
-            vid.style.objectFit = 'contain';
-            vid.style.position = 'absolute';
-            vid.style.inset = '0';
-            vid.style.zIndex = '2';
-            vid.oncanplay = () => vid.play().catch(() => {});
-            container.appendChild(vid);
+            if (videoHoverTimeout) clearTimeout(videoHoverTimeout);
+            videoHoverTimeout = setTimeout(() => {
+                if (!container || container.querySelector('video')) return;
+                const vid = document.createElement('video');
+                vid.src = url + '#t=0.5';
+                vid.muted = true;
+                vid.playsInline = true;
+                vid.preload = 'metadata';
+                vid.style.width = '100%';
+                vid.style.height = '100%';
+                vid.style.objectFit = 'contain';
+                vid.style.position = 'absolute';
+                vid.style.inset = '0';
+                vid.style.zIndex = '2';
+                vid.oncanplay = () => vid.play().catch(() => {});
+                container.appendChild(vid);
+            }, 250);
         }
 
         function stopAssetVideoHover(container) {
+            if (videoHoverTimeout) {
+                clearTimeout(videoHoverTimeout);
+                videoHoverTimeout = null;
+            }
             if (!container) return;
             const vid = container.querySelector('video');
             if (vid) {
@@ -1801,11 +1812,13 @@
         }
 
         function loadMoreAssets() {
+            if (isAssetsLoadingMore) return;
             const grid = document.getElementById('assetsCatalogGrid');
             if (!grid) return;
             const totalCount = currentFilteredAssetsList.length;
             if (assetCurrentDisplayCount >= totalCount) return;
 
+            isAssetsLoadingMore = true;
             const nextSlice = currentFilteredAssetsList.slice(assetCurrentDisplayCount, assetCurrentDisplayCount + assetPageSize);
             assetCurrentDisplayCount += nextSlice.length;
 
@@ -1818,6 +1831,9 @@
             }
 
             grid.insertAdjacentHTML('beforeend', newCardsHtml + loadMoreBtnHtml);
+            setTimeout(() => {
+                isAssetsLoadingMore = false;
+            }, 100);
         }
 
         function setupAssetInfiniteScroll() {
@@ -1825,15 +1841,16 @@
             const mainEl = document.querySelector('main.app-main');
             if (!mainEl) return;
             mainEl.addEventListener('scroll', () => {
-                if (currentView !== 'assets' || isAssetScrollTicking) return;
+                if (currentView !== 'assets' || isAssetScrollTicking || isAssetsLoadingMore) return;
                 isAssetScrollTicking = true;
                 requestAnimationFrame(() => {
                     isAssetScrollTicking = false;
+                    if (isAssetsLoadingMore) return;
+                    // Auto-load seulement si l'utilisateur a défilé vers le bas (> 150px) et approche du fond (< 200px)
                     const scrollBottom = mainEl.scrollHeight - mainEl.scrollTop - mainEl.clientHeight;
-                    if (scrollBottom < 450) {
-                        const btn = document.getElementById('btnLoadMoreAssets');
-                        if (btn && btn.style.display !== 'none' && !btn.dataset.loading) {
-                            btn.dataset.loading = 'true';
+                    if (mainEl.scrollTop > 150 && scrollBottom < 200) {
+                        const totalCount = currentFilteredAssetsList.length;
+                        if (assetCurrentDisplayCount < totalCount) {
                             loadMoreAssets();
                         }
                     }
@@ -1850,7 +1867,11 @@
             // Filtrage par type et sous-dossier (ou liste personnalisée filtrée)
             let filtered = customList ? customList.slice() : assetsCatalogList.filter(item => {
                 if (assetCategoryFilter !== 'all' && item.type !== assetCategoryFilter) return false;
-                if (assetSubfolderFilter !== 'all' && item.subfolder !== assetSubfolderFilter) return false;
+                if (assetSubfolderFilter !== 'all') {
+                    const matchFolder = (item.subfolder && (item.subfolder === assetSubfolderFilter || item.subfolder.startsWith(assetSubfolderFilter + '/'))) ||
+                                        (item.category && item.category === assetSubfolderFilter);
+                    if (!matchFolder) return false;
+                }
                 return true;
             });
 
