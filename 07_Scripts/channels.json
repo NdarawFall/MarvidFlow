@@ -35,6 +35,7 @@
     "platform": "TikTok",
     "format": "9:16",
     "avatar": "",
-    "videoCount": 0
+    "videoCount": 0,
+    "videos": []
   }
 ]
