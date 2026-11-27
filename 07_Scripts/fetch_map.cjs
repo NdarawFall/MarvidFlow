@@ -36,7 +36,7 @@ function geocode(query) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
         const options = {
             headers: {
-                'User-Agent': 'HeyGenNew-VibeEditor/1.0 (contact@vibe-editor.local)'
+                'User-Agent': 'MarvidFlow-Studio/1.0 (contact@marvidflow.local)'
             }
         };
 
@@ -278,7 +278,7 @@ if (require.main === module) {
     if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
         console.log(`
 ================================================================
-🗺️  GÉNÉRATEUR DE CARTES SANS WATERMARK (HeyGen-New)
+🗺️  GÉNÉRATEUR DE CARTES SANS WATERMARK (MarvidFlow)
 ================================================================
 Usage :
   node 07_Scripts/fetch_map.cjs --query "<ville / pays>" [--style dark|voyager|satellite|osm] [--zoom 12] [--pin] [--out <chemin.png>]

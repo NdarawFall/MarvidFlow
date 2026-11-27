@@ -3,7 +3,7 @@
  * 
  * Architecture séquentielle et résiliente par étapes concrètes :
  * 1. Initialisation du projet vidéo HTML & Plan narratif découpé (Storyboard avec timecodes stricts).
- * 2. Gestion de la Voix Off (génération TTS ElevenLabs/HeyGen ou fichier fourni) & Pose directe sur la timeline.
+ * 2. Gestion de la Voix Off (génération TTS ElevenLabs/Edge TTS ou fichier fourni) & Pose directe sur la timeline.
  * 3. Gestion & Téléchargement des Assets (logos vectoriels, drapeaux, cartes, captures web, blasons, chroma key).
  * 4. Découpage et Génération Scène par Scène (Animations & Transitions GSAP avec synchronisation mot-à-mot sur les paroles).
  *    -> Sauvegarde après chaque scène dans un Checkpoint (.checkpoint.json). En cas de blocage ou interruption,
@@ -559,9 +559,9 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
      * 01_Assets/Icones/openhand_100161.svg / closedhand_100189.svg (pour une saisie ou un déplacement)
 6. ICÔNES VECTORIELLES LUCIDE & LOGOS OFFICIELS (100% DISPONIBLES EN DIRECT) :
    - Tu disposes de la librairie complète **Lucide Icons** chargée dans la page !
-   - Utilise simplement : `<i data-lucide="zap"></i>` ou toute autre icône de la suite : `sparkles`, `check`, `shield-check`, `trending-up`, `terminal`, `cpu`, `rocket`, `layers`, `activity`, `database`, `lock`, `play`, `star`, `code`, `box`, `arrow-right`, `globe`, `bar-chart-2`, etc.
-   - Tu peux leur donner des classes Tailwind de taille et couleur : `class="w-6 h-6 text-emerald-400 stroke-[2]"` ou `class="w-5 h-5 text-indigo-400 inline-block mr-2"`.
-   - Tu disposes aussi de **Iconify Web Component** pour les logos officiels : `<iconify-icon icon="logos:claude-icon" width="28"></iconify-icon>`, `<iconify-icon icon="logos:openai-icon" width="28"></iconify-icon>`, `<iconify-icon icon="logos:stripe" width="32"></iconify-icon>`, etc.
+   - Utilise simplement : \`<i data-lucide="zap"></i>\` ou toute autre icône de la suite : \`sparkles\`, \`check\`, \`shield-check\`, \`trending-up\`, \`terminal\`, \`cpu\`, \`rocket\`, \`layers\`, \`activity\`, \`database\`, \`lock\`, \`play\`, \`star\`, \`code\`, \`box\`, \`arrow-right\`, \`globe\`, \`bar-chart-2\`, etc.
+   - Tu peux leur donner des classes Tailwind de taille et couleur : \`class="w-6 h-6 text-emerald-400 stroke-[2]"\` ou \`class="w-5 h-5 text-indigo-400 inline-block mr-2"\`.
+   - Tu disposes aussi de **Iconify Web Component** pour les logos officiels : \`<iconify-icon icon="logos:claude-icon" width="28"></iconify-icon>\`, \`<iconify-icon icon="logos:openai-icon" width="28"></iconify-icon>\`, \`<iconify-icon icon="logos:stripe" width="32"></iconify-icon>\`, etc.
    - RÈGLE D'OR DESIGN SAAS : Pour chaque métrique, badge de statut, bouton d'action ou liste de bénéfices, ACCOMPAGNE TOUJOURS le texte d'une icône Lucide ou d'un logo officiel. Zéro texte nu sans hiérarchie visuelle !
 7. CARTES ET COMPOSANTS UI :
    ${isLight ? `
@@ -581,13 +581,13 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
      * Des cartes de flux ou de performance vivantes (barres de progression néon, badges 'PROD-READY', pastilles d'état vertes pulsantes).
      * Si du code ou prompt est montré : un terminal dark moderne ultra-compact (3 lignes max avec syntax highlighting et curseur clignotant).
 10. SOUND DESIGN ET BRUITAGES SFX (OPENVERSE & SYNTHÈSE EARSHOT) :
-   - Tu disposes de la fonction audio globale `playSfx(nom, volume)` connectée directement dans la timeline GSAP !
+   - Tu disposes de la fonction audio globale \`playSfx(nom, volume)\` connectée directement dans la timeline GSAP !
    - Utilise les bruitages pour rythmer et donner vie aux transitions et interactions :
-     * `tl.call(() => playSfx('whoosh', 0.4), null, <timecode>);` lors d'une transition rapide ou entrée de carte.
-     * `tl.call(() => playSfx('pop', 0.5), null, <timecode>);` lors de l'apparition d'un badge ou pastille.
-     * `tl.call(() => playSfx('click', 0.4), null, <timecode>);` lors d'un clic de curseur main sur un bouton.
-     * `tl.call(() => playSfx('ding', 0.5), null, <timecode>);` lors de l'affichage d'un chiffre clé ou validation.
-     * `tl.call(() => playSfx('keyboard', 0.35), null, <timecode>);` lors de l'affichage de code ou frappe terminal.
+     * \`tl.call(() => playSfx('whoosh', 0.4), null, <timecode>);\` lors d'une transition rapide ou entrée de carte.
+     * \`tl.call(() => playSfx('pop', 0.5), null, <timecode>);\` lors de l'apparition d'un badge ou pastille.
+     * \`tl.call(() => playSfx('click', 0.4), null, <timecode>);\` lors d'un clic de curseur main sur un bouton.
+     * \`tl.call(() => playSfx('ding', 0.5), null, <timecode>);\` lors de l'affichage d'un chiffre clé ou validation.
+     * \`tl.call(() => playSfx('keyboard', 0.35), null, <timecode>);\` lors de l'affichage de code ou frappe terminal.
    - Les bruitages sont automatiquement pré-chargés et joués au millième de seconde près sans latence.
 11. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
@@ -1105,17 +1105,20 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             saveCheckpoint(checkpointPath, checkpoint);
             logAndSaveStep('step_voice', 'Voix off fournie indexée et mesurée !', 38, `Durée mesurée : ${voiceDurationSeconds.toFixed(1)}s`, 'success');
         } else {
-            logAndSaveStep('step_voice', 'Synthèse vocale IA ElevenLabs...', 28, `07_Scripts/generate_voice.cjs : génération de la narration vocale...`, 'info');
+            const engineToUse = (payload.voiceEngine || payload.voiceSource || 'edge').toLowerCase() === 'elevenlabs' ? 'elevenlabs' : 'edge';
+            logAndSaveStep('step_voice', `Synthèse vocale IA (${engineToUse.toUpperCase()})...`, 28, `07_Scripts/generate_voice.cjs : génération de la narration vocale via ${engineToUse}...`, 'info');
             try {
                 const voiceDir = isChannel ? path.join(ROOT_DIR, '01_Assets', 'Voix_Off', channelId) : path.join(ROOT_DIR, '01_Assets', 'Voix_Off');
                 ensureDir(voiceDir);
                 const voiceFile = `narration_${baseRawName}${suffix}.mp3`;
                 const fullVoicePath = path.join(voiceDir, voiceFile);
 
-                const { generateElevenLabs } = require('./generate_voice.cjs');
-                const ttsRes = await generateElevenLabs({
+                const { generateVoice } = require('./generate_voice.cjs');
+                const ttsRes = await generateVoice({
                     text: plan.narration,
-                    outputPath: fullVoicePath
+                    engine: engineToUse,
+                    voice: payload.voiceId,
+                    out: fullVoicePath
                 });
 
                 if (ttsRes && fs.existsSync(fullVoicePath)) {

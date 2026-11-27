@@ -96,7 +96,7 @@ if (!STYLES[chosenStyle]) {
 }
 
 console.log(`\n======================================================`);
-console.log(`🎬  GÉNÉRATEUR DE SOUS-TITRES (HeyGen Studio)`);
+console.log(`🎬  GÉNÉRATEUR DE SOUS-TITRES (MarvidFlow Studio)`);
 console.log(`📄  Source : ${path.basename(inputFile)}`);
 console.log(`🎨  Style  : ${STYLES[chosenStyle].label}`);
 console.log(`======================================================\n`);

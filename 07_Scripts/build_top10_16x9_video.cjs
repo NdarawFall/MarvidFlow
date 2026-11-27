@@ -53,14 +53,14 @@ const html = `<!DOCTYPE html>
         <canvas id="mainCanvas" width="1920" height="1080"></canvas>
     </div>
 
-    <!-- Pistes Audio : Voix off officielle posée HeyGen + Musique Beat Sportive -->
+    <!-- Pistes Audio : Voix off officielle posée + Musique Beat Sportive -->
     <audio id="audioVoice" src="/01_Assets/Voix_Off/ballon_dor_official_calm.wav" preload="auto"></audio>
     <audio id="audioBgm" src="/01_Assets/Musiques/Hitman.mp3" preload="auto" loop></audio>
 
 <script>
 // ==============================================================================
 // BROADCAST MOTION DESIGN — CLASSEMENT OFFICIEL BALLON D'OR (16:9 - 1920x1080)
-// Moteur Canvas 2D Déterministe • Synchronisation Précise Voix Off HeyGen
+// Moteur Canvas 2D Déterministe • Synchronisation Précise Voix Off
 // Aucun bouton incrusté • Aucune barre PowerPoint • TV Broadcast Chyron Packaging
 // ==============================================================================
 const canvas = document.getElementById('mainCanvas');

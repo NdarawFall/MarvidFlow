@@ -133,7 +133,7 @@
 
         // --- 4. CHARGEMENT DES DONNÉES DISQUE & SERVEUR (SYNCHRONE 0MS + BACKGROUND SYNC) ---
         // Catalogue exhaustif et complet des 238 assets réels de 01_Assets
-        const FULL_EMBEDDED_CATALOG = [{"name":"antiquecamera.glb","type":"Other","subfolder":"3D","size":"16.7 MB","bytes":17540348,"url":"../01_Assets/3D/antiquecamera.glb"},{"name":"bench_vice_01.bin","type":"Other","subfolder":"3D","size":"128.3 KB","bytes":131404,"url":"../01_Assets/3D/bench_vice_01.bin"},{"name":"bench_vice_01.gltf","type":"Other","subfolder":"3D","size":"12.9 KB","bytes":13222,"url":"../01_Assets/3D/bench_vice_01.gltf"},{"name":"chairdamaskpurplegold.glb","type":"Other","subfolder":"3D","size":"1.9 MB","bytes":2028924,"url":"../01_Assets/3D/chairdamaskpurplegold.glb"},{"name":"bench_vice_01_arm_1k.jpg","type":"Images","subfolder":"3D/textures","size":"687.7 KB","bytes":704241,"url":"../01_Assets/3D/textures/bench_vice_01_arm_1k.jpg"},{"name":"bench_vice_01_diff_1k.jpg","type":"Images","subfolder":"3D/textures","size":"707.5 KB","bytes":724482,"url":"../01_Assets/3D/textures/bench_vice_01_diff_1k.jpg"},{"name":"bench_vice_01_nor_gl_1k.jpg","type":"Images","subfolder":"3D/textures","size":"846.0 KB","bytes":866287,"url":"../01_Assets/3D/textures/bench_vice_01_nor_gl_1k.jpg"},{"name":"art_ecriture.svg","type":"Vectors","subfolder":"handwriting","size":"112.0 KB","bytes":114685,"url":"../01_Assets/handwriting/art_ecriture.svg"},{"name":"sous_titre.svg","type":"Vectors","subfolder":"handwriting","size":"115.4 KB","bytes":118177,"url":"../01_Assets/handwriting/sous_titre.svg"},{"name":"sous_titre_motion.svg","type":"Vectors","subfolder":"handwriting","size":"229.1 KB","bytes":234563,"url":"../01_Assets/handwriting/sous_titre_motion.svg"},{"name":"tegaki.svg","type":"Vectors","subfolder":"handwriting","size":"42.7 KB","bytes":43768,"url":"../01_Assets/handwriting/tegaki.svg"},{"name":"titre_art.svg","type":"Vectors","subfolder":"handwriting","size":"115.7 KB","bytes":118467,"url":"../01_Assets/handwriting/titre_art.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Icones","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Icones/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Icones","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Icones/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Icones","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Icones/autoframe_robot_logo.png"},{"name":"closedhand_100189.svg","type":"Vectors","subfolder":"Icones","size":"4.6 KB","bytes":4665,"url":"../01_Assets/Icones/closedhand_100189.svg"},{"name":"openhand_100161.svg","type":"Vectors","subfolder":"Icones","size":"6.0 KB","bytes":6191,"url":"../01_Assets/Icones/openhand_100161.svg"},{"name":"pointinghand_100160.svg","type":"Vectors","subfolder":"Icones","size":"5.1 KB","bytes":5256,"url":"../01_Assets/Icones/pointinghand_100160.svg"},{"name":"cristiano-ronaldo.png","type":"Images","subfolder":"Illustrations/Players","size":"274.5 KB","bytes":281066,"url":"../01_Assets/Illustrations/Players/cristiano-ronaldo.png"},{"name":"daniel-carvajal.png","type":"Images","subfolder":"Illustrations/Players","size":"233.6 KB","bytes":239226,"url":"../01_Assets/Illustrations/Players/daniel-carvajal.png"},{"name":"erling-haaland.png","type":"Images","subfolder":"Illustrations/Players","size":"222.8 KB","bytes":228173,"url":"../01_Assets/Illustrations/Players/erling-haaland.png"},{"name":"harry-kane.png","type":"Images","subfolder":"Illustrations/Players","size":"248.3 KB","bytes":254301,"url":"../01_Assets/Illustrations/Players/harry-kane.png"},{"name":"jay-rodriguez.png","type":"Images","subfolder":"Illustrations/Players","size":"448.1 KB","bytes":458831,"url":"../01_Assets/Illustrations/Players/jay-rodriguez.png"},{"name":"jude-bellingham.png","type":"Images","subfolder":"Illustrations/Players","size":"466.2 KB","bytes":477402,"url":"../01_Assets/Illustrations/Players/jude-bellingham.png"},{"name":"kevin-de-bruyne.png","type":"Images","subfolder":"Illustrations/Players","size":"229.0 KB","bytes":234538,"url":"../01_Assets/Illustrations/Players/kevin-de-bruyne.png"},{"name":"kylian-mbappe.png","type":"Images","subfolder":"Illustrations/Players","size":"498.8 KB","bytes":510721,"url":"../01_Assets/Illustrations/Players/kylian-mbappe.png"},{"name":"lamine-yamal.png","type":"Images","subfolder":"Illustrations/Players","size":"223.1 KB","bytes":228427,"url":"../01_Assets/Illustrations/Players/lamine-yamal.png"},{"name":"lautaro-martinez.png","type":"Images","subfolder":"Illustrations/Players","size":"223.6 KB","bytes":228941,"url":"../01_Assets/Illustrations/Players/lautaro-martinez.png"},{"name":"lionel-messi.png","type":"Images","subfolder":"Illustrations/Players","size":"297.0 KB","bytes":304086,"url":"../01_Assets/Illustrations/Players/lionel-messi.png"},{"name":"mohamed-salah.png","type":"Images","subfolder":"Illustrations/Players","size":"185.5 KB","bytes":189966,"url":"../01_Assets/Illustrations/Players/mohamed-salah.png"},{"name":"neymar.png","type":"Images","subfolder":"Illustrations/Players","size":"175.4 KB","bytes":179574,"url":"../01_Assets/Illustrations/Players/neymar.png"},{"name":"phil-foden.png","type":"Images","subfolder":"Illustrations/Players","size":"223.9 KB","bytes":229290,"url":"../01_Assets/Illustrations/Players/phil-foden.png"},{"name":"rodri.png","type":"Images","subfolder":"Illustrations/Players","size":"278.2 KB","bytes":284832,"url":"../01_Assets/Illustrations/Players/rodri.png"},{"name":"rodrigo-lima.png","type":"Images","subfolder":"Illustrations/Players","size":"157.7 KB","bytes":161471,"url":"../01_Assets/Illustrations/Players/rodrigo-lima.png"},{"name":"toni-kroos.png","type":"Images","subfolder":"Illustrations/Players","size":"231.2 KB","bytes":236704,"url":"../01_Assets/Illustrations/Players/toni-kroos.png"},{"name":"vinicius-junior.png","type":"Images","subfolder":"Illustrations/Players","size":"471.0 KB","bytes":482314,"url":"../01_Assets/Illustrations/Players/vinicius-junior.png"},{"name":"ai_energy_orb.b64","type":"Other","subfolder":"Images","size":"32.1 KB","bytes":32888,"url":"../01_Assets/Images/ai_energy_orb.b64"},{"name":"ai_energy_orb.png","type":"Images","subfolder":"Images","size":"24.1 KB","bytes":24665,"url":"../01_Assets/Images/ai_energy_orb.png"},{"name":"aurora_scene_1.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1648364,"url":"../01_Assets/Images/aurora_scene_1.png"},{"name":"aurora_scene_2.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655236,"url":"../01_Assets/Images/aurora_scene_2.png"},{"name":"aurora_scene_3.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1702878,"url":"../01_Assets/Images/aurora_scene_3.png"},{"name":"aurora_scene_4.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1646567,"url":"../01_Assets/Images/aurora_scene_4.png"},{"name":"aurora_scene_5.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1674398,"url":"../01_Assets/Images/aurora_scene_5.png"},{"name":"aurora_scene_6.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655921,"url":"../01_Assets/Images/aurora_scene_6.png"},{"name":"avatar_homepage_man.png","type":"Images","subfolder":"Images","size":"283.4 KB","bytes":290204,"url":"../01_Assets/Images/avatar_homepage_man.png"},{"name":"avatar_homepage_woman.png","type":"Images","subfolder":"Images","size":"269.5 KB","bytes":276010,"url":"../01_Assets/Images/avatar_homepage_woman.png"},{"name":"bg_demo_aurora_orange.png","type":"Images","subfolder":"Images","size":"1.3 MB","bytes":1380204,"url":"../01_Assets/Images/bg_demo_aurora_orange.png"},{"name":"bg_demo_grid_violet.png","type":"Images","subfolder":"Images","size":"164.8 KB","bytes":168724,"url":"../01_Assets/Images/bg_demo_grid_violet.png"},{"name":"avatar_ch_1793063435322.png","type":"Images","subfolder":"Images/channels","size":"1.7 MB","bytes":1749387,"url":"../01_Assets/Images/channels/avatar_ch_1793063435322.png"},{"name":"avatar_ch_1793102190223.jpg","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1240746,"url":"../01_Assets/Images/channels/avatar_ch_1793102190223.jpg"},{"name":"avatar_ch_1793911184121.jpg","type":"Images","subfolder":"Images/channels","size":"644.6 KB","bytes":660053,"url":"../01_Assets/Images/channels/avatar_ch_1793911184121.jpg"},{"name":"avatar_ch_1793911244535.png","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1254067,"url":"../01_Assets/Images/channels/avatar_ch_1793911244535.png"},{"name":"avatar_ch_1793911298459.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1793911298459.png"},{"name":"avatar_ch_1794092386560.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1794092386560.png"},{"name":"01_typography.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"468.2 KB","bytes":479405,"url":"../01_Assets/Images/Design_Tips_Frames/01_typography.png"},{"name":"02_placement.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"273.0 KB","bytes":279519,"url":"../01_Assets/Images/Design_Tips_Frames/02_placement.png"},{"name":"03_balance.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"161.0 KB","bytes":164875,"url":"../01_Assets/Images/Design_Tips_Frames/03_balance.png"},{"name":"04_contrast.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"162.8 KB","bytes":166719,"url":"../01_Assets/Images/Design_Tips_Frames/04_contrast.png"},{"name":"05_color_theory.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"369.9 KB","bytes":378755,"url":"../01_Assets/Images/Design_Tips_Frames/05_color_theory.png"},{"name":"06_branding_rules.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"336.7 KB","bytes":344792,"url":"../01_Assets/Images/Design_Tips_Frames/06_branding_rules.png"},{"name":"07_script_design.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"248.0 KB","bytes":253980,"url":"../01_Assets/Images/Design_Tips_Frames/07_script_design.png"},{"name":"08_horizontal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"173.4 KB","bytes":177599,"url":"../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png"},{"name":"09_vertical_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"267.9 KB","bytes":274361,"url":"../01_Assets/Images/Design_Tips_Frames/09_vertical_designs.png"},{"name":"10_diagonal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"190.8 KB","bytes":195384,"url":"../01_Assets/Images/Design_Tips_Frames/10_diagonal_designs.png"},{"name":"11_steal_like_artist.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"638.6 KB","bytes":653973,"url":"../01_Assets/Images/Design_Tips_Frames/11_steal_like_artist.png"},{"name":"12_inspiration_board.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"141.7 KB","bytes":145132,"url":"../01_Assets/Images/Design_Tips_Frames/12_inspiration_board.png"},{"name":"13_breakdown_inspiration.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"383.6 KB","bytes":392854,"url":"../01_Assets/Images/Design_Tips_Frames/13_breakdown_inspiration.png"},{"name":"14_plan_edit.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"444.1 KB","bytes":454750,"url":"../01_Assets/Images/Design_Tips_Frames/14_plan_edit.png"},{"name":"15_short_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"299.7 KB","bytes":306862,"url":"../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png"},{"name":"16_long_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"177.6 KB","bytes":181892,"url":"../01_Assets/Images/Design_Tips_Frames/16_long_form_animation.png"},{"name":"17_vertical_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.7 KB","bytes":298651,"url":"../01_Assets/Images/Design_Tips_Frames/17_vertical_animations.png"},{"name":"18_horizontal_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.8 KB","bytes":298814,"url":"../01_Assets/Images/Design_Tips_Frames/18_horizontal_animations.png"},{"name":"growkaw_bg.b64","type":"Other","subfolder":"Images","size":"993.7 KB","bytes":1017560,"url":"../01_Assets/Images/growkaw_bg.b64"},{"name":"growkaw_bg.jpg","type":"Images","subfolder":"Images","size":"745.3 KB","bytes":763169,"url":"../01_Assets/Images/growkaw_bg.jpg"},{"name":"growkaz_stickman_concept.jpg","type":"Images","subfolder":"Images","size":"545.0 KB","bytes":558109,"url":"../01_Assets/Images/growkaz_stickman_concept.jpg"},{"name":"branding.json","type":"Other","subfolder":"Images/marvidflow","size":"1.3 KB","bytes":1346,"url":"../01_Assets/Images/marvidflow/branding.json"},{"name":"dashboard_scroll.png","type":"Images","subfolder":"Images/marvidflow","size":"487.9 KB","bytes":499656,"url":"../01_Assets/Images/marvidflow/dashboard_scroll.png"},{"name":"features_scroll.png","type":"Images","subfolder":"Features","size":"444.0 KB","bytes":454606,"url":"../01_Assets/Images/marvidflow/features_scroll.png"},{"name":"hero_full.png","type":"Images","subfolder":"Images/marvidflow","size":"969.8 KB","bytes":993108,"url":"../01_Assets/Images/marvidflow/hero_full.png"},{"name":"marvid_dashboard.png","type":"Images","subfolder":"Images/marvidflow","size":"580.1 KB","bytes":594028,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.png"},{"name":"marvid_dashboard.webp","type":"Images","subfolder":"Images/marvidflow","size":"38.2 KB","bytes":39094,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.webp"},{"name":"marvid_hero_clean.png","type":"Images","subfolder":"Images/marvidflow","size":"2.2 MB","bytes":2340972,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.png"},{"name":"marvid_hero_clean.webp","type":"Images","subfolder":"Images/marvidflow","size":"68.5 KB","bytes":70114,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.webp"},{"name":"marvid_pipeline.png","type":"Images","subfolder":"Images/marvidflow","size":"499.6 KB","bytes":511626,"url":"../01_Assets/Images/marvidflow/marvid_pipeline.png"},{"name":"ref_ask_anything_pill.jpg","type":"Images","subfolder":"Images","size":"12.7 KB","bytes":13024,"url":"../01_Assets/Images/ref_ask_anything_pill.jpg"},{"name":"ref_music_player.jpg","type":"Images","subfolder":"Images","size":"37.1 KB","bytes":37972,"url":"../01_Assets/Images/ref_music_player.jpg"},{"name":"ref_travel_carousel.jpg","type":"Images","subfolder":"Images","size":"33.8 KB","bytes":34586,"url":"../01_Assets/Images/ref_travel_carousel.jpg"},{"name":"sienna_avatar.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_avatar.b64"},{"name":"sienna_face.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_face.b64"},{"name":"sienna_face.jpg","type":"Images","subfolder":"Images","size":"8.7 KB","bytes":8877,"url":"../01_Assets/Images/sienna_face.jpg"},{"name":"sienna_photo.jpg","type":"Images","subfolder":"Images","size":"15.9 KB","bytes":16294,"url":"../01_Assets/Images/sienna_photo.jpg"},{"name":"sienna_small_avatar.jpg","type":"Images","subfolder":"Images","size":"0.4 KB","bytes":397,"url":"../01_Assets/Images/sienna_small_avatar.jpg"},{"name":"style_none.jpg","type":"Images","subfolder":"Images/styles","size":"38.9 KB","bytes":39872,"url":"../01_Assets/Images/styles/style_none.jpg"},{"name":"template_2d_explainer.jpg","type":"Images","subfolder":"Images/styles","size":"149.1 KB","bytes":152679,"url":"../01_Assets/Images/styles/template_2d_explainer.jpg"},{"name":"template_ego_lite.jpg","type":"Images","subfolder":"Images/styles","size":"187.0 KB","bytes":191477,"url":"../01_Assets/Images/styles/template_ego_lite.jpg"},{"name":"template_faceless_brand.jpg","type":"Images","subfolder":"Images/styles","size":"147.1 KB","bytes":150599,"url":"../01_Assets/Images/styles/template_faceless_brand.jpg"},{"name":"template_iman_gadzhi_style.jpg","type":"Images","subfolder":"Images/styles","size":"101.2 KB","bytes":103657,"url":"../01_Assets/Images/styles/template_iman_gadzhi_style.jpg"},{"name":"template_saas_motion_design.jpg","type":"Images","subfolder":"Images/styles","size":"160.5 KB","bytes":164371,"url":"../01_Assets/Images/styles/template_saas_motion_design.jpg"},{"name":"template_stikman_history.jpg","type":"Images","subfolder":"Images/styles","size":"185.6 KB","bytes":190061,"url":"../01_Assets/Images/styles/template_stikman_history.jpg"},{"name":"template_story_vox_style.jpg","type":"Images","subfolder":"Images/styles","size":"224.7 KB","bytes":230127,"url":"../01_Assets/Images/styles/template_story_vox_style.jpg"},{"name":"template_tier_list.jpg","type":"Images","subfolder":"Images/styles","size":"148.0 KB","bytes":151597,"url":"../01_Assets/Images/styles/template_tier_list.jpg"},{"name":"template_top_10.jpg","type":"Images","subfolder":"Images/styles","size":"314.0 KB","bytes":321527,"url":"../01_Assets/Images/styles/template_top_10.jpg"},{"name":"template_trash_style.jpg","type":"Images","subfolder":"Images/styles","size":"213.5 KB","bytes":218603,"url":"../01_Assets/Images/styles/template_trash_style.jpg"},{"name":"template_tutoriel.jpg","type":"Images","subfolder":"Images/styles","size":"161.6 KB","bytes":165452,"url":"../01_Assets/Images/styles/template_tutoriel.jpg"},{"name":"terence_card_clean_bg.jpg","type":"Images","subfolder":"Images","size":"13.7 KB","bytes":14041,"url":"../01_Assets/Images/terence_card_clean_bg.jpg"},{"name":"terence_card_perfect_580.jpg","type":"Images","subfolder":"Images","size":"31.4 KB","bytes":32184,"url":"../01_Assets/Images/terence_card_perfect_580.jpg"},{"name":"terence_card_smart.jpg","type":"Images","subfolder":"Images","size":"15.3 KB","bytes":15667,"url":"../01_Assets/Images/terence_card_smart.jpg"},{"name":"terence_face_clean.jpg","type":"Images","subfolder":"Images","size":"6.2 KB","bytes":6321,"url":"../01_Assets/Images/terence_face_clean.jpg"},{"name":"terence_howard_artwork.jpg","type":"Images","subfolder":"Images","size":"14.8 KB","bytes":15170,"url":"../01_Assets/Images/terence_howard_artwork.jpg"},{"name":"terence_howard_avatar.jpg","type":"Images","subfolder":"Images","size":"1.2 KB","bytes":1192,"url":"../01_Assets/Images/terence_howard_avatar.jpg"},{"name":"terence_photo_pure.jpg","type":"Images","subfolder":"Images","size":"6.7 KB","bytes":6891,"url":"../01_Assets/Images/terence_photo_pure.jpg"},{"name":"terence_portrait_clean.jpg","type":"Images","subfolder":"Images","size":"8.9 KB","bytes":9137,"url":"../01_Assets/Images/terence_portrait_clean.jpg"},{"name":"travel_card_dubai.jpg","type":"Images","subfolder":"Images","size":"7.6 KB","bytes":7784,"url":"../01_Assets/Images/travel_card_dubai.jpg"},{"name":"travel_card_indonesia.jpg","type":"Images","subfolder":"Images","size":"8.0 KB","bytes":8178,"url":"../01_Assets/Images/travel_card_indonesia.jpg"},{"name":"travel_card_turkey.jpg","type":"Images","subfolder":"Images","size":"6.4 KB","bytes":6565,"url":"../01_Assets/Images/travel_card_turkey.jpg"},{"name":"travel_card_vietnam.jpg","type":"Images","subfolder":"Images","size":"7.5 KB","bytes":7650,"url":"../01_Assets/Images/travel_card_vietnam.jpg"},{"name":"travel_photo_dubai.jpg","type":"Images","subfolder":"Images","size":"5.3 KB","bytes":5413,"url":"../01_Assets/Images/travel_photo_dubai.jpg"},{"name":"travel_photo_indonesia.jpg","type":"Images","subfolder":"Images","size":"5.7 KB","bytes":5828,"url":"../01_Assets/Images/travel_photo_indonesia.jpg"},{"name":"travel_photo_turkey.jpg","type":"Images","subfolder":"Images","size":"4.5 KB","bytes":4616,"url":"../01_Assets/Images/travel_photo_turkey.jpg"},{"name":"travel_photo_vietnam.jpg","type":"Images","subfolder":"Images","size":"5.5 KB","bytes":5628,"url":"../01_Assets/Images/travel_photo_vietnam.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.jpg","type":"Images","subfolder":"Images","size":"63.8 KB","bytes":65324,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.webp","type":"Images","subfolder":"Images","size":"27.9 KB","bytes":28620,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.webp"},{"name":"gsap.min.js","type":"Other","subfolder":"Libs","size":"70.5 KB","bytes":72214,"url":"../01_Assets/Libs/gsap.min.js"},{"name":"three.min.js","type":"Other","subfolder":"Libs","size":"589.3 KB","bytes":603445,"url":"../01_Assets/Libs/three.min.js"},{"name":"airsenegal_brandfetch.json","type":"Other","subfolder":"Logos","size":"5.3 KB","bytes":5476,"url":"../01_Assets/Logos/airsenegal_brandfetch.json"},{"name":"airsenegal_emblem.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1690,"url":"../01_Assets/Logos/airsenegal_emblem.svg"},{"name":"airsenegal_icon.jpeg","type":"Images","subfolder":"Logos","size":"7.5 KB","bytes":7727,"url":"../01_Assets/Logos/airsenegal_icon.jpeg"},{"name":"airsenegal_logo.png","type":"Images","subfolder":"Logos","size":"18.5 KB","bytes":18956,"url":"../01_Assets/Logos/airsenegal_logo.png"},{"name":"anthropic.svg","type":"Vectors","subfolder":"Logos","size":"1.5 KB","bytes":1568,"url":"../01_Assets/Logos/anthropic.svg"},{"name":"apple.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":755,"url":"../01_Assets/Logos/apple.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Logos","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Logos/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Logos","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Logos/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Logos","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Logos/autoframe_robot_logo.png"},{"name":"chatgpt_com_favicon.png","type":"Images","subfolder":"Logos","size":"3.0 KB","bytes":3026,"url":"../01_Assets/Logos/chatgpt_com_favicon.png"},{"name":"claude_symbol.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol.svg"},{"name":"claude_symbol_white.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol_white.svg"},{"name":"dakar2026_logo.svg","type":"Vectors","subfolder":"Logos","size":"2.4 KB","bytes":2476,"url":"../01_Assets/Logos/dakar2026_logo.svg"},{"name":"dakar_2026_official_logo.png","type":"Images","subfolder":"Logos","size":"135.6 KB","bytes":138824,"url":"../01_Assets/Logos/dakar_2026_official_logo.png"},{"name":"dakar_2026_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"183.4 KB","bytes":187780,"url":"../01_Assets/Logos/dakar_2026_official_logo.svg"},{"name":"deepseek.svg","type":"Vectors","subfolder":"Logos","size":"6.3 KB","bytes":6476,"url":"../01_Assets/Logos/deepseek.svg"},{"name":"egypt.svg","type":"Vectors","subfolder":"Logos","size":"18.0 KB","bytes":18440,"url":"../01_Assets/Logos/egypt.svg"},{"name":"elevenlabs.svg","type":"Vectors","subfolder":"Logos","size":"2.2 KB","bytes":2218,"url":"../01_Assets/Logos/elevenlabs.svg"},{"name":"elevenlabs_symbol.svg","type":"Vectors","subfolder":"Logos","size":"0.4 KB","bytes":404,"url":"../01_Assets/Logos/elevenlabs_symbol.svg"},{"name":"ferrari_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.1 KB","bytes":1145,"url":"../01_Assets/Logos/ferrari_com_favicon.png"},{"name":"al-hilal.png","type":"Images","subfolder":"Logos/Football","size":"11.4 KB","bytes":11680,"url":"../01_Assets/Logos/Football/al-hilal.png"},{"name":"al-nassr.png","type":"Images","subfolder":"Logos/Football","size":"42.4 KB","bytes":43409,"url":"../01_Assets/Logos/Football/al-nassr.png"},{"name":"arsenal.png","type":"Images","subfolder":"Logos/Football","size":"39.5 KB","bytes":40478,"url":"../01_Assets/Logos/Football/arsenal.png"},{"name":"atletico-madrid.png","type":"Images","subfolder":"Logos/Football","size":"19.2 KB","bytes":19709,"url":"../01_Assets/Logos/Football/atletico-madrid.png"},{"name":"barcelona.png","type":"Images","subfolder":"Logos/Football","size":"39.3 KB","bytes":40257,"url":"../01_Assets/Football/barcelona.png"},{"name":"bayern-munchen.png","type":"Images","subfolder":"Logos/Football","size":"47.4 KB","bytes":48573,"url":"../01_Assets/Logos/Football/bayern-munchen.png"},{"name":"borussia-dortmund.png","type":"Images","subfolder":"Logos/Football","size":"48.6 KB","bytes":49769,"url":"../01_Assets/Logos/Football/borussia-dortmund.png"},{"name":"inter-miami-cf.png","type":"Images","subfolder":"Logos/Football","size":"44.6 KB","bytes":45700,"url":"../01_Assets/Logos/Football/inter-miami-cf.png"},{"name":"inter.png","type":"Images","subfolder":"Logos/Football","size":"26.4 KB","bytes":27006,"url":"../01_Assets/Logos/Football/inter.png"},{"name":"liverpool.png","type":"Images","subfolder":"Logos/Football","size":"29.4 KB","bytes":30067,"url":"../01_Assets/Logos/Football/liverpool.png"},{"name":"manchester-city.png","type":"Images","subfolder":"Logos/Football","size":"49.1 KB","bytes":50279,"url":"../01_Assets/Logos/Football/manchester-city.png"},{"name":"milan.png","type":"Images","subfolder":"Logos/Football","size":"33.5 KB","bytes":34324,"url":"../01_Assets/Logos/Football/milan.png"},{"name":"paris-saint-germain.png","type":"Images","subfolder":"Logos/Football","size":"39.8 KB","bytes":40791,"url":"../01_Assets/Logos/Football/paris-saint-germain.png"},{"name":"real-madrid.png","type":"Images","subfolder":"Logos/Football","size":"70.7 KB","bytes":72347,"url":"../01_Assets/Logos/Football/real-madrid.png"},{"name":"heygen.svg","type":"Vectors","subfolder":"Logos","size":"47.9 KB","bytes":49093,"url":"../01_Assets/Logos/heygen.svg"},{"name":"heygen_com_favicon.png","type":"Images","subfolder":"Logos","size":"3.3 KB","bytes":3362,"url":"../01_Assets/Logos/heygen_com_favicon.png"},{"name":"heygen_symbol.svg","type":"Vectors","subfolder":"Logos","size":"41.3 KB","bytes":42246,"url":"../01_Assets/Logos/heygen_symbol.svg"},{"name":"instagram.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":688,"url":"../01_Assets/Logos/instagram.svg"},{"name":"joj_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"0.0 KB","bytes":0,"url":"../01_Assets/Logos/joj_official_logo.svg"},{"name":"marvidflow_com_favicon.png","type":"Images","subfolder":"Logos","size":"0.8 KB","bytes":870,"url":"../01_Assets/Logos/marvidflow_com_favicon.png"},{"name":"morocco.svg","type":"Vectors","subfolder":"Logos","size":"0.3 KB","bytes":264,"url":"../01_Assets/Logos/morocco.svg"},{"name":"nigeria.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":201,"url":"../01_Assets/Logos/nigeria.svg"},{"name":"nike_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.4 KB","bytes":1463,"url":"../01_Assets/Logos/nike_com_favicon.png"},{"name":"nvidia.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1753,"url":"../01_Assets/Logos/nvidia.svg"},{"name":"olympic_rings.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":522,"url":"../01_Assets/Logos/olympic_rings.svg"},{"name":"openai.svg","type":"Vectors","subfolder":"Logos","size":"3.0 KB","bytes":3072,"url":"../01_Assets/Logos/openai.svg"},{"name":"senegal.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":255,"url":"../01_Assets/Logos/senegal.svg"},{"name":"tiktok.svg","type":"Vectors","subfolder":"Logos","size":"0.9 KB","bytes":960,"url":"../01_Assets/Logos/tiktok.svg"},{"name":"youtube.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":498,"url":"../01_Assets/Logos/youtube.svg"},{"name":"dakar_satellite.png","type":"Images","subfolder":"Maps","size":"1.4 MB","bytes":1484532,"url":"../01_Assets/Maps/dakar_satellite.png"},{"name":"paris_style_osm.png","type":"Images","subfolder":"Maps","size":"3.1 MB","bytes":3227031,"url":"../01_Assets/Maps/paris_style_osm.png"},{"name":"paris_style_satellite.png","type":"Images","subfolder":"Maps","size":"4.4 MB","bytes":4634650,"url":"../01_Assets/Maps/paris_style_satellite.png"},{"name":"tokyo_sat.png","type":"Images","subfolder":"Maps","size":"4.1 MB","bytes":4276932,"url":"../01_Assets/Maps/tokyo_sat.png"},{"name":"Carefree.mp3","type":"Audios","subfolder":"Musiques","size":"6.3 MB","bytes":6566713,"url":"../01_Assets/Musiques/Carefree.mp3"},{"name":"chatgpt_ad_60s_music.wav","type":"Audios","subfolder":"Musiques","size":"10.1 MB","bytes":10584044,"url":"../01_Assets/Musiques/chatgpt_ad_60s_music.wav"},{"name":"Cool_Rock.mp3","type":"Audios","subfolder":"Musiques","size":"3.2 MB","bytes":3351095,"url":"../01_Assets/Musiques/Cool_Rock.mp3"},{"name":"Heartwarming.mp3","type":"Audios","subfolder":"Musiques","size":"2.8 MB","bytes":2971312,"url":"../01_Assets/Musiques/Heartwarming.mp3"},{"name":"Hitman.mp3","type":"Audios","subfolder":"Musiques","size":"7.7 MB","bytes":8035387,"url":"../01_Assets/Musiques/Hitman.mp3"},{"name":"Modern_Jazz_Samba.mp3","type":"Audios","subfolder":"Musiques","size":"5.8 MB","bytes":6070802,"url":"../01_Assets/Musiques/Modern_Jazz_Samba.mp3"},{"name":"Sneaky_Snitch.mp3","type":"Audios","subfolder":"Musiques","size":"5.2 MB","bytes":5466943,"url":"../01_Assets/Musiques/Sneaky_Snitch.mp3"},{"name":"Take_a_Chance.mp3","type":"Audios","subfolder":"Musiques","size":"1.4 MB","bytes":1494334,"url":"../01_Assets/Musiques/Take_a_Chance.mp3"},{"name":"Wallpaper.mp3","type":"Audios","subfolder":"Musiques","size":"8.4 MB","bytes":8804339,"url":"../01_Assets/Musiques/Wallpaper.mp3"},{"name":"avatar_1794100251831.png","type":"Images","subfolder":"Profiles","size":"0.1 KB","bytes":77,"url":"../01_Assets/Profiles/avatar_1794100251831.png"},{"name":"profile.json","type":"Other","subfolder":"Profiles","size":"0.2 KB","bytes":176,"url":"../01_Assets/Profiles/profile.json"},{"name":"520025088242792374.jpg","type":"Images","subfolder":"References","size":"34.0 KB","bytes":34822,"url":"../01_Assets/References/520025088242792374.jpg"},{"name":"678143656457756602.jpg","type":"Images","subfolder":"References","size":"25.6 KB","bytes":26165,"url":"../01_Assets/References/678143656457756602.jpg"},{"name":"806285139576294015.jpg","type":"Images","subfolder":"References","size":"25.7 KB","bytes":26339,"url":"../01_Assets/References/806285139576294015.jpg"},{"name":"AI assistant motion by Robin Holesinsky on Muzli.jpg","type":"Images","subfolder":"References","size":"18.6 KB","bytes":19050,"url":"../01_Assets/References/AI assistant motion by Robin Holesinsky on Muzli.jpg"},{"name":"Apple Card is Here.jpg","type":"Images","subfolder":"References","size":"12.3 KB","bytes":12558,"url":"../01_Assets/References/Apple Card is Here.jpg"},{"name":"card_design.jpg","type":"Images","subfolder":"References","size":"22.3 KB","bytes":22883,"url":"../01_Assets/References/card_design.jpg"},{"name":"design_1.jpg","type":"Images","subfolder":"References","size":"36.1 KB","bytes":36922,"url":"../01_Assets/References/design_1.jpg"},{"name":"Instagram (1).jpg","type":"Images","subfolder":"References","size":"11.1 KB","bytes":11397,"url":"../01_Assets/References/Instagram (1).jpg"},{"name":"Instagram.jpg","type":"Images","subfolder":"References","size":"29.7 KB","bytes":30378,"url":"../01_Assets/References/Instagram.jpg"},{"name":"motion_graphic.jpg","type":"Images","subfolder":"References","size":"20.7 KB","bytes":21212,"url":"../01_Assets/References/motion_graphic.jpg"},{"name":"téléchargement (1).jpg","type":"Images","subfolder":"References","size":"34.9 KB","bytes":35757,"url":"../01_Assets/References/téléchargement (1).jpg"},{"name":"téléchargement (2).jpg","type":"Images","subfolder":"References","size":"12.5 KB","bytes":12768,"url":"../01_Assets/References/téléchargement (2).jpg"},{"name":"téléchargement.jpg","type":"Images","subfolder":"References","size":"18.4 KB","bytes":18848,"url":"../01_Assets/References/téléchargement.jpg"},{"name":"ui_design.jpg","type":"Images","subfolder":"References","size":"20.0 KB","bytes":20455,"url":"../01_Assets/References/ui_design.jpg"},{"name":"target1_2x_publish.jpg","type":"Images","subfolder":"References/user_targets","size":"45.7 KB","bytes":46821,"url":"../01_Assets/References/user_targets/target1_2x_publish.jpg"},{"name":"target2_16pct.jpg","type":"Images","subfolder":"References/user_targets","size":"16.3 KB","bytes":16715,"url":"../01_Assets/References/user_targets/target2_16pct.jpg"},{"name":"target3_wallet.jpg","type":"Images","subfolder":"References/user_targets","size":"38.7 KB","bytes":39630,"url":"../01_Assets/References/user_targets/target3_wallet.jpg"},{"name":"click_bolt.wav","type":"Audios","subfolder":"SFX","size":"5.7 KB","bytes":5804,"url":"../01_Assets/SFX/click_bolt.wav"},{"name":"ding_fact.wav","type":"Audios","subfolder":"SFX","size":"150.0 KB","bytes":153644,"url":"../01_Assets/SFX/ding_fact.wav"},{"name":"heartbeat_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/heartbeat_life.mp3"},{"name":"heartbeat_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/heartbeat_life.wav"},{"name":"rumble_depressurization.wav","type":"Audios","subfolder":"SFX","size":"140.7 KB","bytes":144044,"url":"../01_Assets/SFX/rumble_depressurization.wav"},{"name":"thump_door.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/thump_door.wav"},{"name":"whoosh_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/whoosh_life.mp3"},{"name":"whoosh_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_life.wav"},{"name":"whoosh_transition.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_transition.wav"},{"name":"17_design_tips_for_video_editors.mp4","type":"Videos","subfolder":"Videos","size":"23.5 MB","bytes":24632614,"url":"../01_Assets/Videos/17_design_tips_for_video_editors.mp4"},{"name":"marvid_scroll.mp4","type":"Videos","subfolder":"Videos","size":"2.4 MB","bytes":2477140,"url":"../01_Assets/Videos/marvid_scroll.mp4"},{"name":"motion_design_example.mp4","type":"Videos","subfolder":"Videos","size":"664.9 KB","bytes":680827,"url":"../01_Assets/Videos/motion_design_example.mp4"},{"name":"apple_iphone17pro_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"393.7 KB","bytes":403134,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.mp3"},{"name":"apple_iphone17pro_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.8 MB","bytes":2890466,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.wav"},{"name":"ascii_crt_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1009.8 KB","bytes":1034024,"url":"../01_Assets/Voix_Off/ascii_crt_video_15s.wav"},{"name":"aura_app_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"554.7 KB","bytes":568050,"url":"../01_Assets/Voix_Off/aura_app_tanguy.mp3"},{"name":"aura_app_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.0 MB","bytes":2082476,"url":"../01_Assets/Voix_Off/aura_app_tanguy.wav"},{"name":"ballon_dor_official_calm.wav","type":"Audios","subfolder":"Voix_Off","size":"1.9 MB","bytes":1946858,"url":"../01_Assets/Voix_Off/ballon_dor_official_calm.wav"},{"name":"football_mara_explainer.mp3","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1198751,"url":"../01_Assets/Voix_Off/football_mara_explainer.mp3"},{"name":"football_mara_explainer.wav","type":"Audios","subfolder":"Voix_Off","size":"4.2 MB","bytes":4399090,"url":"../01_Assets/Voix_Off/football_mara_explainer.wav"},{"name":"growkaw_motivation_solange.wav","type":"Audios","subfolder":"Voix_Off","size":"998.8 KB","bytes":1022760,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange.wav"},{"name":"growkaw_motivation_solange_20s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1567978,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange_20s.wav"},{"name":"growkaz_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1090794,"url":"../01_Assets/Voix_Off/growkaz_video_15s.wav"},{"name":"marvidflow_voice.mp3","type":"Audios","subfolder":"Voix_Off","size":"291.9 KB","bytes":298883,"url":"../01_Assets/Voix_Off/marvidflow_voice.mp3"},{"name":"objectifs_mara-4921.wav","type":"Audios","subfolder":"Voix_Off","size":"2.9 MB","bytes":3023982,"url":"../01_Assets/Voix_Off/objectifs_mara-4921.wav"},{"name":"top10_football_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"598.8 KB","bytes":613160,"url":"../01_Assets/Voix_Off/top10_football_15s.wav"},{"name":"top10_football_full_14s.wav","type":"Audios","subfolder":"Voix_Off","size":"906.8 KB","bytes":928552,"url":"../01_Assets/Voix_Off/top10_football_full_14s.wav"},{"name":"top10_official_2024.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1559786,"url":"../01_Assets/Voix_Off/top10_official_2024.wav"},{"name":"ww2_mara_summary.mp3","type":"Audios","subfolder":"Voix_Off","size":"471.8 KB","bytes":483094,"url":"../01_Assets/Voix_Off/ww2_mara_summary.mp3"},{"name":"ww2_mara_summary.wav","type":"Audios","subfolder":"Voix_Off","size":"3.0 MB","bytes":3198062,"url":"../01_Assets/Voix_Off/ww2_mara_summary.wav"},{"name":"_temp_1793996767311.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1097198,"url":"../01_Assets/Voix_Off/_temp_1793996767311.wav"},{"name":"_temp_1794009979487.wav","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1160368,"url":"../01_Assets/Voix_Off/_temp_1794009979487.wav"},{"name":"_temp_1794017362810.wav","type":"Audios","subfolder":"Voix_Off","size":"582.0 KB","bytes":595996,"url":"../01_Assets/Voix_Off/_temp_1794017362810.wav"}];
+        const FULL_EMBEDDED_CATALOG = [{"name":"antiquecamera.glb","type":"Other","subfolder":"3D","size":"16.7 MB","bytes":17540348,"url":"../01_Assets/3D/antiquecamera.glb"},{"name":"bench_vice_01.bin","type":"Other","subfolder":"3D","size":"128.3 KB","bytes":131404,"url":"../01_Assets/3D/bench_vice_01.bin"},{"name":"bench_vice_01.gltf","type":"Other","subfolder":"3D","size":"12.9 KB","bytes":13222,"url":"../01_Assets/3D/bench_vice_01.gltf"},{"name":"chairdamaskpurplegold.glb","type":"Other","subfolder":"3D","size":"1.9 MB","bytes":2028924,"url":"../01_Assets/3D/chairdamaskpurplegold.glb"},{"name":"bench_vice_01_arm_1k.jpg","type":"Images","subfolder":"3D/textures","size":"687.7 KB","bytes":704241,"url":"../01_Assets/3D/textures/bench_vice_01_arm_1k.jpg"},{"name":"bench_vice_01_diff_1k.jpg","type":"Images","subfolder":"3D/textures","size":"707.5 KB","bytes":724482,"url":"../01_Assets/3D/textures/bench_vice_01_diff_1k.jpg"},{"name":"bench_vice_01_nor_gl_1k.jpg","type":"Images","subfolder":"3D/textures","size":"846.0 KB","bytes":866287,"url":"../01_Assets/3D/textures/bench_vice_01_nor_gl_1k.jpg"},{"name":"art_ecriture.svg","type":"Vectors","subfolder":"handwriting","size":"112.0 KB","bytes":114685,"url":"../01_Assets/handwriting/art_ecriture.svg"},{"name":"sous_titre.svg","type":"Vectors","subfolder":"handwriting","size":"115.4 KB","bytes":118177,"url":"../01_Assets/handwriting/sous_titre.svg"},{"name":"sous_titre_motion.svg","type":"Vectors","subfolder":"handwriting","size":"229.1 KB","bytes":234563,"url":"../01_Assets/handwriting/sous_titre_motion.svg"},{"name":"tegaki.svg","type":"Vectors","subfolder":"handwriting","size":"42.7 KB","bytes":43768,"url":"../01_Assets/handwriting/tegaki.svg"},{"name":"titre_art.svg","type":"Vectors","subfolder":"handwriting","size":"115.7 KB","bytes":118467,"url":"../01_Assets/handwriting/titre_art.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Icones","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Icones/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Icones","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Icones/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Icones","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Icones/autoframe_robot_logo.png"},{"name":"closedhand_100189.svg","type":"Vectors","subfolder":"Icones","size":"4.6 KB","bytes":4665,"url":"../01_Assets/Icones/closedhand_100189.svg"},{"name":"openhand_100161.svg","type":"Vectors","subfolder":"Icones","size":"6.0 KB","bytes":6191,"url":"../01_Assets/Icones/openhand_100161.svg"},{"name":"pointinghand_100160.svg","type":"Vectors","subfolder":"Icones","size":"5.1 KB","bytes":5256,"url":"../01_Assets/Icones/pointinghand_100160.svg"},{"name":"cristiano-ronaldo.png","type":"Images","subfolder":"Illustrations/Players","size":"274.5 KB","bytes":281066,"url":"../01_Assets/Illustrations/Players/cristiano-ronaldo.png"},{"name":"daniel-carvajal.png","type":"Images","subfolder":"Illustrations/Players","size":"233.6 KB","bytes":239226,"url":"../01_Assets/Illustrations/Players/daniel-carvajal.png"},{"name":"erling-haaland.png","type":"Images","subfolder":"Illustrations/Players","size":"222.8 KB","bytes":228173,"url":"../01_Assets/Illustrations/Players/erling-haaland.png"},{"name":"harry-kane.png","type":"Images","subfolder":"Illustrations/Players","size":"248.3 KB","bytes":254301,"url":"../01_Assets/Illustrations/Players/harry-kane.png"},{"name":"jay-rodriguez.png","type":"Images","subfolder":"Illustrations/Players","size":"448.1 KB","bytes":458831,"url":"../01_Assets/Illustrations/Players/jay-rodriguez.png"},{"name":"jude-bellingham.png","type":"Images","subfolder":"Illustrations/Players","size":"466.2 KB","bytes":477402,"url":"../01_Assets/Illustrations/Players/jude-bellingham.png"},{"name":"kevin-de-bruyne.png","type":"Images","subfolder":"Illustrations/Players","size":"229.0 KB","bytes":234538,"url":"../01_Assets/Illustrations/Players/kevin-de-bruyne.png"},{"name":"kylian-mbappe.png","type":"Images","subfolder":"Illustrations/Players","size":"498.8 KB","bytes":510721,"url":"../01_Assets/Illustrations/Players/kylian-mbappe.png"},{"name":"lamine-yamal.png","type":"Images","subfolder":"Illustrations/Players","size":"223.1 KB","bytes":228427,"url":"../01_Assets/Illustrations/Players/lamine-yamal.png"},{"name":"lautaro-martinez.png","type":"Images","subfolder":"Illustrations/Players","size":"223.6 KB","bytes":228941,"url":"../01_Assets/Illustrations/Players/lautaro-martinez.png"},{"name":"lionel-messi.png","type":"Images","subfolder":"Illustrations/Players","size":"297.0 KB","bytes":304086,"url":"../01_Assets/Illustrations/Players/lionel-messi.png"},{"name":"mohamed-salah.png","type":"Images","subfolder":"Illustrations/Players","size":"185.5 KB","bytes":189966,"url":"../01_Assets/Illustrations/Players/mohamed-salah.png"},{"name":"neymar.png","type":"Images","subfolder":"Illustrations/Players","size":"175.4 KB","bytes":179574,"url":"../01_Assets/Illustrations/Players/neymar.png"},{"name":"phil-foden.png","type":"Images","subfolder":"Illustrations/Players","size":"223.9 KB","bytes":229290,"url":"../01_Assets/Illustrations/Players/phil-foden.png"},{"name":"rodri.png","type":"Images","subfolder":"Illustrations/Players","size":"278.2 KB","bytes":284832,"url":"../01_Assets/Illustrations/Players/rodri.png"},{"name":"rodrigo-lima.png","type":"Images","subfolder":"Illustrations/Players","size":"157.7 KB","bytes":161471,"url":"../01_Assets/Illustrations/Players/rodrigo-lima.png"},{"name":"toni-kroos.png","type":"Images","subfolder":"Illustrations/Players","size":"231.2 KB","bytes":236704,"url":"../01_Assets/Illustrations/Players/toni-kroos.png"},{"name":"vinicius-junior.png","type":"Images","subfolder":"Illustrations/Players","size":"471.0 KB","bytes":482314,"url":"../01_Assets/Illustrations/Players/vinicius-junior.png"},{"name":"ai_energy_orb.b64","type":"Other","subfolder":"Images","size":"32.1 KB","bytes":32888,"url":"../01_Assets/Images/ai_energy_orb.b64"},{"name":"ai_energy_orb.png","type":"Images","subfolder":"Images","size":"24.1 KB","bytes":24665,"url":"../01_Assets/Images/ai_energy_orb.png"},{"name":"aurora_scene_1.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1648364,"url":"../01_Assets/Images/aurora_scene_1.png"},{"name":"aurora_scene_2.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655236,"url":"../01_Assets/Images/aurora_scene_2.png"},{"name":"aurora_scene_3.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1702878,"url":"../01_Assets/Images/aurora_scene_3.png"},{"name":"aurora_scene_4.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1646567,"url":"../01_Assets/Images/aurora_scene_4.png"},{"name":"aurora_scene_5.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1674398,"url":"../01_Assets/Images/aurora_scene_5.png"},{"name":"aurora_scene_6.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655921,"url":"../01_Assets/Images/aurora_scene_6.png"},{"name":"avatar_homepage_man.png","type":"Images","subfolder":"Images","size":"283.4 KB","bytes":290204,"url":"../01_Assets/Images/avatar_homepage_man.png"},{"name":"avatar_homepage_woman.png","type":"Images","subfolder":"Images","size":"269.5 KB","bytes":276010,"url":"../01_Assets/Images/avatar_homepage_woman.png"},{"name":"bg_demo_aurora_orange.png","type":"Images","subfolder":"Images","size":"1.3 MB","bytes":1380204,"url":"../01_Assets/Images/bg_demo_aurora_orange.png"},{"name":"bg_demo_grid_violet.png","type":"Images","subfolder":"Images","size":"164.8 KB","bytes":168724,"url":"../01_Assets/Images/bg_demo_grid_violet.png"},{"name":"avatar_ch_1793063435322.png","type":"Images","subfolder":"Images/channels","size":"1.7 MB","bytes":1749387,"url":"../01_Assets/Images/channels/avatar_ch_1793063435322.png"},{"name":"avatar_ch_1793102190223.jpg","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1240746,"url":"../01_Assets/Images/channels/avatar_ch_1793102190223.jpg"},{"name":"avatar_ch_1793911184121.jpg","type":"Images","subfolder":"Images/channels","size":"644.6 KB","bytes":660053,"url":"../01_Assets/Images/channels/avatar_ch_1793911184121.jpg"},{"name":"avatar_ch_1793911244535.png","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1254067,"url":"../01_Assets/Images/channels/avatar_ch_1793911244535.png"},{"name":"avatar_ch_1793911298459.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1793911298459.png"},{"name":"avatar_ch_1794092386560.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1794092386560.png"},{"name":"01_typography.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"468.2 KB","bytes":479405,"url":"../01_Assets/Images/Design_Tips_Frames/01_typography.png"},{"name":"02_placement.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"273.0 KB","bytes":279519,"url":"../01_Assets/Images/Design_Tips_Frames/02_placement.png"},{"name":"03_balance.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"161.0 KB","bytes":164875,"url":"../01_Assets/Images/Design_Tips_Frames/03_balance.png"},{"name":"04_contrast.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"162.8 KB","bytes":166719,"url":"../01_Assets/Images/Design_Tips_Frames/04_contrast.png"},{"name":"05_color_theory.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"369.9 KB","bytes":378755,"url":"../01_Assets/Images/Design_Tips_Frames/05_color_theory.png"},{"name":"06_branding_rules.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"336.7 KB","bytes":344792,"url":"../01_Assets/Images/Design_Tips_Frames/06_branding_rules.png"},{"name":"07_script_design.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"248.0 KB","bytes":253980,"url":"../01_Assets/Images/Design_Tips_Frames/07_script_design.png"},{"name":"08_horizontal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"173.4 KB","bytes":177599,"url":"../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png"},{"name":"09_vertical_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"267.9 KB","bytes":274361,"url":"../01_Assets/Images/Design_Tips_Frames/09_vertical_designs.png"},{"name":"10_diagonal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"190.8 KB","bytes":195384,"url":"../01_Assets/Images/Design_Tips_Frames/10_diagonal_designs.png"},{"name":"11_steal_like_artist.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"638.6 KB","bytes":653973,"url":"../01_Assets/Images/Design_Tips_Frames/11_steal_like_artist.png"},{"name":"12_inspiration_board.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"141.7 KB","bytes":145132,"url":"../01_Assets/Images/Design_Tips_Frames/12_inspiration_board.png"},{"name":"13_breakdown_inspiration.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"383.6 KB","bytes":392854,"url":"../01_Assets/Images/Design_Tips_Frames/13_breakdown_inspiration.png"},{"name":"14_plan_edit.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"444.1 KB","bytes":454750,"url":"../01_Assets/Images/Design_Tips_Frames/14_plan_edit.png"},{"name":"15_short_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"299.7 KB","bytes":306862,"url":"../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png"},{"name":"16_long_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"177.6 KB","bytes":181892,"url":"../01_Assets/Images/Design_Tips_Frames/16_long_form_animation.png"},{"name":"17_vertical_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.7 KB","bytes":298651,"url":"../01_Assets/Images/Design_Tips_Frames/17_vertical_animations.png"},{"name":"18_horizontal_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.8 KB","bytes":298814,"url":"../01_Assets/Images/Design_Tips_Frames/18_horizontal_animations.png"},{"name":"growkaw_bg.b64","type":"Other","subfolder":"Images","size":"993.7 KB","bytes":1017560,"url":"../01_Assets/Images/growkaw_bg.b64"},{"name":"growkaw_bg.jpg","type":"Images","subfolder":"Images","size":"745.3 KB","bytes":763169,"url":"../01_Assets/Images/growkaw_bg.jpg"},{"name":"growkaz_stickman_concept.jpg","type":"Images","subfolder":"Images","size":"545.0 KB","bytes":558109,"url":"../01_Assets/Images/growkaz_stickman_concept.jpg"},{"name":"branding.json","type":"Other","subfolder":"Images/marvidflow","size":"1.3 KB","bytes":1346,"url":"../01_Assets/Images/marvidflow/branding.json"},{"name":"dashboard_scroll.png","type":"Images","subfolder":"Images/marvidflow","size":"487.9 KB","bytes":499656,"url":"../01_Assets/Images/marvidflow/dashboard_scroll.png"},{"name":"features_scroll.png","type":"Images","subfolder":"Features","size":"444.0 KB","bytes":454606,"url":"../01_Assets/Images/marvidflow/features_scroll.png"},{"name":"hero_full.png","type":"Images","subfolder":"Images/marvidflow","size":"969.8 KB","bytes":993108,"url":"../01_Assets/Images/marvidflow/hero_full.png"},{"name":"marvid_dashboard.png","type":"Images","subfolder":"Images/marvidflow","size":"580.1 KB","bytes":594028,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.png"},{"name":"marvid_dashboard.webp","type":"Images","subfolder":"Images/marvidflow","size":"38.2 KB","bytes":39094,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.webp"},{"name":"marvid_hero_clean.png","type":"Images","subfolder":"Images/marvidflow","size":"2.2 MB","bytes":2340972,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.png"},{"name":"marvid_hero_clean.webp","type":"Images","subfolder":"Images/marvidflow","size":"68.5 KB","bytes":70114,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.webp"},{"name":"marvid_pipeline.png","type":"Images","subfolder":"Images/marvidflow","size":"499.6 KB","bytes":511626,"url":"../01_Assets/Images/marvidflow/marvid_pipeline.png"},{"name":"ref_ask_anything_pill.jpg","type":"Images","subfolder":"Images","size":"12.7 KB","bytes":13024,"url":"../01_Assets/Images/ref_ask_anything_pill.jpg"},{"name":"ref_music_player.jpg","type":"Images","subfolder":"Images","size":"37.1 KB","bytes":37972,"url":"../01_Assets/Images/ref_music_player.jpg"},{"name":"ref_travel_carousel.jpg","type":"Images","subfolder":"Images","size":"33.8 KB","bytes":34586,"url":"../01_Assets/Images/ref_travel_carousel.jpg"},{"name":"sienna_avatar.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_avatar.b64"},{"name":"sienna_face.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_face.b64"},{"name":"sienna_face.jpg","type":"Images","subfolder":"Images","size":"8.7 KB","bytes":8877,"url":"../01_Assets/Images/sienna_face.jpg"},{"name":"sienna_photo.jpg","type":"Images","subfolder":"Images","size":"15.9 KB","bytes":16294,"url":"../01_Assets/Images/sienna_photo.jpg"},{"name":"sienna_small_avatar.jpg","type":"Images","subfolder":"Images","size":"0.4 KB","bytes":397,"url":"../01_Assets/Images/sienna_small_avatar.jpg"},{"name":"style_none.jpg","type":"Images","subfolder":"Images/styles","size":"38.9 KB","bytes":39872,"url":"../01_Assets/Images/styles/style_none.jpg"},{"name":"template_2d_explainer.jpg","type":"Images","subfolder":"Images/styles","size":"149.1 KB","bytes":152679,"url":"../01_Assets/Images/styles/template_2d_explainer.jpg"},{"name":"template_ego_lite.jpg","type":"Images","subfolder":"Images/styles","size":"187.0 KB","bytes":191477,"url":"../01_Assets/Images/styles/template_ego_lite.jpg"},{"name":"template_faceless_brand.jpg","type":"Images","subfolder":"Images/styles","size":"147.1 KB","bytes":150599,"url":"../01_Assets/Images/styles/template_faceless_brand.jpg"},{"name":"template_iman_gadzhi_style.jpg","type":"Images","subfolder":"Images/styles","size":"101.2 KB","bytes":103657,"url":"../01_Assets/Images/styles/template_iman_gadzhi_style.jpg"},{"name":"template_saas_motion_design.jpg","type":"Images","subfolder":"Images/styles","size":"160.5 KB","bytes":164371,"url":"../01_Assets/Images/styles/template_saas_motion_design.jpg"},{"name":"template_stikman_history.jpg","type":"Images","subfolder":"Images/styles","size":"185.6 KB","bytes":190061,"url":"../01_Assets/Images/styles/template_stikman_history.jpg"},{"name":"template_story_vox_style.jpg","type":"Images","subfolder":"Images/styles","size":"224.7 KB","bytes":230127,"url":"../01_Assets/Images/styles/template_story_vox_style.jpg"},{"name":"template_tier_list.jpg","type":"Images","subfolder":"Images/styles","size":"148.0 KB","bytes":151597,"url":"../01_Assets/Images/styles/template_tier_list.jpg"},{"name":"template_top_10.jpg","type":"Images","subfolder":"Images/styles","size":"314.0 KB","bytes":321527,"url":"../01_Assets/Images/styles/template_top_10.jpg"},{"name":"template_trash_style.jpg","type":"Images","subfolder":"Images/styles","size":"213.5 KB","bytes":218603,"url":"../01_Assets/Images/styles/template_trash_style.jpg"},{"name":"template_tutoriel.jpg","type":"Images","subfolder":"Images/styles","size":"161.6 KB","bytes":165452,"url":"../01_Assets/Images/styles/template_tutoriel.jpg"},{"name":"terence_card_clean_bg.jpg","type":"Images","subfolder":"Images","size":"13.7 KB","bytes":14041,"url":"../01_Assets/Images/terence_card_clean_bg.jpg"},{"name":"terence_card_perfect_580.jpg","type":"Images","subfolder":"Images","size":"31.4 KB","bytes":32184,"url":"../01_Assets/Images/terence_card_perfect_580.jpg"},{"name":"terence_card_smart.jpg","type":"Images","subfolder":"Images","size":"15.3 KB","bytes":15667,"url":"../01_Assets/Images/terence_card_smart.jpg"},{"name":"terence_face_clean.jpg","type":"Images","subfolder":"Images","size":"6.2 KB","bytes":6321,"url":"../01_Assets/Images/terence_face_clean.jpg"},{"name":"terence_howard_artwork.jpg","type":"Images","subfolder":"Images","size":"14.8 KB","bytes":15170,"url":"../01_Assets/Images/terence_howard_artwork.jpg"},{"name":"terence_howard_avatar.jpg","type":"Images","subfolder":"Images","size":"1.2 KB","bytes":1192,"url":"../01_Assets/Images/terence_howard_avatar.jpg"},{"name":"terence_photo_pure.jpg","type":"Images","subfolder":"Images","size":"6.7 KB","bytes":6891,"url":"../01_Assets/Images/terence_photo_pure.jpg"},{"name":"terence_portrait_clean.jpg","type":"Images","subfolder":"Images","size":"8.9 KB","bytes":9137,"url":"../01_Assets/Images/terence_portrait_clean.jpg"},{"name":"travel_card_dubai.jpg","type":"Images","subfolder":"Images","size":"7.6 KB","bytes":7784,"url":"../01_Assets/Images/travel_card_dubai.jpg"},{"name":"travel_card_indonesia.jpg","type":"Images","subfolder":"Images","size":"8.0 KB","bytes":8178,"url":"../01_Assets/Images/travel_card_indonesia.jpg"},{"name":"travel_card_turkey.jpg","type":"Images","subfolder":"Images","size":"6.4 KB","bytes":6565,"url":"../01_Assets/Images/travel_card_turkey.jpg"},{"name":"travel_card_vietnam.jpg","type":"Images","subfolder":"Images","size":"7.5 KB","bytes":7650,"url":"../01_Assets/Images/travel_card_vietnam.jpg"},{"name":"travel_photo_dubai.jpg","type":"Images","subfolder":"Images","size":"5.3 KB","bytes":5413,"url":"../01_Assets/Images/travel_photo_dubai.jpg"},{"name":"travel_photo_indonesia.jpg","type":"Images","subfolder":"Images","size":"5.7 KB","bytes":5828,"url":"../01_Assets/Images/travel_photo_indonesia.jpg"},{"name":"travel_photo_turkey.jpg","type":"Images","subfolder":"Images","size":"4.5 KB","bytes":4616,"url":"../01_Assets/Images/travel_photo_turkey.jpg"},{"name":"travel_photo_vietnam.jpg","type":"Images","subfolder":"Images","size":"5.5 KB","bytes":5628,"url":"../01_Assets/Images/travel_photo_vietnam.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.jpg","type":"Images","subfolder":"Images","size":"63.8 KB","bytes":65324,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.webp","type":"Images","subfolder":"Images","size":"27.9 KB","bytes":28620,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.webp"},{"name":"gsap.min.js","type":"Other","subfolder":"Libs","size":"70.5 KB","bytes":72214,"url":"../01_Assets/Libs/gsap.min.js"},{"name":"three.min.js","type":"Other","subfolder":"Libs","size":"589.3 KB","bytes":603445,"url":"../01_Assets/Libs/three.min.js"},{"name":"airsenegal_brandfetch.json","type":"Other","subfolder":"Logos","size":"5.3 KB","bytes":5476,"url":"../01_Assets/Logos/airsenegal_brandfetch.json"},{"name":"airsenegal_emblem.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1690,"url":"../01_Assets/Logos/airsenegal_emblem.svg"},{"name":"airsenegal_icon.jpeg","type":"Images","subfolder":"Logos","size":"7.5 KB","bytes":7727,"url":"../01_Assets/Logos/airsenegal_icon.jpeg"},{"name":"airsenegal_logo.png","type":"Images","subfolder":"Logos","size":"18.5 KB","bytes":18956,"url":"../01_Assets/Logos/airsenegal_logo.png"},{"name":"anthropic.svg","type":"Vectors","subfolder":"Logos","size":"1.5 KB","bytes":1568,"url":"../01_Assets/Logos/anthropic.svg"},{"name":"apple.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":755,"url":"../01_Assets/Logos/apple.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Logos","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Logos/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Logos","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Logos/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Logos","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Logos/autoframe_robot_logo.png"},{"name":"chatgpt_com_favicon.png","type":"Images","subfolder":"Logos","size":"3.0 KB","bytes":3026,"url":"../01_Assets/Logos/chatgpt_com_favicon.png"},{"name":"claude_symbol.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol.svg"},{"name":"claude_symbol_white.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol_white.svg"},{"name":"dakar2026_logo.svg","type":"Vectors","subfolder":"Logos","size":"2.4 KB","bytes":2476,"url":"../01_Assets/Logos/dakar2026_logo.svg"},{"name":"dakar_2026_official_logo.png","type":"Images","subfolder":"Logos","size":"135.6 KB","bytes":138824,"url":"../01_Assets/Logos/dakar_2026_official_logo.png"},{"name":"dakar_2026_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"183.4 KB","bytes":187780,"url":"../01_Assets/Logos/dakar_2026_official_logo.svg"},{"name":"deepseek.svg","type":"Vectors","subfolder":"Logos","size":"6.3 KB","bytes":6476,"url":"../01_Assets/Logos/deepseek.svg"},{"name":"egypt.svg","type":"Vectors","subfolder":"Logos","size":"18.0 KB","bytes":18440,"url":"../01_Assets/Logos/egypt.svg"},{"name":"elevenlabs.svg","type":"Vectors","subfolder":"Logos","size":"2.2 KB","bytes":2218,"url":"../01_Assets/Logos/elevenlabs.svg"},{"name":"elevenlabs_symbol.svg","type":"Vectors","subfolder":"Logos","size":"0.4 KB","bytes":404,"url":"../01_Assets/Logos/elevenlabs_symbol.svg"},{"name":"ferrari_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.1 KB","bytes":1145,"url":"../01_Assets/Logos/ferrari_com_favicon.png"},{"name":"al-hilal.png","type":"Images","subfolder":"Logos/Football","size":"11.4 KB","bytes":11680,"url":"../01_Assets/Logos/Football/al-hilal.png"},{"name":"al-nassr.png","type":"Images","subfolder":"Logos/Football","size":"42.4 KB","bytes":43409,"url":"../01_Assets/Logos/Football/al-nassr.png"},{"name":"arsenal.png","type":"Images","subfolder":"Logos/Football","size":"39.5 KB","bytes":40478,"url":"../01_Assets/Logos/Football/arsenal.png"},{"name":"atletico-madrid.png","type":"Images","subfolder":"Logos/Football","size":"19.2 KB","bytes":19709,"url":"../01_Assets/Logos/Football/atletico-madrid.png"},{"name":"barcelona.png","type":"Images","subfolder":"Logos/Football","size":"39.3 KB","bytes":40257,"url":"../01_Assets/Football/barcelona.png"},{"name":"bayern-munchen.png","type":"Images","subfolder":"Logos/Football","size":"47.4 KB","bytes":48573,"url":"../01_Assets/Logos/Football/bayern-munchen.png"},{"name":"borussia-dortmund.png","type":"Images","subfolder":"Logos/Football","size":"48.6 KB","bytes":49769,"url":"../01_Assets/Logos/Football/borussia-dortmund.png"},{"name":"inter-miami-cf.png","type":"Images","subfolder":"Logos/Football","size":"44.6 KB","bytes":45700,"url":"../01_Assets/Logos/Football/inter-miami-cf.png"},{"name":"inter.png","type":"Images","subfolder":"Logos/Football","size":"26.4 KB","bytes":27006,"url":"../01_Assets/Logos/Football/inter.png"},{"name":"liverpool.png","type":"Images","subfolder":"Logos/Football","size":"29.4 KB","bytes":30067,"url":"../01_Assets/Logos/Football/liverpool.png"},{"name":"manchester-city.png","type":"Images","subfolder":"Logos/Football","size":"49.1 KB","bytes":50279,"url":"../01_Assets/Logos/Football/manchester-city.png"},{"name":"milan.png","type":"Images","subfolder":"Logos/Football","size":"33.5 KB","bytes":34324,"url":"../01_Assets/Logos/Football/milan.png"},{"name":"paris-saint-germain.png","type":"Images","subfolder":"Logos/Football","size":"39.8 KB","bytes":40791,"url":"../01_Assets/Logos/Football/paris-saint-germain.png"},{"name":"real-madrid.png","type":"Images","subfolder":"Logos/Football","size":"70.7 KB","bytes":72347,"url":"../01_Assets/Logos/Football/real-madrid.png"},{"name":"instagram.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":688,"url":"../01_Assets/Logos/instagram.svg"},{"name":"joj_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"0.0 KB","bytes":0,"url":"../01_Assets/Logos/joj_official_logo.svg"},{"name":"marvidflow_com_favicon.png","type":"Images","subfolder":"Logos","size":"0.8 KB","bytes":870,"url":"../01_Assets/Logos/marvidflow_com_favicon.png"},{"name":"morocco.svg","type":"Vectors","subfolder":"Logos","size":"0.3 KB","bytes":264,"url":"../01_Assets/Logos/morocco.svg"},{"name":"nigeria.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":201,"url":"../01_Assets/Logos/nigeria.svg"},{"name":"nike_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.4 KB","bytes":1463,"url":"../01_Assets/Logos/nike_com_favicon.png"},{"name":"nvidia.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1753,"url":"../01_Assets/Logos/nvidia.svg"},{"name":"olympic_rings.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":522,"url":"../01_Assets/Logos/olympic_rings.svg"},{"name":"openai.svg","type":"Vectors","subfolder":"Logos","size":"3.0 KB","bytes":3072,"url":"../01_Assets/Logos/openai.svg"},{"name":"senegal.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":255,"url":"../01_Assets/Logos/senegal.svg"},{"name":"tiktok.svg","type":"Vectors","subfolder":"Logos","size":"0.9 KB","bytes":960,"url":"../01_Assets/Logos/tiktok.svg"},{"name":"youtube.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":498,"url":"../01_Assets/Logos/youtube.svg"},{"name":"dakar_satellite.png","type":"Images","subfolder":"Maps","size":"1.4 MB","bytes":1484532,"url":"../01_Assets/Maps/dakar_satellite.png"},{"name":"paris_style_osm.png","type":"Images","subfolder":"Maps","size":"3.1 MB","bytes":3227031,"url":"../01_Assets/Maps/paris_style_osm.png"},{"name":"paris_style_satellite.png","type":"Images","subfolder":"Maps","size":"4.4 MB","bytes":4634650,"url":"../01_Assets/Maps/paris_style_satellite.png"},{"name":"tokyo_sat.png","type":"Images","subfolder":"Maps","size":"4.1 MB","bytes":4276932,"url":"../01_Assets/Maps/tokyo_sat.png"},{"name":"Carefree.mp3","type":"Audios","subfolder":"Musiques","size":"6.3 MB","bytes":6566713,"url":"../01_Assets/Musiques/Carefree.mp3"},{"name":"chatgpt_ad_60s_music.wav","type":"Audios","subfolder":"Musiques","size":"10.1 MB","bytes":10584044,"url":"../01_Assets/Musiques/chatgpt_ad_60s_music.wav"},{"name":"Cool_Rock.mp3","type":"Audios","subfolder":"Musiques","size":"3.2 MB","bytes":3351095,"url":"../01_Assets/Musiques/Cool_Rock.mp3"},{"name":"Heartwarming.mp3","type":"Audios","subfolder":"Musiques","size":"2.8 MB","bytes":2971312,"url":"../01_Assets/Musiques/Heartwarming.mp3"},{"name":"Hitman.mp3","type":"Audios","subfolder":"Musiques","size":"7.7 MB","bytes":8035387,"url":"../01_Assets/Musiques/Hitman.mp3"},{"name":"Modern_Jazz_Samba.mp3","type":"Audios","subfolder":"Musiques","size":"5.8 MB","bytes":6070802,"url":"../01_Assets/Musiques/Modern_Jazz_Samba.mp3"},{"name":"Sneaky_Snitch.mp3","type":"Audios","subfolder":"Musiques","size":"5.2 MB","bytes":5466943,"url":"../01_Assets/Musiques/Sneaky_Snitch.mp3"},{"name":"Take_a_Chance.mp3","type":"Audios","subfolder":"Musiques","size":"1.4 MB","bytes":1494334,"url":"../01_Assets/Musiques/Take_a_Chance.mp3"},{"name":"Wallpaper.mp3","type":"Audios","subfolder":"Musiques","size":"8.4 MB","bytes":8804339,"url":"../01_Assets/Musiques/Wallpaper.mp3"},{"name":"avatar_1794100251831.png","type":"Images","subfolder":"Profiles","size":"0.1 KB","bytes":77,"url":"../01_Assets/Profiles/avatar_1794100251831.png"},{"name":"profile.json","type":"Other","subfolder":"Profiles","size":"0.2 KB","bytes":176,"url":"../01_Assets/Profiles/profile.json"},{"name":"520025088242792374.jpg","type":"Images","subfolder":"References","size":"34.0 KB","bytes":34822,"url":"../01_Assets/References/520025088242792374.jpg"},{"name":"678143656457756602.jpg","type":"Images","subfolder":"References","size":"25.6 KB","bytes":26165,"url":"../01_Assets/References/678143656457756602.jpg"},{"name":"806285139576294015.jpg","type":"Images","subfolder":"References","size":"25.7 KB","bytes":26339,"url":"../01_Assets/References/806285139576294015.jpg"},{"name":"AI assistant motion by Robin Holesinsky on Muzli.jpg","type":"Images","subfolder":"References","size":"18.6 KB","bytes":19050,"url":"../01_Assets/References/AI assistant motion by Robin Holesinsky on Muzli.jpg"},{"name":"Apple Card is Here.jpg","type":"Images","subfolder":"References","size":"12.3 KB","bytes":12558,"url":"../01_Assets/References/Apple Card is Here.jpg"},{"name":"card_design.jpg","type":"Images","subfolder":"References","size":"22.3 KB","bytes":22883,"url":"../01_Assets/References/card_design.jpg"},{"name":"design_1.jpg","type":"Images","subfolder":"References","size":"36.1 KB","bytes":36922,"url":"../01_Assets/References/design_1.jpg"},{"name":"Instagram (1).jpg","type":"Images","subfolder":"References","size":"11.1 KB","bytes":11397,"url":"../01_Assets/References/Instagram (1).jpg"},{"name":"Instagram.jpg","type":"Images","subfolder":"References","size":"29.7 KB","bytes":30378,"url":"../01_Assets/References/Instagram.jpg"},{"name":"motion_graphic.jpg","type":"Images","subfolder":"References","size":"20.7 KB","bytes":21212,"url":"../01_Assets/References/motion_graphic.jpg"},{"name":"téléchargement (1).jpg","type":"Images","subfolder":"References","size":"34.9 KB","bytes":35757,"url":"../01_Assets/References/téléchargement (1).jpg"},{"name":"téléchargement (2).jpg","type":"Images","subfolder":"References","size":"12.5 KB","bytes":12768,"url":"../01_Assets/References/téléchargement (2).jpg"},{"name":"téléchargement.jpg","type":"Images","subfolder":"References","size":"18.4 KB","bytes":18848,"url":"../01_Assets/References/téléchargement.jpg"},{"name":"ui_design.jpg","type":"Images","subfolder":"References","size":"20.0 KB","bytes":20455,"url":"../01_Assets/References/ui_design.jpg"},{"name":"target1_2x_publish.jpg","type":"Images","subfolder":"References/user_targets","size":"45.7 KB","bytes":46821,"url":"../01_Assets/References/user_targets/target1_2x_publish.jpg"},{"name":"target2_16pct.jpg","type":"Images","subfolder":"References/user_targets","size":"16.3 KB","bytes":16715,"url":"../01_Assets/References/user_targets/target2_16pct.jpg"},{"name":"target3_wallet.jpg","type":"Images","subfolder":"References/user_targets","size":"38.7 KB","bytes":39630,"url":"../01_Assets/References/user_targets/target3_wallet.jpg"},{"name":"click_bolt.wav","type":"Audios","subfolder":"SFX","size":"5.7 KB","bytes":5804,"url":"../01_Assets/SFX/click_bolt.wav"},{"name":"ding_fact.wav","type":"Audios","subfolder":"SFX","size":"150.0 KB","bytes":153644,"url":"../01_Assets/SFX/ding_fact.wav"},{"name":"heartbeat_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/heartbeat_life.mp3"},{"name":"heartbeat_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/heartbeat_life.wav"},{"name":"rumble_depressurization.wav","type":"Audios","subfolder":"SFX","size":"140.7 KB","bytes":144044,"url":"../01_Assets/SFX/rumble_depressurization.wav"},{"name":"thump_door.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/thump_door.wav"},{"name":"whoosh_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/whoosh_life.mp3"},{"name":"whoosh_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_life.wav"},{"name":"whoosh_transition.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_transition.wav"},{"name":"17_design_tips_for_video_editors.mp4","type":"Videos","subfolder":"Videos","size":"23.5 MB","bytes":24632614,"url":"../01_Assets/Videos/17_design_tips_for_video_editors.mp4"},{"name":"marvid_scroll.mp4","type":"Videos","subfolder":"Videos","size":"2.4 MB","bytes":2477140,"url":"../01_Assets/Videos/marvid_scroll.mp4"},{"name":"motion_design_example.mp4","type":"Videos","subfolder":"Videos","size":"664.9 KB","bytes":680827,"url":"../01_Assets/Videos/motion_design_example.mp4"},{"name":"apple_iphone17pro_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"393.7 KB","bytes":403134,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.mp3"},{"name":"apple_iphone17pro_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.8 MB","bytes":2890466,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.wav"},{"name":"ascii_crt_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1009.8 KB","bytes":1034024,"url":"../01_Assets/Voix_Off/ascii_crt_video_15s.wav"},{"name":"aura_app_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"554.7 KB","bytes":568050,"url":"../01_Assets/Voix_Off/aura_app_tanguy.mp3"},{"name":"aura_app_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.0 MB","bytes":2082476,"url":"../01_Assets/Voix_Off/aura_app_tanguy.wav"},{"name":"ballon_dor_official_calm.wav","type":"Audios","subfolder":"Voix_Off","size":"1.9 MB","bytes":1946858,"url":"../01_Assets/Voix_Off/ballon_dor_official_calm.wav"},{"name":"football_mara_explainer.mp3","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1198751,"url":"../01_Assets/Voix_Off/football_mara_explainer.mp3"},{"name":"football_mara_explainer.wav","type":"Audios","subfolder":"Voix_Off","size":"4.2 MB","bytes":4399090,"url":"../01_Assets/Voix_Off/football_mara_explainer.wav"},{"name":"growkaw_motivation_solange.wav","type":"Audios","subfolder":"Voix_Off","size":"998.8 KB","bytes":1022760,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange.wav"},{"name":"growkaw_motivation_solange_20s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1567978,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange_20s.wav"},{"name":"growkaz_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1090794,"url":"../01_Assets/Voix_Off/growkaz_video_15s.wav"},{"name":"marvidflow_voice.mp3","type":"Audios","subfolder":"Voix_Off","size":"291.9 KB","bytes":298883,"url":"../01_Assets/Voix_Off/marvidflow_voice.mp3"},{"name":"objectifs_mara-4921.wav","type":"Audios","subfolder":"Voix_Off","size":"2.9 MB","bytes":3023982,"url":"../01_Assets/Voix_Off/objectifs_mara-4921.wav"},{"name":"top10_football_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"598.8 KB","bytes":613160,"url":"../01_Assets/Voix_Off/top10_football_15s.wav"},{"name":"top10_football_full_14s.wav","type":"Audios","subfolder":"Voix_Off","size":"906.8 KB","bytes":928552,"url":"../01_Assets/Voix_Off/top10_football_full_14s.wav"},{"name":"top10_official_2024.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1559786,"url":"../01_Assets/Voix_Off/top10_official_2024.wav"},{"name":"ww2_mara_summary.mp3","type":"Audios","subfolder":"Voix_Off","size":"471.8 KB","bytes":483094,"url":"../01_Assets/Voix_Off/ww2_mara_summary.mp3"},{"name":"ww2_mara_summary.wav","type":"Audios","subfolder":"Voix_Off","size":"3.0 MB","bytes":3198062,"url":"../01_Assets/Voix_Off/ww2_mara_summary.wav"},{"name":"_temp_1793996767311.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1097198,"url":"../01_Assets/Voix_Off/_temp_1793996767311.wav"},{"name":"_temp_1794009979487.wav","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1160368,"url":"../01_Assets/Voix_Off/_temp_1794009979487.wav"},{"name":"_temp_1794017362810.wav","type":"Audios","subfolder":"Voix_Off","size":"582.0 KB","bytes":595996,"url":"../01_Assets/Voix_Off/_temp_1794017362810.wav"}];
 
         const SNAPSHOT_KEY_CHANNELS = 'marvidflow_cached_channels';
         const SNAPSHOT_KEY_CLIENTS = 'marvidflow_cached_clients';
@@ -4241,7 +4241,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             // 2. Montage et piste audio par défaut : Sans audio
             selectAudioOption('none');
             loadElevenVoicesForCreateVideo();
-            loadHeyGenVoicesForCreateVideo();
+            loadEdgeVoicesForCreateVideo();
 
             // 3. Modèles de sous-titres par défaut : Sans sous-titres
             selectSubtitlesOption(false);
@@ -4333,11 +4333,11 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         // --- GESTION DU MOTEUR & SÉLECTEUR DE VOIX OFF DANS CREATE VIDEO (MODERNE AVEC DRAPEAUX & RECHERCHE) ---
-        let currentVoiceSource = 'elevenlabs';
+        let currentVoiceSource = 'edge';
         let createElevenVoicesCache = {};
-        let createHeyGenVoicesCache = {};
+        let createEdgeVoicesCache = {};
         let elevenVoicesRawList = [];
-        let heyGenVoicesRawList = [];
+        let edgeVoicesRawList = [];
 
         function getVoiceFlagUrl(voice) {
             const lang = ((voice && voice.language) || '').toLowerCase();
@@ -4394,20 +4394,20 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     (v.category || '').toLowerCase().includes(query)
                 );
                 renderVoiceRows('eleven', filtered);
-            } else if (engine === 'heygen') {
-                const query = (document.getElementById('searchHeygenInput').value || '').toLowerCase().trim();
-                const filtered = heyGenVoicesRawList.filter(v => 
+            } else if (engine === 'edge') {
+                const query = (document.getElementById('searchEdgeInput').value || '').toLowerCase().trim();
+                const filtered = edgeVoicesRawList.filter(v => 
                     (v.name || '').toLowerCase().includes(query) || 
                     (v.language || '').toLowerCase().includes(query) ||
                     (v.gender || '').toLowerCase().includes(query)
                 );
-                renderVoiceRows('heygen', filtered);
+                renderVoiceRows('edge', filtered);
             }
         }
 
         function renderVoiceRows(engine, list) {
-            const listContainer = document.getElementById(engine === 'eleven' ? 'listElevenItems' : 'listHeygenItems');
-            const currentSelectedId = document.getElementById(engine === 'eleven' ? 'createVideoElevenVoiceSelect' : 'createVideoHeygenVoiceSelect').value;
+            const listContainer = document.getElementById(engine === 'eleven' ? 'listElevenItems' : 'listEdgeItems');
+            const currentSelectedId = document.getElementById(engine === 'eleven' ? 'createVideoElevenVoiceSelect' : 'createVideoEdgeVoiceSelect').value;
             if (!listContainer) return;
 
             if (!list || list.length === 0) {
@@ -4419,8 +4419,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             list.forEach(v => {
                 const isSel = v.id === currentSelectedId ? 'selected' : '';
                 const flagUrl = getVoiceFlagUrl(v);
-                const sub = v.category ? `${v.category === 'cloned' ? '✨ Voix clonée' : 'Officielle'}` : `${v.language || 'Générale'} ${v.gender ? '• ' + v.gender : ''}`;
+                const sub = v.category ? `${v.category === 'cloned' ? '✨ Voix clonée' : 'Officielle'}` : `${v.language || 'Neural'} ${v.gender ? '• ' + v.gender : ''}`;
                 
+                const previewBtnHtml = engine === 'eleven'
+                    ? (v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreview('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : '')
+                    : `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectEdgePreview('${v.id}')" title="Écouter cette voix">▶</button>`;
+
                 html += `
                     <div class="voice-item-row ${isSel}" onclick="selectVoiceItem('${engine}', '${v.id}')">
                         <div class="voice-item-left">
@@ -4431,7 +4435,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                             </div>
                         </div>
                         <div class="voice-item-actions">
-                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreview('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                            ${previewBtnHtml}
                         </div>
                     </div>
                 `;
@@ -4440,7 +4444,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         function selectVoiceItem(engine, voiceId) {
-            const cache = engine === 'eleven' ? createElevenVoicesCache : createHeyGenVoicesCache;
+            const cache = engine === 'eleven' ? createElevenVoicesCache : createEdgeVoicesCache;
             const voice = cache[voiceId];
             if (!voice) return;
 
@@ -4452,17 +4456,16 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 document.getElementById('dropdownEleven').classList.remove('open');
                 updateElevenVoicePreviewBtn();
             } else {
-                document.getElementById('createVideoHeygenVoiceSelect').value = voice.id;
-                document.getElementById('nameHeygenSelected').textContent = voice.name;
-                document.getElementById('flagHeygenSelected').src = getVoiceFlagUrl(voice);
-                document.getElementById('badgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
-                document.getElementById('dropdownHeygen').classList.remove('open');
-                updateHeygenVoicePreviewBtn();
+                document.getElementById('createVideoEdgeVoiceSelect').value = voice.id;
+                document.getElementById('nameEdgeSelected').textContent = voice.name;
+                document.getElementById('flagEdgeSelected').src = getVoiceFlagUrl(voice);
+                document.getElementById('badgeEdgeSelected').textContent = (voice.language || 'Neural').toUpperCase();
+                document.getElementById('dropdownEdge').classList.remove('open');
             }
 
             // Rafraîchir les surbrillances
             if (engine === 'eleven') renderVoiceRows('eleven', elevenVoicesRawList);
-            else renderVoiceRows('heygen', heyGenVoicesRawList);
+            else renderVoiceRows('edge', edgeVoicesRawList);
 
             updateVoiceBadgeStatus();
         }
@@ -4479,21 +4482,36 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             audio.play().catch(e => console.warn('Erreur écoute voix:', e));
         }
 
+        async function playDirectEdgePreview(voiceId) {
+            if (!voiceId) return;
+            try {
+                const res = await fetch(`/api/edge/preview?voice=${encodeURIComponent(voiceId)}`);
+                const data = await res.json();
+                if (data.success && data.audioUrl) {
+                    playDirectPreview(data.audioUrl + '?t=' + Date.now());
+                } else {
+                    alert(data.error || "Erreur de génération préécoute Edge");
+                }
+            } catch(e) {
+                console.warn('Erreur préécoute Edge:', e);
+            }
+        }
+
         function selectVoiceSource(source) {
             currentVoiceSource = source;
             const cardEleven = document.getElementById('voiceChoiceCardEleven');
-            const cardHeygen = document.getElementById('voiceChoiceCardHeygen');
+            const cardEdge = document.getElementById('voiceChoiceCardEdge');
             const cardCustom = document.getElementById('voiceChoiceCardCustom');
             const panelEleven = document.getElementById('voicePanelEleven');
-            const panelHeygen = document.getElementById('voicePanelHeygen');
+            const panelEdge = document.getElementById('voicePanelEdge');
             const panelCustom = document.getElementById('voicePanelCustom');
 
             if (cardEleven) cardEleven.classList.toggle('selected', source === 'elevenlabs');
-            if (cardHeygen) cardHeygen.classList.toggle('selected', source === 'heygen');
+            if (cardEdge) cardEdge.classList.toggle('selected', source === 'edge');
             if (cardCustom) cardCustom.classList.toggle('selected', source === 'custom');
 
             if (panelEleven) panelEleven.style.display = source === 'elevenlabs' ? 'flex' : 'none';
-            if (panelHeygen) panelHeygen.style.display = source === 'heygen' ? 'flex' : 'none';
+            if (panelEdge) panelEdge.style.display = source === 'edge' ? 'flex' : 'none';
             if (panelCustom) panelCustom.style.display = source === 'custom' ? 'block' : 'none';
 
             // Mettre en pause tout extrait audio en cours
@@ -4551,10 +4569,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 const select = document.getElementById('createVideoElevenVoiceSelect');
                 const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'ElevenLabs';
                 badge.textContent = `ElevenLabs : ${selectedText}`;
-            } else if (currentVoiceSource === 'heygen') {
-                const select = document.getElementById('createVideoHeygenVoiceSelect');
-                const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'HeyGen Turbo';
-                badge.textContent = `HeyGen : ${selectedText}`;
+            } else if (currentVoiceSource === 'edge') {
+                const select = document.getElementById('createVideoEdgeVoiceSelect');
+                const selectedVal = select ? select.value : 'fr-FR-HenriNeural';
+                const v = createEdgeVoicesCache[selectedVal];
+                const selectedText = v ? v.name : 'Henri (Français - Naturel)';
+                badge.textContent = `Edge TTS (100% Gratuit) : ${selectedText}`;
             } else {
                 badge.textContent = 'Mon propre fichier audio (Attribution des Médias)';
             }
@@ -4622,149 +4642,70 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
-        function applyHeyGenVoicesData(data) {
+        function applyEdgeVoicesData(data) {
             if (!data) return false;
-            createHeyGenVoicesCache = {};
-            heyGenVoicesRawList = [];
+            createEdgeVoicesCache = {};
+            edgeVoicesRawList = [];
 
             if (data.frenchVoices && Array.isArray(data.frenchVoices)) {
                 data.frenchVoices.forEach(v => {
-                    createHeyGenVoicesCache[v.id] = v;
-                    heyGenVoicesRawList.push(v);
+                    createEdgeVoicesCache[v.id] = v;
+                    edgeVoicesRawList.push(v);
                 });
             }
             if (data.englishVoices && Array.isArray(data.englishVoices)) {
                 data.englishVoices.slice(0, 40).forEach(v => {
-                    createHeyGenVoicesCache[v.id] = v;
-                    heyGenVoicesRawList.push(v);
+                    createEdgeVoicesCache[v.id] = v;
+                    edgeVoicesRawList.push(v);
                 });
             }
-            if (data.voices && Array.isArray(data.voices) && heyGenVoicesRawList.length === 0) {
+            if (data.voices && Array.isArray(data.voices) && edgeVoicesRawList.length === 0) {
                 data.voices.slice(0, 40).forEach(v => {
-                    createHeyGenVoicesCache[v.id] = v;
-                    heyGenVoicesRawList.push(v);
+                    createEdgeVoicesCache[v.id] = v;
+                    edgeVoicesRawList.push(v);
                 });
             }
 
-            if (heyGenVoicesRawList.length === 0) return false;
+            if (edgeVoicesRawList.length === 0) return false;
 
-            renderVoiceRows('heygen', heyGenVoicesRawList);
+            renderVoiceRows('edge', edgeVoicesRawList);
 
-            const savedHeygen = localStorage.getItem('vibeeditor_heygen_voice_id');
-            const initial = (savedHeygen && createHeyGenVoicesCache[savedHeygen]) ? savedHeygen : heyGenVoicesRawList[0].id;
-            selectVoiceItem('heygen', initial);
+            const savedEdge = localStorage.getItem('vibeeditor_edge_voice_id');
+            const initial = (savedEdge && createEdgeVoicesCache[savedEdge]) ? savedEdge : (createEdgeVoicesCache['fr-FR-HenriNeural'] ? 'fr-FR-HenriNeural' : edgeVoicesRawList[0].id);
+            selectVoiceItem('edge', initial);
             return true;
         }
 
-        async function loadHeyGenVoicesForCreateVideo(forceRefresh = false) {
-            // 1. Rendu instantané 0ms depuis le cache localStorage
+        async function loadEdgeVoicesForCreateVideo(forceRefresh = false) {
             let hasLoadedFromCache = false;
             if (!forceRefresh) {
                 try {
-                    const cachedStr = localStorage.getItem('marvidflow_cached_heygen_voices');
+                    const cachedStr = localStorage.getItem('marvidflow_cached_edge_voices');
                     if (cachedStr) {
                         const cachedData = JSON.parse(cachedStr);
-                        hasLoadedFromCache = applyHeyGenVoicesData(cachedData);
+                        hasLoadedFromCache = applyEdgeVoicesData(cachedData);
                     }
                 } catch(e) {}
             }
 
             try {
                 let data = null;
-                try {
-                    const res = await fetch('/api/heygen/voices');
-                    if (res.ok) data = await res.json();
-                } catch (e) {}
+                const res = await fetch('/api/edge/voices');
+                if (res.ok) data = await res.json();
 
                 if (data && data.success && (data.frenchVoices || data.voices)) {
-                    localStorage.setItem('marvidflow_cached_heygen_voices', JSON.stringify(data));
-                    applyHeyGenVoicesData(data);
+                    localStorage.setItem('marvidflow_cached_edge_voices', JSON.stringify(data));
+                    applyEdgeVoicesData(data);
                 } else if (!hasLoadedFromCache) {
-                    throw new Error("Aucune voix HeyGen reçue");
+                    throw new Error("Aucune voix Edge TTS reçue");
                 }
             } catch(e) {
-                if (!hasLoadedFromCache && heyGenVoicesRawList.length === 0) {
-                    const list = document.getElementById('listHeygenItems');
-                    if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Voix non disponibles (Vérifiez la clé dans Paramètres)</div>';
-                    const triggerText = document.getElementById('nameHeygenSelected');
+                if (!hasLoadedFromCache && edgeVoicesRawList.length === 0) {
+                    const list = document.getElementById('listEdgeItems');
+                    if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Voix non disponibles</div>';
+                    const triggerText = document.getElementById('nameEdgeSelected');
                     if (triggerText) triggerText.textContent = 'Sélectionner une voix';
                 }
-            }
-        }
-
-        async function _old_loadHeygenVoices() {
-            const select = document.getElementById('createVideoHeygenVoiceSelect');
-            if (!select) return;
-            select.innerHTML = '<option value="">Chargement des voix HeyGen...</option>';
-
-            try {
-                let data = null;
-                try {
-                    const res = await fetch('/api/heygen/voices');
-                    if (res.ok) data = await res.json();
-                } catch (e) {}
-
-                if (!data || !data.success) {
-                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
-                    if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v3/voices', {
-                            headers: { 'X-Api-Key': savedKey }
-                        });
-                        if (directRes.ok) {
-                            const raw = await directRes.json();
-                            const rawVoices = Array.isArray(raw.data) ? raw.data : (raw.data && raw.data.voices) || [];
-                            const voices = rawVoices.map(v => ({
-                                id: v.voice_id,
-                                name: v.name,
-                                language: v.language || 'Autre',
-                                previewUrl: v.preview_audio || v.preview_audio_url || ''
-                            }));
-                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
-                        }
-                    }
-                }
-
-                if (!data || !data.success) {
-                    throw new Error("Impossible de récupérer les voix HeyGen");
-                }
-
-                createHeyGenVoicesCache = {};
-                select.innerHTML = '';
-
-                // Voix Françaises
-                if (data.frenchVoices && data.frenchVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `🇫🇷 Voix Françaises (${data.frenchVoices.length})`;
-                    data.frenchVoices.forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                // Voix Anglaises (top 20)
-                if (data.englishVoices && data.englishVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `🇬🇧 Voix Anglaises`;
-                    data.englishVoices.slice(0, 20).forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                updateHeygenVoicePreviewBtn();
-                updateVoiceBadgeStatus();
-            } catch(e) {
-                select.innerHTML = '<option value="">Erreur chargement HeyGen (Vérifiez votre clé dans Paramètres)</option>';
             }
         }
 
@@ -4778,36 +4719,30 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             updateVoiceBadgeStatus();
         }
 
-        function updateHeygenVoicePreviewBtn() {
-            const select = document.getElementById('createVideoHeygenVoiceSelect');
-            const btn = document.getElementById('btnPreviewHeygenCreate');
-            const voice = select ? createHeyGenVoicesCache[select.value] : null;
-            if (btn) {
-                btn.style.display = (voice && voice.previewUrl) ? 'inline-flex' : 'none';
-            }
-            updateVoiceBadgeStatus();
-        }
-
-        function playVoicePreviewCreate(engine) {
-            let voice = null;
+        async function playVoicePreviewCreate(engine) {
             if (engine === 'eleven') {
                 const select = document.getElementById('createVideoElevenVoiceSelect');
-                voice = select ? createElevenVoicesCache[select.value] : null;
-            } else if (engine === 'heygen') {
-                const select = document.getElementById('createVideoHeygenVoiceSelect');
-                voice = select ? createHeyGenVoicesCache[select.value] : null;
+                const voice = select ? createElevenVoicesCache[select.value] : null;
+                if (!voice || !voice.previewUrl) return;
+                playDirectPreview(voice.previewUrl);
+            } else if (engine === 'edge') {
+                const select = document.getElementById('createVideoEdgeVoiceSelect');
+                const voiceId = select ? select.value : 'fr-FR-HenriNeural';
+                const btn = document.getElementById('btnPreviewEdgeCreate');
+                const origHtml = btn ? btn.innerHTML : '';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `<span style="font-size:11px;">⏳ Préécoute...</span>`;
+                }
+                try {
+                    await playDirectEdgePreview(voiceId);
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = origHtml;
+                    }
+                }
             }
-
-            if (!voice || !voice.previewUrl) return;
-
-            let audio = document.getElementById('createVideoAudioPreview');
-            if (!audio) {
-                audio = new Audio();
-                audio.id = 'createVideoAudioPreview';
-                document.body.appendChild(audio);
-            }
-            audio.src = voice.previewUrl;
-            audio.play().catch(e => console.warn('Preview error:', e));
         }
 
         let currentSubtitleType = 'type-wordbyword';
@@ -6323,15 +6258,13 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         const API_KEY_BRANDFETCH = 'vibeeditor_api_brandfetch';
         const API_KEY_BG_REMOVE = 'vibeeditor_api_bg_remove';
         const API_KEY_SKETCHFAB = 'vibeeditor_api_sketchfab';
-        const API_KEY_HEYGEN = 'vibeeditor_api_heygen';
-        const HEYGEN_VOICE_ID = 'vibeeditor_heygen_voice_id';
+        const EDGE_VOICE_ID = 'vibeeditor_edge_voice_id';
 
         // Caches et états
         let voicesCache = {};
-        let heygenVoicesCache = {};
-        let settingsHeygenRawList = [];
+        let edgeVoicesCache = {};
+        let settingsEdgeRawList = [];
         let keyChangeTimeout = null;
-        let heygenKeyChangeTimeout = null;
         let previewAudioInstance = null;
 
         
@@ -6688,8 +6621,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const savedBrandfetch = localStorage.getItem(API_KEY_BRANDFETCH);
             const savedBgRemove = localStorage.getItem(API_KEY_BG_REMOVE);
             const savedSketchfab = localStorage.getItem(API_KEY_SKETCHFAB);
-            const savedHeygen = localStorage.getItem(API_KEY_HEYGEN);
-            let savedHeygenVoice = localStorage.getItem(HEYGEN_VOICE_ID);
+            let savedEdgeVoice = localStorage.getItem(EDGE_VOICE_ID) || 'fr-FR-HenriNeural';
 
             if (savedFormat && document.getElementById('prefFormat')) document.getElementById('prefFormat').value = savedFormat;
             if (savedFps && document.getElementById('prefFps')) document.getElementById('prefFps').value = savedFps;
@@ -6704,11 +6636,9 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (savedBrandfetch && document.getElementById('apiKeyBrandfetch')) document.getElementById('apiKeyBrandfetch').value = savedBrandfetch;
             if (savedBgRemove && document.getElementById('apiKeyBgRemove')) document.getElementById('apiKeyBgRemove').value = savedBgRemove;
             if (savedSketchfab && document.getElementById('apiKeySketchfab')) document.getElementById('apiKeySketchfab').value = savedSketchfab;
-            if (savedHeygen && document.getElementById('apiKeyHeygen')) document.getElementById('apiKeyHeygen').value = savedHeygen;
 
             // 2. Synchronisation complète depuis le serveur (/api/settings -> api_config.json)
             let activeElevenKey = savedElevenlabs || '';
-            let activeHeyGenKey = savedHeygen || '';
 
             try {
                 const res = await fetch('/api/settings');
@@ -6782,13 +6712,8 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                         document.getElementById('apiKeySketchfab').value = cfg.sketchfab_api_token;
                         localStorage.setItem(API_KEY_SKETCHFAB, cfg.sketchfab_api_token);
                     }
-                    if (cfg.heygen_api_key && document.getElementById('apiKeyHeygen')) {
-                        document.getElementById('apiKeyHeygen').value = cfg.heygen_api_key;
-                        activeHeyGenKey = cfg.heygen_api_key;
-                        localStorage.setItem(API_KEY_HEYGEN, cfg.heygen_api_key);
-                    }
-                    if (cfg.heygen_voice_id && !savedHeygenVoice) {
-                        savedHeygenVoice = cfg.heygen_voice_id;
+                    if (cfg.edge_voice_id) {
+                        savedEdgeVoice = cfg.edge_voice_id;
                     }
                 }
             } catch (e) {
@@ -6801,10 +6726,8 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 loadElevenLabsSubscription(activeElevenKey.trim());
             }
 
-            // 4. Initialisation HeyGen
-            if (activeHeyGenKey && activeHeyGenKey.trim()) {
-                loadHeyGenVoicesFromUi(savedHeygenVoice);
-            }
+            // 4. Initialisation Edge TTS (100% Gratuit)
+            loadEdgeVoicesFromUi(savedEdgeVoice);
         });
 
 
@@ -6828,19 +6751,20 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         });
 
         function filterSettingsVoices(engine) {
-            if (engine === 'heygen') {
-                const query = (document.getElementById('settingsSearchHeygenInput').value || '').toLowerCase().trim();
-                const filtered = settingsHeygenRawList.filter(v => 
+            if (engine === 'edge') {
+                const query = (document.getElementById('settingsSearchEdgeInput').value || '').toLowerCase().trim();
+                const filtered = settingsEdgeRawList.filter(v => 
                     (v.name || '').toLowerCase().includes(query) || 
-                    (v.language || '').toLowerCase().includes(query)
+                    (v.language || '').toLowerCase().includes(query) ||
+                    (v.gender || '').toLowerCase().includes(query)
                 );
-                renderSettingsHeygenRows(filtered);
+                renderSettingsEdgeRows(filtered);
             }
         }
 
-        function renderSettingsHeygenRows(list) {
-            const container = document.getElementById('settingsListHeygenItems');
-            const currentSelected = document.getElementById('heygenVoiceId').value;
+        function renderSettingsEdgeRows(list) {
+            const container = document.getElementById('settingsListEdgeItems');
+            const currentSelected = document.getElementById('edgeVoiceId').value;
             if (!container) return;
 
             if (!list || list.length === 0) {
@@ -6853,7 +6777,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 const isSel = v.id === currentSelected ? 'selected' : '';
                 const flagUrl = getVoiceFlagUrl(v);
                 html += `
-                    <div class="voice-item-row ${isSel}" onclick="selectSettingsHeygenVoice('${v.id}')">
+                    <div class="voice-item-row ${isSel}" onclick="selectSettingsEdgeVoice('${v.id}')">
                         <div class="voice-item-left">
                             <img class="voice-flag-img" src="${flagUrl}" alt="Flag">
                             <div class="voice-item-info">
@@ -6862,7 +6786,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                             </div>
                         </div>
                         <div class="voice-item-actions">
-                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreviewSettings('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                            <button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectEdgePreviewSettings('${v.id}')" title="Écouter un extrait">▶</button>
                         </div>
                     </div>
                 `;
@@ -6870,21 +6794,15 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             container.innerHTML = html;
         }
 
-        function selectSettingsHeygenVoice(voiceId) {
-            const voice = heygenVoicesCache[voiceId];
+        function selectSettingsEdgeVoice(voiceId) {
+            const voice = edgeVoicesCache[voiceId];
             if (!voice) return;
-            document.getElementById('heygenVoiceId').value = voice.id;
-            document.getElementById('settingsNameHeygenSelected').textContent = voice.name;
-            document.getElementById('settingsFlagHeygenSelected').src = getVoiceFlagUrl(voice);
-            document.getElementById('settingsBadgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
-            document.getElementById('settingsDropdownHeygen').classList.remove('open');
-            renderSettingsHeygenRows(settingsHeygenRawList);
-
-            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
-            if (previewBtn) {
-                previewBtn.style.display = voice.previewUrl ? 'inline-flex' : 'none';
-                previewBtn.dataset.previewUrl = voice.previewUrl || '';
-            }
+            document.getElementById('edgeVoiceId').value = voice.id;
+            document.getElementById('settingsNameEdgeSelected').textContent = voice.name;
+            document.getElementById('settingsFlagEdgeSelected').src = getVoiceFlagUrl(voice);
+            document.getElementById('settingsBadgeEdgeSelected').textContent = (voice.language || 'Neural').toUpperCase();
+            document.getElementById('settingsDropdownEdge').classList.remove('open');
+            renderSettingsEdgeRows(settingsEdgeRawList);
         }
 
         function playDirectPreviewSettings(url) {
@@ -6897,95 +6815,77 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             audio.play().catch(e => console.warn('Erreur preview:', e));
         }
 
-        function onHeyGenVoiceSelected() {
-            const selectEl = document.getElementById('heygenVoiceId');
-            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
-            const voiceId = selectEl ? selectEl.value : '';
-            const voice = heygenVoicesCache[voiceId];
-
-            if (previewBtn) {
-                if (voice && voice.previewUrl) {
-                    previewBtn.style.display = 'inline-flex';
-                    previewBtn.dataset.previewUrl = voice.previewUrl;
+        async function playDirectEdgePreviewSettings(voiceId) {
+            if (!voiceId) return;
+            try {
+                const res = await fetch(`/api/edge/preview?voice=${encodeURIComponent(voiceId)}`);
+                const data = await res.json();
+                if (data.success && data.audioUrl) {
+                    playDirectPreviewSettings(data.audioUrl + '?t=' + Date.now());
                 } else {
-                    previewBtn.style.display = 'none';
-                    previewBtn.dataset.previewUrl = '';
+                    alert(data.error || "Erreur lors de la génération de l'extrait audio");
+                }
+            } catch (e) {
+                console.warn('Erreur préécoute Edge:', e);
+            }
+        }
+
+        async function playEdgeVoicePreview() {
+            const voiceId = document.getElementById('edgeVoiceId')?.value || 'fr-FR-HenriNeural';
+            const btn = document.getElementById('btnPreviewEdgeVoice');
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span style="font-size:11px;">⏳ Préécoute...</span>`;
+            }
+            try {
+                await playDirectEdgePreviewSettings(voiceId);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
                 }
             }
         }
 
-        function playHeyGenVoicePreview() {
-            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
-            const url = previewBtn ? previewBtn.dataset.previewUrl : '';
-            if (!url) return;
-
-            let previewAudio = document.getElementById('audioPreview');
-            if (!previewAudio) {
-                previewAudio = new Audio();
-            }
-            previewAudio.src = url;
-            previewAudio.play().catch(e => console.warn('Preview error:', e));
-        }
-
-        function handleHeyGenKeyChange() {
-            clearTimeout(heygenKeyChangeTimeout);
-            heygenKeyChangeTimeout = setTimeout(() => {
-                const key = document.getElementById('apiKeyHeygen').value.trim();
-                const statusEl = document.getElementById('heygenKeyStatus');
-                if (key) {
-                    loadHeyGenVoicesFromUi();
-                } else {
-                    if (statusEl) {
-                        statusEl.innerHTML = `
-                            <span style="color:var(--text-muted);">Synchronisez vos voix HeyGen officielles et personnalisées.</span>
-                        `;
-                    }
-                }
-            }, 600);
-        }
-
-        async function loadHeyGenVoicesFromUi(voiceToSelect = null) {
-            const keyInput = document.getElementById('apiKeyHeygen');
-            const key = keyInput ? keyInput.value.trim() : '';
-            const statusEl = document.getElementById('heygenKeyStatus');
-            if (statusEl) statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement des voix HeyGen...</span>`;
+        async function loadEdgeVoicesFromUi(voiceToSelect = null) {
+            const statusEl = document.getElementById('edgeKeyStatus');
+            if (statusEl) statusEl.innerHTML = `<span style="color:#10b981;">⚡ Chargement des voix Edge TTS...</span>`;
 
             try {
-                const url = key ? `/api/heygen/voices?key=${encodeURIComponent(key)}` : '/api/heygen/voices';
-                const res = await fetch(url);
+                const res = await fetch('/api/edge/voices');
                 if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    throw new Error(err.error || 'Erreur lors du chargement des voix HeyGen');
+                    throw new Error('Erreur lors du chargement des voix Edge');
                 }
                 const data = await res.json();
-                heygenVoicesCache = {};
-                settingsHeygenRawList = [];
+                edgeVoicesCache = {};
+                settingsEdgeRawList = [];
 
                 if (data.frenchVoices) {
                     data.frenchVoices.forEach(v => {
-                        heygenVoicesCache[v.id] = v;
-                        settingsHeygenRawList.push(v);
+                        edgeVoicesCache[v.id] = v;
+                        settingsEdgeRawList.push(v);
                     });
                 }
                 if (data.englishVoices) {
                     data.englishVoices.slice(0, 30).forEach(v => {
-                        heygenVoicesCache[v.id] = v;
-                        settingsHeygenRawList.push(v);
+                        edgeVoicesCache[v.id] = v;
+                        settingsEdgeRawList.push(v);
                     });
                 }
 
-                renderSettingsHeygenRows(settingsHeygenRawList);
+                renderSettingsEdgeRows(settingsEdgeRawList);
 
-                const currentSaved = voiceToSelect || localStorage.getItem(HEYGEN_VOICE_ID);
-                const initialVoice = (currentSaved && heygenVoicesCache[currentSaved])
+                const currentSaved = voiceToSelect || localStorage.getItem(EDGE_VOICE_ID) || 'fr-FR-HenriNeural';
+                const initialVoice = (currentSaved && edgeVoicesCache[currentSaved])
                     ? currentSaved
-                    : (settingsHeygenRawList.length > 0 ? settingsHeygenRawList[0].id : '');
+                    : (settingsEdgeRawList.length > 0 ? settingsEdgeRawList[0].id : '');
 
                 if (initialVoice) {
-                    selectSettingsHeygenVoice(initialVoice);
+                    selectSettingsEdgeVoice(initialVoice);
                 }
                 if (statusEl) {
-                    statusEl.innerHTML = `<span style="color:#10b981;">✅ ${data.total} voix HeyGen disponibles (${data.frenchVoices ? data.frenchVoices.length : 0} françaises).</span>`;
+                    statusEl.innerHTML = `<span style="color:#10b981;">✅ ${data.total || settingsEdgeRawList.length} voix Edge TTS disponibles (${data.frenchVoices ? data.frenchVoices.length : 0} françaises) — 100% Gratuit.</span>`;
                 }
             } catch (err) {
                 if (statusEl) {
@@ -7317,7 +7217,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const brandfetchKey = document.getElementById('apiKeyBrandfetch').value.trim();
             const bgRemoveKey = document.getElementById('apiKeyBgRemove').value.trim();
             const sketchfabToken = document.getElementById('apiKeySketchfab') ? document.getElementById('apiKeySketchfab').value.trim() : '';
-            const heygenKey = document.getElementById('apiKeyHeygen') ? document.getElementById('apiKeyHeygen').value.trim() : '';
+            const edgeVoice = document.getElementById('edgeVoiceId') ? document.getElementById('edgeVoiceId').value : 'fr-FR-HenriNeural';
 
             // LocalStorage
             localStorage.setItem(PREF_KEY_FORMAT, format);
@@ -7334,9 +7234,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             localStorage.setItem(API_KEY_BRANDFETCH, brandfetchKey);
             localStorage.setItem(API_KEY_BG_REMOVE, bgRemoveKey);
             localStorage.setItem(API_KEY_SKETCHFAB, sketchfabToken);
-            localStorage.setItem(API_KEY_HEYGEN, heygenKey);
-            const heygenVoice = document.getElementById('heygenVoiceId') ? document.getElementById('heygenVoiceId').value : '';
-            localStorage.setItem(HEYGEN_VOICE_ID, heygenVoice);
+            localStorage.setItem(EDGE_VOICE_ID, edgeVoice);
 
             // Synchronisation avec api_config.json via /api/settings
             try {
@@ -7364,9 +7262,8 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                         coverr_api_key: coverrKey,
                         brandfetch_api_key: brandfetchKey,
                         bg_remove_api_key: bgRemoveKey,
-                    sketchfab_api_token: sketchfabToken,
-                        heygen_api_key: heygenKey,
-                        heygen_voice_id: heygenVoice
+                        sketchfab_api_token: sketchfabToken,
+                        edge_voice_id: edgeVoice
                     })
                 });
             } catch (e) {
@@ -7378,11 +7275,6 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 loadVoices(elevenlabsKey, elevenlabsVoice);
                 localStorage.removeItem('marvidflow_cached_eleven_voices');
                 loadElevenVoicesForCreateVideo(true);
-            }
-            if (heygenKey) {
-                loadHeyGenVoicesFromUi(heygenVoice);
-                localStorage.removeItem('marvidflow_cached_heygen_voices');
-                loadHeyGenVoicesForCreateVideo(true);
             }
 
             const toast = document.getElementById('toast');
@@ -7530,17 +7422,6 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (!key) return null;
             const r = await fetch('https://api.elevenlabs.io/v1/voices', {
               headers: { 'xi-api-key': key }
-            });
-            return r.ok;
-          }
-        },
-        {
-          label: 'HeyGen',
-          fieldId: 'apiKeyHeygen',
-          test: async (key) => {
-            if (!key) return null;
-            const r = await fetch('https://api.heygen.com/v3/voices', {
-              headers: { 'X-Api-Key': key }
             });
             return r.ok;
           }

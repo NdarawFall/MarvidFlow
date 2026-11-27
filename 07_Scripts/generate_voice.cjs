@@ -1,15 +1,18 @@
 /**
  * GENERATE_VOICE.CJS — Générateur de Voix Off Ultra-Réalistes
- * Moteurs supportés : ElevenLabs & HeyGen (Voice Turbo API)
+ * Moteurs supportés :
+ *  1. Edge TTS (Microsoft Neural TTS — 100% Gratuit, Illimité, Zéro clé API requise)
+ *  2. ElevenLabs (Clé API requise)
  * 
  * Usage CLI :
- *   node 07_Scripts/generate_voice.cjs --text "Bienvenue" --engine heygen --out 01_Assets/Voix_Off/intro.wav
+ *   node 07_Scripts/generate_voice.cjs --text "Bienvenue" --engine edge --voice fr-FR-HenriNeural --out 01_Assets/Voix_Off/intro.mp3
  *   node 07_Scripts/generate_voice.cjs --text "Bienvenue" --engine elevenlabs --out 01_Assets/Voix_Off/intro.mp3
- *   node 07_Scripts/generate_voice.cjs --list-voices [--engine heygen|elevenlabs]
+ *   node 07_Scripts/generate_voice.cjs --list-voices [--engine edge|elevenlabs]
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync, spawnSync } = require('child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const CONFIG_PATH = process.env.VIBE_USER_DATA 
@@ -43,9 +46,124 @@ function parseArgs() {
     return params;
 }
 
+function ensureDirExists(filePath) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+}
+
 /**
  * ==========================================
- * ELEVENLABS API
+ * 1. EDGE TTS (MICROSOFT NEURAL VOICES - 100% GRATUIT)
+ * ==========================================
+ */
+
+const CURATED_EDGE_FRENCH_VOICES = [
+    { id: 'fr-FR-HenriNeural', name: 'Henri (Posé, Documentaire & Naturel)', language: 'French', gender: 'male', locale: 'fr-FR', isFeatured: true },
+    { id: 'fr-FR-VivienneNeural', name: 'Vivienne (Claire, Chaleureuse & Expressive)', language: 'French', gender: 'female', locale: 'fr-FR', isFeatured: true },
+    { id: 'fr-FR-RemyMultilingualNeural', name: 'Rémy (Multilingue & Dynamique)', language: 'French', gender: 'male', locale: 'fr-FR', isFeatured: true },
+    { id: 'fr-FR-DeniseNeural', name: 'Denise (Posée & Professionnelle)', language: 'French', gender: 'female', locale: 'fr-FR', isFeatured: false },
+    { id: 'fr-FR-EloiseNeural', name: 'Éloïse (Jeune & Pétillante)', language: 'French', gender: 'female', locale: 'fr-FR', isFeatured: false },
+    { id: 'fr-CA-AntoineNeural', name: 'Antoine (Canadien / Québécois)', language: 'French (Canada)', gender: 'male', locale: 'fr-CA', isFeatured: false },
+    { id: 'fr-CA-SylvieNeural', name: 'Sylvie (Canadienne / Québécoise)', language: 'French (Canada)', gender: 'female', locale: 'fr-CA', isFeatured: false },
+    { id: 'fr-BE-CharlineNeural', name: 'Charline (Belge)', language: 'French (Belgium)', gender: 'female', locale: 'fr-BE', isFeatured: false },
+    { id: 'fr-CH-ArianeNeural', name: 'Ariane (Suisse)', language: 'French (Switzerland)', gender: 'female', locale: 'fr-CH', isFeatured: false }
+];
+
+const CURATED_EDGE_ENGLISH_VOICES = [
+    { id: 'en-US-ChristopherNeural', name: 'Christopher (Conversational & Engaging)', language: 'English', gender: 'male', locale: 'en-US', isFeatured: true },
+    { id: 'en-US-JennyNeural', name: 'Jenny (Professional & Articulate)', language: 'English', gender: 'female', locale: 'en-US', isFeatured: true },
+    { id: 'en-US-GuyNeural', name: 'Guy (Natural & Casual)', language: 'English', gender: 'male', locale: 'en-US', isFeatured: false },
+    { id: 'en-US-AriaNeural', name: 'Aria (Dynamic & Expressive)', language: 'English', gender: 'female', locale: 'en-US', isFeatured: false },
+    { id: 'en-GB-RyanNeural', name: 'Ryan (British Accent)', language: 'English (UK)', gender: 'male', locale: 'en-GB', isFeatured: false },
+    { id: 'en-GB-SoniaNeural', name: 'Sonia (British Accent)', language: 'English (UK)', gender: 'female', locale: 'en-GB', isFeatured: false }
+];
+
+let _edgeVoicesCache = null;
+
+async function fetchEdgeVoices() {
+    if (_edgeVoicesCache) {
+        return _edgeVoicesCache;
+    }
+
+    try {
+        const pyScript = `import asyncio, edge_tts, json
+try:
+    v = asyncio.run(edge_tts.list_voices())
+    print(json.dumps([{"id": x["ShortName"], "name": x["FriendlyName"], "gender": x["Gender"].lower(), "locale": x["Locale"], "language": x["LocaleName"]} for x in v]))
+except Exception as e:
+    print(json.dumps([]))`;
+
+        const stdout = execFileSync('python', ['-c', pyScript], { encoding: 'utf8', timeout: 8000 });
+        const allVoices = JSON.parse(stdout.trim() || '[]');
+
+        if (allVoices.length > 0) {
+            const french = allVoices.filter(v => (v.locale || '').toLowerCase().startsWith('fr'));
+            const english = allVoices.filter(v => (v.locale || '').toLowerCase().startsWith('en'));
+            const other = allVoices.filter(v => !v.locale.toLowerCase().startsWith('fr') && !v.locale.toLowerCase().startsWith('en'));
+
+            _edgeVoicesCache = {
+                success: true,
+                voices: allVoices,
+                frenchVoices: french.length > 0 ? french : CURATED_EDGE_FRENCH_VOICES,
+                englishVoices: english.length > 0 ? english : CURATED_EDGE_ENGLISH_VOICES,
+                otherVoices: other,
+                total: allVoices.length,
+                isFree: true
+            };
+            return _edgeVoicesCache;
+        }
+    } catch (e) {
+        // En cas d'échec python, fallback immédiat sur la liste sélectionnée
+    }
+
+    _edgeVoicesCache = {
+        success: true,
+        voices: [...CURATED_EDGE_FRENCH_VOICES, ...CURATED_EDGE_ENGLISH_VOICES],
+        frenchVoices: CURATED_EDGE_FRENCH_VOICES,
+        englishVoices: CURATED_EDGE_ENGLISH_VOICES,
+        otherVoices: [],
+        total: CURATED_EDGE_FRENCH_VOICES.length + CURATED_EDGE_ENGLISH_VOICES.length,
+        isFree: true
+    };
+    return _edgeVoicesCache;
+}
+
+async function generateEdgeTTS({ text, voiceId, outputPath, rate = '+0%', pitch = '+0Hz' }) {
+    if (!text || !text.trim()) {
+        throw new Error("Texte manquant pour la synthèse vocale Edge TTS");
+    }
+
+    const cfg = loadConfig();
+    const voice = voiceId || cfg.edge_voice_id || 'fr-FR-HenriNeural';
+    ensureDirExists(outputPath);
+
+    // Exécution de edge-tts via Python
+    const args = ['-m', 'edge_tts', '--voice', voice, '--text', text.trim(), '--write-media', outputPath];
+    if (rate && rate !== '+0%') args.push('--rate', rate);
+    if (pitch && pitch !== '+0Hz') args.push('--pitch', pitch);
+
+    try {
+        execFileSync('python', args, { encoding: 'utf8', timeout: 30000 });
+        if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size < 100) {
+            throw new Error("Le fichier audio Edge TTS n'a pas été créé ou est vide.");
+        }
+        return {
+            success: true,
+            engine: 'edge',
+            voice,
+            outputPath,
+            sizeBytes: fs.statSync(outputPath).size
+        };
+    } catch (e) {
+        throw new Error(`Erreur Edge TTS : ${e.message}`);
+    }
+}
+
+/**
+ * ==========================================
+ * 2. ELEVENLABS API
  * ==========================================
  */
 
@@ -103,49 +221,24 @@ async function fetchElevenLabsVoices(apiKey, forceRefresh = false) {
     try {
         const response = await fetch('https://api.elevenlabs.io/v1/voices', {
             headers: { 'xi-api-key': key },
-            signal: AbortSignal.timeout(3500)
+            signal: AbortSignal.timeout(6000)
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(`Erreur ElevenLabs [${response.status}]`);
         }
 
         const data = await response.json();
-        const all = data.voices || [];
-        const excludedNames = ['ibrahima', 'khady'];
-
-        const customVoices = all
-            .filter(v => ['cloned', 'generated', 'custom'].includes(v.category))
-            .filter(v => {
-                const nameLower = (v.name || '').toLowerCase();
-                return !excludedNames.some(ex => nameLower.includes(ex));
-            })
-            .map(v => ({
-                id: v.voice_id,
-                name: v.name,
-                category: v.category,
-                previewUrl: v.preview_url || '',
-                labels: v.labels || {}
-            }));
-
-        const defaultVoices = all
-            .filter(v => v.category === 'premade')
-            .map(v => ({
-                id: v.voice_id,
-                name: v.name,
-                category: v.category,
-                previewUrl: v.preview_url || '',
-                labels: v.labels || {}
-            }));
+        const customVoices = (data.voices || []).filter(v => v.category === 'cloned' || v.category === 'generated');
+        const defaultVoices = (data.voices || []).filter(v => v.category !== 'cloned' && v.category !== 'generated');
 
         const result = {
             success: true,
             customVoices,
-            defaultVoices: defaultVoices.length > 0 ? defaultVoices : FALLBACK_ELEVEN_VOICES,
-            total: customVoices.length + (defaultVoices.length || FALLBACK_ELEVEN_VOICES.length)
+            defaultVoices,
+            total: (data.voices || []).length
         };
 
-        // Sauvegarde dans le cache persistant
         _elevenVoicesCache = result;
         _elevenCacheKey = key;
         _elevenCacheTimestamp = now;
@@ -155,14 +248,6 @@ async function fetchElevenLabsVoices(apiKey, forceRefresh = false) {
 
         return result;
     } catch(err) {
-        // En cas de lenteur réseau ou timeout, vérifier si un cache disque existe
-        if (fs.existsSync(cacheFile)) {
-            try {
-                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-                if (cached.data) return cached.data;
-            } catch(e) {}
-        }
-        // Sinon renvoyer la liste officielle de secours instantanément
         return {
             success: true,
             customVoices: [],
@@ -258,190 +343,9 @@ async function generateElevenLabs({ text, apiKey, voiceId, modelId, outputPath }
 
 /**
  * ==========================================
- * HEYGEN API (VOICE TURBO)
+ * 3. FONCTION PRINCIPALE UNIVERSELLE
  * ==========================================
  */
-
-const FALLBACK_HEYGEN_VOICES = [
-    { id: 'b11a7dbb250f483eadad9fb253e7d313', name: 'Solange', language: 'French', gender: 'female', previewUrl: '' },
-    { id: '1e457f920f2648719bc5a691bcdd5fb6', name: 'Claude', language: 'French', gender: 'male', previewUrl: '' },
-    { id: '924cf04218eb4ebdaeb024cf4fcb8c34', name: 'Marion', language: 'French', gender: 'female', previewUrl: '' },
-    { id: '09cba1bb538d40beaf0b98f2441a75c4', name: 'Wayne', language: 'English', gender: 'male', previewUrl: '' },
-    { id: '83fa1432f7034c549beea0e599988db2', name: 'Amber', language: 'English', gender: 'female', previewUrl: '' }
-];
-
-let _heygenVoicesCache = null;
-let _heygenCacheKey = null;
-let _heygenCacheTimestamp = 0;
-const HEYGEN_CACHE_TTL = 1000 * 60 * 60 * 24; // 24 heures de cache
-
-async function fetchHeyGenVoices(apiKey, forceRefresh = false) {
-    const key = apiKey || process.env.HEYGEN_API_KEY || loadConfig().heygen_api_key;
-    const now = Date.now();
-    const cacheFile = path.join(__dirname, '.heygen_voices_cache.json');
-
-    // Vérification du cache mémoire ou disque (pour éviter de re-télécharger à chaque requête)
-    if (!forceRefresh) {
-        if (_heygenVoicesCache && _heygenCacheKey === key && (now - _heygenCacheTimestamp < HEYGEN_CACHE_TTL)) {
-            return _heygenVoicesCache;
-        }
-        if (fs.existsSync(cacheFile)) {
-            try {
-                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-                if (cached.key === key && cached.data && (now - (cached.timestamp || 0) < HEYGEN_CACHE_TTL)) {
-                    _heygenVoicesCache = cached.data;
-                    _heygenCacheKey = key;
-                    _heygenCacheTimestamp = cached.timestamp || now;
-                    return _heygenVoicesCache;
-                }
-            } catch (e) {}
-        }
-    }
-
-    if (!key) {
-        const frVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French');
-        const enVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English');
-        return {
-            success: true,
-            voices: FALLBACK_HEYGEN_VOICES,
-            frenchVoices: frVoices,
-            englishVoices: enVoices,
-            otherVoices: [],
-            total: FALLBACK_HEYGEN_VOICES.length,
-            isFallback: true,
-            message: "Clé API HeyGen non renseignée dans Paramètres."
-        };
-    }
-
-    try {
-        const response = await fetch('https://api.heygen.com/v3/voices', {
-            headers: { 'X-Api-Key': key },
-            signal: AbortSignal.timeout(5000)
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        const rawVoices = Array.isArray(data.data) ? data.data : (data.data && data.data.voices) || [];
-
-        const voices = rawVoices.map(v => ({
-            id: v.voice_id,
-            name: v.name,
-            language: v.language || 'Autre',
-            gender: v.gender || 'unknown',
-            previewUrl: v.preview_audio || v.preview_audio_url || ''
-        }));
-
-        const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-        const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-        const otherVoices = voices.filter(v => !frenchVoices.includes(v) && !englishVoices.includes(v));
-
-        const result = {
-            success: true,
-            voices,
-            frenchVoices: frenchVoices.length > 0 ? frenchVoices : FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French'),
-            englishVoices: englishVoices.length > 0 ? englishVoices : FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English'),
-            otherVoices,
-            total: voices.length
-        };
-
-        _heygenVoicesCache = result;
-        _heygenCacheKey = key;
-        _heygenCacheTimestamp = now;
-        try {
-            fs.writeFileSync(cacheFile, JSON.stringify({ key, timestamp: now, data: result }), 'utf8');
-        } catch (e) {}
-
-        return result;
-    } catch(err) {
-        // En cas de lenteur réseau ou timeout, vérifier si un cache disque existe
-        if (fs.existsSync(cacheFile)) {
-            try {
-                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-                if (cached.data) return cached.data;
-            } catch(e) {}
-        }
-        const frVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French');
-        const enVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English');
-        return {
-            success: true,
-            voices: FALLBACK_HEYGEN_VOICES,
-            frenchVoices: frVoices,
-            englishVoices: enVoices,
-            otherVoices: [],
-            total: FALLBACK_HEYGEN_VOICES.length,
-            isFallback: true,
-            error: err.message
-        };
-    }
-}
-
-async function generateHeyGen({ text, apiKey, voiceId, model, outputPath }) {
-    const key = apiKey || process.env.HEYGEN_API_KEY || loadConfig().heygen_api_key;
-    if (!key) {
-        throw new Error("Clé API HeyGen manquante. Renseignez-la dans Paramètres.");
-    }
-
-    const selectedVoice = voiceId || loadConfig().heygen_voice_id || 'b11a7dbb250f483eadad9fb253e7d313'; // Solange (FR) par défaut
-    const selectedModel = model || loadConfig().heygen_model_id || 'heygen-voice-1-turbo-free';
-
-    const response = await fetch('https://api.heygen.com/v3/models/audio/tts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Api-Key': key
-        },
-        body: JSON.stringify({
-            model: selectedModel,
-            voice_id: selectedVoice,
-            text: text
-        })
-    });
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erreur HeyGen [${response.status}] : ${errorText}`);
-    }
-
-    const data = await response.json();
-    const audioUrl = data.data && data.data.audio_url;
-    if (!audioUrl) {
-        throw new Error("Réponse HeyGen invalide : URL audio non reçue.");
-    }
-
-    // Télécharger le fichier audio résultant
-    const audioRes = await fetch(audioUrl);
-    if (!audioRes.ok) {
-        throw new Error(`Échec du téléchargement de l'audio généré par HeyGen (${audioRes.status})`);
-    }
-
-    const arrayBuffer = await audioRes.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    ensureDirExists(outputPath);
-    fs.writeFileSync(outputPath, buffer);
-
-    return {
-        success: true,
-        engine: 'heygen',
-        voice: selectedVoice,
-        model: selectedModel,
-        outputPath,
-        duration: data.data.duration || null,
-        sizeBytes: buffer.length
-    };
-}
-
-function ensureDirExists(filePath) {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-}
-
-// Fonction principale universelle
 async function generateVoice(options) {
     const text = options.text;
     if (!text || !text.trim()) {
@@ -449,26 +353,33 @@ async function generateVoice(options) {
     }
 
     const cfg = loadConfig();
-    const engine = (options.engine || cfg.tts_engine || 'elevenlabs').toLowerCase();
+    const requestedEngine = (options.engine || cfg.tts_engine || 'edge').toLowerCase();
+    const engine = requestedEngine === 'heygen' ? 'edge' : requestedEngine;
 
-    let ext = engine === 'heygen' ? 'wav' : 'mp3';
-    let defaultOut = path.join(ROOT_DIR, '01_Assets', 'Voix_Off', `voix_off_${Date.now()}.${ext}`);
-    let outputPath = options.out ? path.resolve(options.out) : defaultOut;
+    const defaultOut = path.join(ROOT_DIR, '01_Assets', 'Voix_Off', `voix_off_${Date.now()}.mp3`);
+    const outputPath = options.out ? path.resolve(options.out) : defaultOut;
 
-    if (engine === 'heygen') {
-        return await generateHeyGen({
+    if (engine === 'elevenlabs') {
+        const apiKey = options.key || cfg.elevenlabs_api_key;
+        if (!apiKey) {
+            console.warn("[Voice] Clé ElevenLabs manquante. Bascule automatique sur Edge TTS (Gratuit)...");
+            return await generateEdgeTTS({
+                text,
+                voiceId: options.voice || cfg.edge_voice_id || 'fr-FR-HenriNeural',
+                outputPath
+            });
+        }
+        return await generateElevenLabs({
             text,
-            apiKey: options.key,
+            apiKey,
             voiceId: options.voice,
-            model: options.model,
+            modelId: options.model,
             outputPath
         });
     } else {
-        return await generateElevenLabs({
+        return await generateEdgeTTS({
             text,
-            apiKey: options.key,
-            voiceId: options.voice,
-            modelId: options.model,
+            voiceId: options.voice || cfg.edge_voice_id || 'fr-FR-HenriNeural',
             outputPath
         });
     }
@@ -479,22 +390,25 @@ if (require.main === module) {
     (async () => {
         try {
             const args = parseArgs();
-            const engine = (args.engine || 'elevenlabs').toLowerCase();
+            const requestedEngine = (args.engine || 'edge').toLowerCase();
+            const engine = requestedEngine === 'heygen' ? 'edge' : requestedEngine;
 
             if (args['list-voices']) {
-                if (engine === 'heygen') {
-                    console.log("🔍 Récupération des voix HeyGen...");
-                    const res = await fetchHeyGenVoices(args.key);
-                    console.log(`\n✨ Voix Françaises (${res.frenchVoices.length}) :`);
-                    res.frenchVoices.forEach(v => console.log(`  - [${v.id}] ${v.name} (${v.gender})`));
-                    console.log(`\nTotal voix disponibles : ${res.total}`);
-                } else {
+                if (engine === 'elevenlabs') {
                     console.log("🔍 Récupération des voix ElevenLabs...");
                     const { customVoices, defaultVoices } = await fetchElevenLabsVoices(args.key);
                     console.log(`\n✨ Mes Voix Créées (${customVoices.length}) :`);
                     customVoices.forEach(v => console.log(`  - [${v.id}] ${v.name} (${v.category})`));
                     console.log(`\n🎙️ Voix Par Défaut ElevenLabs (${defaultVoices.length}) :`);
                     defaultVoices.forEach(v => console.log(`  - [${v.id}] ${v.name}`));
+                } else {
+                    console.log("🔍 Récupération des voix Edge TTS (100% Gratuit)...");
+                    const res = await fetchEdgeVoices();
+                    console.log(`\n✨ Voix Françaises (${res.frenchVoices.length}) :`);
+                    res.frenchVoices.forEach(v => console.log(`  - [${v.id}] ${v.name} (${v.gender})`));
+                    console.log(`\n✨ Voix Anglaises (${res.englishVoices.length}) :`);
+                    res.englishVoices.slice(0, 10).forEach(v => console.log(`  - [${v.id}] ${v.name} (${v.gender})`));
+                    console.log(`\nTotal voix disponibles : ${res.total}`);
                 }
                 return;
             }
@@ -502,8 +416,8 @@ if (require.main === module) {
             if (!args.text) {
                 console.log(`
 Usage :
-  node 07_Scripts/generate_voice.cjs --text "Texte à générer" [--engine heygen|elevenlabs] [--out <fichier>] [--key <cle>] [--voice <id>]
-  node 07_Scripts/generate_voice.cjs --list-voices [--engine heygen|elevenlabs] [--key <cle>]
+  node 07_Scripts/generate_voice.cjs --text "Texte à générer" [--engine edge|elevenlabs] [--out <fichier>] [--voice <id>]
+  node 07_Scripts/generate_voice.cjs --list-voices [--engine edge|elevenlabs]
                 `);
                 return;
             }
@@ -512,6 +426,7 @@ Usage :
             const res = await generateVoice(args);
             console.log(`✅ Voix générée avec succès !`);
             console.log(`   Moteur  : ${res.engine}`);
+            console.log(`   Voix    : ${res.voice}`);
             console.log(`   Fichier : ${res.outputPath}`);
             console.log(`   Taille  : ${Math.round(res.sizeBytes / 1024)} Ko`);
         } catch (err) {
@@ -523,9 +438,9 @@ Usage :
 
 module.exports = {
     generateVoice,
+    generateEdgeTTS,
+    fetchEdgeVoices,
     generateElevenLabs,
     fetchElevenLabsVoices,
-    fetchElevenLabsSubscription,
-    generateHeyGen,
-    fetchHeyGenVoices
+    fetchElevenLabsSubscription
 };

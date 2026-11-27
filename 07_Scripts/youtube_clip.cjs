@@ -427,7 +427,7 @@ if (require.main === module) {
     if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
         console.log(`
 ===============================================================
-🎬 UTILITAIRE YOUTUBE CLIP & TRANSCRIPTION (HeyGen-New)
+🎬 UTILITAIRE YOUTUBE CLIP & TRANSCRIPTION (MarvidFlow)
 ===============================================================
 Usage :
   node 07_Scripts/youtube_clip.cjs --info <url>

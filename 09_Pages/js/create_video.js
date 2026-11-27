@@ -815,7 +815,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             // 2. Montage et piste audio par défaut : Sans audio
             selectAudioOption('none');
             loadElevenVoicesForCreateVideo();
-            loadHeyGenVoicesForCreateVideo();
+            loadEdgeVoicesForCreateVideo();
 
             // 3. Modèles de sous-titres par défaut : Sans sous-titres
             selectSubtitlesOption(false);
@@ -907,11 +907,11 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         // --- GESTION DU MOTEUR & SÉLECTEUR DE VOIX OFF DANS CREATE VIDEO (MODERNE AVEC DRAPEAUX & RECHERCHE) ---
-        let currentVoiceSource = 'elevenlabs';
+        let currentVoiceSource = 'edge';
         let createElevenVoicesCache = {};
-        let createHeyGenVoicesCache = {};
+        let createEdgeVoicesCache = {};
         let elevenVoicesRawList = [];
-        let heyGenVoicesRawList = [];
+        let edgeVoicesRawList = [];
 
         function getVoiceFlagUrl(voice) {
             const lang = ((voice && voice.language) || '').toLowerCase();
@@ -968,20 +968,20 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     (v.category || '').toLowerCase().includes(query)
                 );
                 renderVoiceRows('eleven', filtered);
-            } else if (engine === 'heygen') {
-                const query = (document.getElementById('searchHeygenInput').value || '').toLowerCase().trim();
-                const filtered = heyGenVoicesRawList.filter(v => 
+            } else if (engine === 'edge') {
+                const query = (document.getElementById('searchEdgeInput').value || '').toLowerCase().trim();
+                const filtered = edgeVoicesRawList.filter(v => 
                     (v.name || '').toLowerCase().includes(query) || 
                     (v.language || '').toLowerCase().includes(query) ||
                     (v.gender || '').toLowerCase().includes(query)
                 );
-                renderVoiceRows('heygen', filtered);
+                renderVoiceRows('edge', filtered);
             }
         }
 
         function renderVoiceRows(engine, list) {
-            const listContainer = document.getElementById(engine === 'eleven' ? 'listElevenItems' : 'listHeygenItems');
-            const currentSelectedId = document.getElementById(engine === 'eleven' ? 'createVideoElevenVoiceSelect' : 'createVideoHeygenVoiceSelect').value;
+            const listContainer = document.getElementById(engine === 'eleven' ? 'listElevenItems' : 'listEdgeItems');
+            const currentSelectedId = document.getElementById(engine === 'eleven' ? 'createVideoElevenVoiceSelect' : 'createVideoEdgeVoiceSelect').value;
             if (!listContainer) return;
 
             if (!list || list.length === 0) {
@@ -993,8 +993,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             list.forEach(v => {
                 const isSel = v.id === currentSelectedId ? 'selected' : '';
                 const flagUrl = getVoiceFlagUrl(v);
-                const sub = v.category ? `${v.category === 'cloned' ? '✨ Voix clonée' : 'Officielle'}` : `${v.language || 'Générale'} ${v.gender ? '• ' + v.gender : ''}`;
+                const sub = v.category ? `${v.category === 'cloned' ? '✨ Voix clonée' : 'Officielle'}` : `${v.language || 'Neural'} ${v.gender ? '• ' + v.gender : ''}`;
                 
+                const previewBtnHtml = engine === 'eleven'
+                    ? (v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreview('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : '')
+                    : `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectEdgePreview('${v.id}')" title="Écouter cette voix">▶</button>`;
+
                 html += `
                     <div class="voice-item-row ${isSel}" onclick="selectVoiceItem('${engine}', '${v.id}')">
                         <div class="voice-item-left">
@@ -1005,7 +1009,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                             </div>
                         </div>
                         <div class="voice-item-actions">
-                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreview('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                            ${previewBtnHtml}
                         </div>
                     </div>
                 `;
@@ -1014,7 +1018,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         function selectVoiceItem(engine, voiceId) {
-            const cache = engine === 'eleven' ? createElevenVoicesCache : createHeyGenVoicesCache;
+            const cache = engine === 'eleven' ? createElevenVoicesCache : createEdgeVoicesCache;
             const voice = cache[voiceId];
             if (!voice) return;
 
@@ -1026,17 +1030,16 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 document.getElementById('dropdownEleven').classList.remove('open');
                 updateElevenVoicePreviewBtn();
             } else {
-                document.getElementById('createVideoHeygenVoiceSelect').value = voice.id;
-                document.getElementById('nameHeygenSelected').textContent = voice.name;
-                document.getElementById('flagHeygenSelected').src = getVoiceFlagUrl(voice);
-                document.getElementById('badgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
-                document.getElementById('dropdownHeygen').classList.remove('open');
-                updateHeygenVoicePreviewBtn();
+                document.getElementById('createVideoEdgeVoiceSelect').value = voice.id;
+                document.getElementById('nameEdgeSelected').textContent = voice.name;
+                document.getElementById('flagEdgeSelected').src = getVoiceFlagUrl(voice);
+                document.getElementById('badgeEdgeSelected').textContent = (voice.language || 'Neural').toUpperCase();
+                document.getElementById('dropdownEdge').classList.remove('open');
             }
 
             // Rafraîchir les surbrillances
             if (engine === 'eleven') renderVoiceRows('eleven', elevenVoicesRawList);
-            else renderVoiceRows('heygen', heyGenVoicesRawList);
+            else renderVoiceRows('edge', edgeVoicesRawList);
 
             updateVoiceBadgeStatus();
         }
@@ -1053,21 +1056,36 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             audio.play().catch(e => console.warn('Erreur écoute voix:', e));
         }
 
+        async function playDirectEdgePreview(voiceId) {
+            if (!voiceId) return;
+            try {
+                const res = await fetch(`/api/edge/preview?voice=${encodeURIComponent(voiceId)}`);
+                const data = await res.json();
+                if (data.success && data.audioUrl) {
+                    playDirectPreview(data.audioUrl + '?t=' + Date.now());
+                } else {
+                    alert(data.error || "Erreur de génération préécoute Edge");
+                }
+            } catch(e) {
+                console.warn('Erreur préécoute Edge:', e);
+            }
+        }
+
         function selectVoiceSource(source) {
             currentVoiceSource = source;
             const cardEleven = document.getElementById('voiceChoiceCardEleven');
-            const cardHeygen = document.getElementById('voiceChoiceCardHeygen');
+            const cardEdge = document.getElementById('voiceChoiceCardEdge');
             const cardCustom = document.getElementById('voiceChoiceCardCustom');
             const panelEleven = document.getElementById('voicePanelEleven');
-            const panelHeygen = document.getElementById('voicePanelHeygen');
+            const panelEdge = document.getElementById('voicePanelEdge');
             const panelCustom = document.getElementById('voicePanelCustom');
 
             if (cardEleven) cardEleven.classList.toggle('selected', source === 'elevenlabs');
-            if (cardHeygen) cardHeygen.classList.toggle('selected', source === 'heygen');
+            if (cardEdge) cardEdge.classList.toggle('selected', source === 'edge');
             if (cardCustom) cardCustom.classList.toggle('selected', source === 'custom');
 
             if (panelEleven) panelEleven.style.display = source === 'elevenlabs' ? 'flex' : 'none';
-            if (panelHeygen) panelHeygen.style.display = source === 'heygen' ? 'flex' : 'none';
+            if (panelEdge) panelEdge.style.display = source === 'edge' ? 'flex' : 'none';
             if (panelCustom) panelCustom.style.display = source === 'custom' ? 'block' : 'none';
 
             // Mettre en pause tout extrait audio en cours
@@ -1125,10 +1143,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 const select = document.getElementById('createVideoElevenVoiceSelect');
                 const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'ElevenLabs';
                 badge.textContent = `ElevenLabs : ${selectedText}`;
-            } else if (currentVoiceSource === 'heygen') {
-                const select = document.getElementById('createVideoHeygenVoiceSelect');
-                const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'HeyGen Turbo';
-                badge.textContent = `HeyGen : ${selectedText}`;
+            } else if (currentVoiceSource === 'edge') {
+                const select = document.getElementById('createVideoEdgeVoiceSelect');
+                const selectedVal = select ? select.value : 'fr-FR-HenriNeural';
+                const v = createEdgeVoicesCache[selectedVal];
+                const selectedText = v ? v.name : 'Henri (Français - Naturel)';
+                badge.textContent = `Edge TTS (100% Gratuit) : ${selectedText}`;
             } else {
                 badge.textContent = 'Mon propre fichier audio (Attribution des Médias)';
             }
@@ -1218,146 +1238,42 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
-        async function loadHeyGenVoicesForCreateVideo() {
+        async function loadEdgeVoicesForCreateVideo() {
             try {
                 let data = null;
-                try {
-                    const res = await fetch('/api/heygen/voices');
-                    if (res.ok) data = await res.json();
-                } catch (e) {}
+                const res = await fetch('/api/edge/voices');
+                if (res.ok) data = await res.json();
 
                 if (!data || !data.success) {
-                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
-                    if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v3/voices', {
-                            headers: { 'X-Api-Key': savedKey }
-                        });
-                        if (directRes.ok) {
-                            const raw = await directRes.json();
-                            const rawVoices = Array.isArray(raw.data) ? raw.data : (raw.data && raw.data.voices) || [];
-                            const voices = rawVoices.map(v => ({
-                                id: v.voice_id,
-                                name: v.name,
-                                language: v.language || 'Autre',
-                                gender: v.gender || '',
-                                previewUrl: v.preview_audio || v.preview_audio_url || ''
-                            }));
-                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
-                        }
-                    }
+                    throw new Error("Impossible de récupérer les voix Edge TTS");
                 }
 
-                if (!data || !data.success) {
-                    throw new Error("Impossible de récupérer les voix HeyGen");
-                }
+                createEdgeVoicesCache = {};
+                edgeVoicesRawList = [];
 
-                createHeyGenVoicesCache = {};
-                heyGenVoicesRawList = [];
-
-                // Voix françaises en tête
                 if (data.frenchVoices) {
                     data.frenchVoices.forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        heyGenVoicesRawList.push(v);
+                        createEdgeVoicesCache[v.id] = v;
+                        edgeVoicesRawList.push(v);
                     });
                 }
-                // Voix anglaises
                 if (data.englishVoices) {
                     data.englishVoices.slice(0, 30).forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        heyGenVoicesRawList.push(v);
+                        createEdgeVoicesCache[v.id] = v;
+                        edgeVoicesRawList.push(v);
                     });
                 }
 
-                renderVoiceRows('heygen', heyGenVoicesRawList);
+                renderVoiceRows('edge', edgeVoicesRawList);
 
-                // Sélectionner Solange ou 1ère voix française par défaut
-                if (heyGenVoicesRawList.length > 0) {
-                    const savedHeygen = localStorage.getItem('vibeeditor_heygen_voice_id');
-                    const initial = (savedHeygen && createHeyGenVoicesCache[savedHeygen]) ? savedHeygen : heyGenVoicesRawList[0].id;
-                    selectVoiceItem('heygen', initial);
+                if (edgeVoicesRawList.length > 0) {
+                    const savedEdge = localStorage.getItem('vibeeditor_edge_voice_id');
+                    const initial = (savedEdge && createEdgeVoicesCache[savedEdge]) ? savedEdge : (createEdgeVoicesCache['fr-FR-HenriNeural'] ? 'fr-FR-HenriNeural' : edgeVoicesRawList[0].id);
+                    selectVoiceItem('edge', initial);
                 }
             } catch(e) {
-                const list = document.getElementById('listHeygenItems');
-                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement HeyGen (Vérifiez la clé)</div>';
-            }
-        }
-
-        async function _old_loadHeygenVoices() {
-            const select = document.getElementById('createVideoHeygenVoiceSelect');
-            if (!select) return;
-            select.innerHTML = '<option value="">Chargement des voix HeyGen...</option>';
-
-            try {
-                let data = null;
-                try {
-                    const res = await fetch('/api/heygen/voices');
-                    if (res.ok) data = await res.json();
-                } catch (e) {}
-
-                if (!data || !data.success) {
-                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
-                    if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v3/voices', {
-                            headers: { 'X-Api-Key': savedKey }
-                        });
-                        if (directRes.ok) {
-                            const raw = await directRes.json();
-                            const rawVoices = Array.isArray(raw.data) ? raw.data : (raw.data && raw.data.voices) || [];
-                            const voices = rawVoices.map(v => ({
-                                id: v.voice_id,
-                                name: v.name,
-                                language: v.language || 'Autre',
-                                previewUrl: v.preview_audio || v.preview_audio_url || ''
-                            }));
-                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
-                        }
-                    }
-                }
-
-                if (!data || !data.success) {
-                    throw new Error("Impossible de récupérer les voix HeyGen");
-                }
-
-                createHeyGenVoicesCache = {};
-                select.innerHTML = '';
-
-                // Voix Françaises
-                if (data.frenchVoices && data.frenchVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `🇫🇷 Voix Françaises (${data.frenchVoices.length})`;
-                    data.frenchVoices.forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                // Voix Anglaises (top 20)
-                if (data.englishVoices && data.englishVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `🇬🇧 Voix Anglaises`;
-                    data.englishVoices.slice(0, 20).forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                updateHeygenVoicePreviewBtn();
-                updateVoiceBadgeStatus();
-            } catch(e) {
-                select.innerHTML = '<option value="">Erreur chargement HeyGen (Vérifiez votre clé dans Paramètres)</option>';
+                const list = document.getElementById('listEdgeItems');
+                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement Edge TTS</div>';
             }
         }
 
@@ -1371,36 +1287,30 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             updateVoiceBadgeStatus();
         }
 
-        function updateHeygenVoicePreviewBtn() {
-            const select = document.getElementById('createVideoHeygenVoiceSelect');
-            const btn = document.getElementById('btnPreviewHeygenCreate');
-            const voice = select ? createHeyGenVoicesCache[select.value] : null;
-            if (btn) {
-                btn.style.display = (voice && voice.previewUrl) ? 'inline-flex' : 'none';
-            }
-            updateVoiceBadgeStatus();
-        }
-
-        function playVoicePreviewCreate(engine) {
-            let voice = null;
+        async function playVoicePreviewCreate(engine) {
             if (engine === 'eleven') {
                 const select = document.getElementById('createVideoElevenVoiceSelect');
-                voice = select ? createElevenVoicesCache[select.value] : null;
-            } else if (engine === 'heygen') {
-                const select = document.getElementById('createVideoHeygenVoiceSelect');
-                voice = select ? createHeyGenVoicesCache[select.value] : null;
+                const voice = select ? createElevenVoicesCache[select.value] : null;
+                if (!voice || !voice.previewUrl) return;
+                playDirectPreview(voice.previewUrl);
+            } else if (engine === 'edge') {
+                const select = document.getElementById('createVideoEdgeVoiceSelect');
+                const voiceId = select ? select.value : 'fr-FR-HenriNeural';
+                const btn = document.getElementById('btnPreviewEdgeCreate');
+                const origHtml = btn ? btn.innerHTML : '';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `<span style="font-size:11px;">⏳ Préécoute...</span>`;
+                }
+                try {
+                    await playDirectEdgePreview(voiceId);
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = origHtml;
+                    }
+                }
             }
-
-            if (!voice || !voice.previewUrl) return;
-
-            let audio = document.getElementById('createVideoAudioPreview');
-            if (!audio) {
-                audio = new Audio();
-                audio.id = 'createVideoAudioPreview';
-                document.body.appendChild(audio);
-            }
-            audio.src = voice.previewUrl;
-            audio.play().catch(e => console.warn('Preview error:', e));
         }
 
         let currentSubtitleType = 'type-wordbyword';
@@ -2262,10 +2172,23 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
             const preferredAi = document.getElementById('selectAiEngine')?.value || 'kombo';
 
+            let voiceEngine = 'edge';
+            let voiceId = 'fr-FR-HenriNeural';
+            if (currentVoiceSource === 'elevenlabs') {
+                voiceEngine = 'elevenlabs';
+                voiceId = document.getElementById('createVideoElevenVoiceSelect')?.value || '';
+            } else if (currentVoiceSource === 'edge') {
+                voiceEngine = 'edge';
+                voiceId = document.getElementById('createVideoEdgeVoiceSelect')?.value || 'fr-FR-HenriNeural';
+            }
+
             const payload = {
                 fileName: autoName,
                 prompt,
                 preferredAi,
+                voiceEngine,
+                voiceId,
+                voiceSource: currentVoiceSource,
                 useTemplate,
                 template: currentSelectedStyle,
                 format,

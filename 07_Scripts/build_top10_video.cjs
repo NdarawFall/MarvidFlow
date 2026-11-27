@@ -53,7 +53,7 @@ const html = `<!DOCTYPE html>
         <canvas id="mainCanvas" width="1080" height="1920"></canvas>
     </div>
 
-    <!-- Pistes Audio : Voix off HeyGen + Musique Beat Sport Kevin MacLeod (Hitman) -->
+    <!-- Pistes Audio : Voix off + Musique Beat Sport Kevin MacLeod (Hitman) -->
     <audio id="audioVoice" src="/01_Assets/Voix_Off/top10_football_full_14s.wav" preload="auto"></audio>
     <audio id="audioBgm" src="/01_Assets/Musiques/Hitman.mp3" preload="auto" loop></audio>
 

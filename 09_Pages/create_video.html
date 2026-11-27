@@ -654,19 +654,22 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                 <p class="choice-desc">Voix ultra-réalistes et clones personnalisés.</p>
                             </div>
 
-                            <!-- OPTION HEYGEN -->
-                            <div class="audio-choice-card" id="voiceChoiceCardHeygen"
-                                onclick="selectVoiceSource('heygen')">
+                            <!-- OPTION EDGE TTS -->
+                            <div class="audio-choice-card" id="voiceChoiceCardEdge"
+                                onclick="selectVoiceSource('edge')">
                                 <div class="choice-card-header">
-                                    <div class="choice-icon">
-                                        <img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen Logo"
-                                            style="width: 22px; height: 22px; border-radius: 4px; object-fit: contain;">
+                                    <div class="choice-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                                        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2;">
+                                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                                        </svg>
                                     </div>
                                     <span class="choice-check">✓</span>
                                 </div>
-                                <h4 class="choice-title">HeyGen (Voice Turbo)</h4>
-                                <p class="choice-desc">Modèle vocal rapide et naturel (voix françaises et mondiales).
-                                </p>
+                                <h4 class="choice-title">Edge TTS (100% Gratuit)</h4>
+                                <p class="choice-desc">Microsoft Edge Neural, gratuit et illimité sans clé API.</p>
                             </div>
 
                             <!-- OPTION MON PROPRE FICHIER -->
@@ -751,34 +754,33 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                             créées et officielles avec drapeaux et recherche instantanée.</span>
                     </div>
 
-                    <!-- PANNEAU HEYGEN (MODERNE AVEC DRAPEAU ET RECHERCHE) -->
-                    <div id="voicePanelHeygen"
+                    <!-- PANNEAU EDGE TTS (MODERNE AVEC DRAPEAU ET RECHERCHE) -->
+                    <div id="voicePanelEdge"
                         style="display: none; flex-direction: column; gap: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 14px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #ffffff;">
-                                2. Voix HeyGen Voice Turbo à utiliser
+                                2. Voix Microsoft Edge Neural (100% Gratuite)
                             </label>
-                            <button type="button" onclick="loadHeyGenVoicesForCreateVideo()"
+                            <button type="button" onclick="loadEdgeVoicesForCreateVideo()"
                                 style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline;">Actualiser
                                 les voix</button>
                         </div>
 
-                        <div class="modern-voice-picker" id="pickerContainerHeygen">
-                            <input type="hidden" id="createVideoHeygenVoiceSelect" value="">
-                            <div class="voice-picker-trigger" id="triggerHeygen"
-                                onclick="toggleVoiceDropdown('dropdownHeygen')">
+                        <div class="modern-voice-picker" id="pickerContainerEdge">
+                            <input type="hidden" id="createVideoEdgeVoiceSelect" value="fr-FR-HenriNeural">
+                            <div class="voice-picker-trigger" id="triggerEdge"
+                                onclick="toggleVoiceDropdown('dropdownEdge')">
                                 <div class="voice-trigger-left">
-                                    <img class="voice-flag-img" id="flagHeygenSelected" src="https://flagcdn.com/fr.svg"
+                                    <img class="voice-flag-img" id="flagEdgeSelected" src="https://flagcdn.com/fr.svg"
                                         alt="Flag">
-                                    <span class="voice-trigger-name" id="nameHeygenSelected">Chargement des
-                                        voix...</span>
-                                    <span class="voice-trigger-badge" id="badgeHeygenSelected">Turbo</span>
+                                    <span class="voice-trigger-name" id="nameEdgeSelected">Henri (Français - Naturel)</span>
+                                    <span class="voice-trigger-badge" id="badgeEdgeSelected">Neural</span>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <button type="button" id="btnPreviewHeygenCreate"
-                                        onclick="event.stopPropagation(); playVoicePreviewCreate('heygen')"
+                                    <button type="button" id="btnPreviewEdgeCreate"
+                                        onclick="event.stopPropagation(); playVoicePreviewCreate('edge')"
                                         class="btn-secondary"
-                                        style="padding: 6px 12px; font-size: 11.5px; display: none; align-items: center; gap: 5px;"
+                                        style="padding: 6px 12px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 5px;"
                                         title="Écouter cette voix">
                                         <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24">
                                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -793,7 +795,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                 </div>
                             </div>
 
-                            <div class="voice-dropdown-menu" id="dropdownHeygen">
+                            <div class="voice-dropdown-menu" id="dropdownEdge">
                                 <div class="voice-search-box">
                                     <svg class="icon"
                                         style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;"
@@ -801,16 +803,15 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
-                                    <input type="text" class="voice-search-input" id="searchHeygenInput"
-                                        placeholder="Rechercher une voix HeyGen (ex: Solange, Français, Anglais)..."
-                                        oninput="filterVoicesList('heygen')">
+                                    <input type="text" class="voice-search-input" id="searchEdgeInput"
+                                        placeholder="Rechercher une voix (ex: Henri, Vivienne, Remy)..."
+                                        oninput="filterVoicesList('edge')">
                                 </div>
-                                <div class="voice-items-list" id="listHeygenItems"></div>
+                                <div class="voice-items-list" id="listEdgeItems"></div>
                             </div>
                         </div>
 
-                        <span id="heygenVoiceSelectHint" style="font-size: 11px; color: var(--text-muted);">Voix
-                            françaises en tête avec drapeaux réels, recherche dynamique et préécoute.</span>
+                        <span id="edgeVoiceSelectHint" style="font-size: 11px; color: var(--text-muted);">Voix neurales gratuites haute fidélité (Microsoft Edge), préécoute instantanée sans quota.</span>
                     </div>
 
                     <!-- PANNEAU FICHIER PERSONNEL -->
@@ -1275,7 +1276,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             <div
                 style="padding: 20px 24px; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
                 <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
-                    MarvidFlow dispose de tous les outils nécessaires : <strong style="color: #ffffff;">HeyGen &
+                    MarvidFlow dispose de tous les outils nécessaires : <strong style="color: #ffffff;">Edge TTS &
                         ElevenLabs</strong> (voix off), <strong style="color: #ffffff;">Brandfetch</strong> (logos
                     officiels), <strong style="color: #ffffff;">FFmpeg & yt-dlp</strong> (B-Roll fluide 60 FPS), <strong
                         style="color: #ffffff;">fetch_map & fetch_flag</strong> (cartes et drapeaux vectoriels).<br>

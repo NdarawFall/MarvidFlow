@@ -90,8 +90,7 @@ const DEFAULT_CONFIG = {
     bg_remove_api_key: "",
     sketchfab_api_token: "",
     coverr_api_key: "",
-    heygen_api_key: "",
-    heygen_voice_id: "b11a7dbb250f483eadad9fb253e7d313",
+    edge_voice_id: "fr-FR-HenriNeural",
     groq_api_key: "",
     groq_model: "llama-3.1-8b-instant",
     openrouter_api_key: "",
@@ -2437,46 +2436,55 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    // 5f-ter. API pour lister les voix HeyGen (v2)
-    if (req.url.startsWith('/api/heygen/voices')) {
-        const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
-        let savedKey = '';
+    // 5f-ter. API pour lister les voix Edge TTS (100% Gratuit)
+    if (req.url.startsWith('/api/edge/voices')) {
         try {
-            const configPath = getResolvedConfigPath();
-            if (fs.existsSync(configPath)) {
-                savedKey = JSON.parse(fs.readFileSync(configPath, 'utf8')).heygen_api_key || '';
-            }
-        } catch(e) {}
-        const queryKey = parsedUrl.searchParams.get('key') || savedKey;
-
-        const handleFetchHeyGenVoices = async (keyToUse) => {
-            try {
-                const { fetchHeyGenVoices } = require('./generate_voice.cjs');
-                const result = await fetchHeyGenVoices(keyToUse || savedKey);
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
-                return res.end(JSON.stringify(result));
-            } catch (err) {
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                return res.end(JSON.stringify({ success: true, voices: [], frenchVoices: [], englishVoices: [], isFallback: true, error: err.message }));
-            }
-        };
-
-        if (req.method === 'POST') {
-            let body = '';
-            req.on('data', chunk => { body += chunk; });
-            req.on('end', () => {
-                let data = {};
-                try { data = JSON.parse(body || '{}'); } catch (e) {}
-                handleFetchHeyGenVoices(data.apiKey || queryKey);
-            });
-            return;
-        } else {
-            handleFetchHeyGenVoices(queryKey);
-            return;
+            const { fetchEdgeVoices } = require('./generate_voice.cjs');
+            const result = await fetchEdgeVoices();
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+            return res.end(JSON.stringify(result));
+        } catch (err) {
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ success: true, voices: [], frenchVoices: [], englishVoices: [], isFallback: true, error: err.message }));
         }
     }
 
-    // 5g. API pour générer une voix off via ElevenLabs ou HeyGen
+    // 5f-quater. API pour prévisualiser/écouter une voix Edge TTS
+    if (req.url.startsWith('/api/edge/preview')) {
+        const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
+        const voice = parsedUrl.searchParams.get('voice') || 'fr-FR-HenriNeural';
+        const sampleText = parsedUrl.searchParams.get('text') || "Bonjour, ceci est un test de voix avec Edge TTS dans MarvidFlow.";
+        
+        try {
+            const { generateEdgeTTS } = require('./generate_voice.cjs');
+            const previewDir = path.join(ROOT_DIR, '01_Assets', 'Voix_Off', 'previews');
+            if (!fs.existsSync(previewDir)) fs.mkdirSync(previewDir, { recursive: true });
+            
+            const safeVoice = voice.replace(/[^a-zA-Z0-9_\-]/g, '_');
+            const previewFile = path.join(previewDir, `preview_edge_${safeVoice}.mp3`);
+            
+            // Générer seulement si pas encore en cache
+            if (!fs.existsSync(previewFile) || fs.statSync(previewFile).size < 100) {
+                await generateEdgeTTS({
+                    text: sampleText,
+                    voiceId: voice,
+                    outputPath: previewFile
+                });
+            }
+
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({
+                success: true,
+                voice,
+                audioUrl: `/01_Assets/Voix_Off/previews/preview_edge_${safeVoice}.mp3`
+            }));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
+    // 5g. API pour générer une voix off via Edge TTS ou ElevenLabs
     if (cleanUrl === '/api/tts/generate' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
@@ -2499,6 +2507,7 @@ const server = http.createServer(async (req, res) => {
 
                 const result = await generateVoice({
                     text: text.trim(),
+                    engine: engine || 'edge',
                     key: apiKey,
                     voice: voiceId,
                     model: modelId,
@@ -2508,7 +2517,7 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({
                     success: true,
-                    engine: result.engine || engine || 'elevenlabs',
+                    engine: result.engine || engine || 'edge',
                     voice: result.voice,
                     model: result.model,
                     filename: safeName,
@@ -2516,7 +2525,7 @@ const server = http.createServer(async (req, res) => {
                     sizeBytes: result.sizeBytes
                 }));
             } catch (err) {
-                console.error('Erreur génération ElevenLabs :', err.message);
+                console.error('Erreur génération TTS :', err.message);
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({ error: err.message }));
             }

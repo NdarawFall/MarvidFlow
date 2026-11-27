@@ -55,14 +55,14 @@ const html = `<!DOCTYPE html>
         <canvas id="mainCanvas" width="1080" height="1920"></canvas>
     </div>
 
-    <!-- Voix off féminine HeyGen (Solange - 17.8s) & Musique d'ambiance -->
+    <!-- Voix off féminine Edge TTS (17.8s) & Musique d'ambiance -->
     <audio id="audioVoice" src="../01_Assets/Voix_Off/growkaw_motivation_solange_20s.wav" preload="auto"></audio>
     <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
 
 <script>
 // ==============================================================================
 // VIBEEDITOR 1.0 — GROWKAW MOTIVATION SHORT (20s / 9:16 VERTICAL 60 FPS)
-// Voix Off Féminine HeyGen (Solange) & Typographie Cinétique Mot-à-Mot
+// Voix Off Féminine & Typographie Cinétique Mot-à-Mot
 // ==============================================================================
 const canvas = document.getElementById('mainCanvas');
 const g = canvas.getContext('2d');
