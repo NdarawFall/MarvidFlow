@@ -100,6 +100,7 @@ heygen-new/
 │   ├── generate_voice.cjs      # Synthèse vocale IA réaliste (ElevenLabs / HeyGen)
 │   ├── generate_music.py       # Génération de pistes musicales procédurales
 │   ├── sfx.py                  # Moteur d'effets sonores et bruitages procéduraux
+│   ├── fetch_sfx.cjs           # Moteur hybride de bruitages : recherche Openverse (CC0) et fallback procédural Earshot
 │   ├── coverr.cjs              # Moteur de recherche et téléchargement de vidéos B-Roll HD/4K
 │   ├── transcribe_subtitles.cjs# Calage temporel mot-à-mot des sous-titres
 │   ├── brandfetch.cjs          # Extraction automatique de logos officiels de marques (SVG/PNG)

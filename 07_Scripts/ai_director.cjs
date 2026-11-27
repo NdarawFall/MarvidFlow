@@ -17,6 +17,7 @@ const https = require('https');
 const { exec, execFile } = require('child_process');
 const { fetchFlag } = require('./fetch_flag.cjs');
 const { parseRoadmapMarkdown, getRoadmap, extractCssValue } = require('./roadmap_generator.cjs');
+const { ensureSfxCollection } = require('./fetch_sfx.cjs');
 
 /**
  * Télécharge un logo vectoriel SVG officiel depuis Iconify Logos API si non disponible localement
@@ -579,7 +580,16 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
      * Un DASHBOARD DE MÉTRIQUES EXPLOSIVES (Hero Stats en grille 2 ou 3 colonnes) : ex: '⚡ 10x Faster', '🚀 99.9% Accuracy', '📊 12ms Latency' avec compteurs animés GSAP ou Anime.js.
      * Des cartes de flux ou de performance vivantes (barres de progression néon, badges 'PROD-READY', pastilles d'état vertes pulsantes).
      * Si du code ou prompt est montré : un terminal dark moderne ultra-compact (3 lignes max avec syntax highlighting et curseur clignotant).
-10. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
+10. SOUND DESIGN ET BRUITAGES SFX (OPENVERSE & SYNTHÈSE EARSHOT) :
+   - Tu disposes de la fonction audio globale `playSfx(nom, volume)` connectée directement dans la timeline GSAP !
+   - Utilise les bruitages pour rythmer et donner vie aux transitions et interactions :
+     * `tl.call(() => playSfx('whoosh', 0.4), null, <timecode>);` lors d'une transition rapide ou entrée de carte.
+     * `tl.call(() => playSfx('pop', 0.5), null, <timecode>);` lors de l'apparition d'un badge ou pastille.
+     * `tl.call(() => playSfx('click', 0.4), null, <timecode>);` lors d'un clic de curseur main sur un bouton.
+     * `tl.call(() => playSfx('ding', 0.5), null, <timecode>);` lors de l'affichage d'un chiffre clé ou validation.
+     * `tl.call(() => playSfx('keyboard', 0.35), null, <timecode>);` lors de l'affichage de code ou frappe terminal.
+   - Les bruitages sont automatiquement pré-chargés et joués au millième de seconde près sans latence.
+11. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
    - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
    - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
@@ -1433,6 +1443,17 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     const fontBody = plan.theme?.fontBody || payload.font || 'Inter';
 
     // =========================================================================
+    // PRÉPARATION DU SOUND DESIGN SFX (OPENVERSE & SYNTHÈSE EARSHOT)
+    // =========================================================================
+    let sfxMap = {};
+    try {
+        logAndSaveStep('step_assets', 'Préparation du Sound Design (Openverse & Earshot)...', 48, 'Mise en cache des bruitages haute fidélité...', 'info');
+        sfxMap = await ensureSfxCollection(['whoosh', 'pop', 'click', 'ding', 'keyboard']);
+    } catch (sfxErr) {
+        console.warn('[AI Director] Avertissement SFX:', sfxErr.message);
+    }
+
+    // =========================================================================
     // ÉTAPE 4 : DÉCOUPAGE ET GÉNÉRATION SCÈNE PAR SCÈNE (AVEC REPRISE)
     // =========================================================================
     checkpoint.scenes = Array.isArray(checkpoint.scenes) ? checkpoint.scenes : [];
@@ -1935,6 +1956,18 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
         window.__animeTimelines = [];
         try { if (window.lucide) lucide.createIcons(); } catch(e) {}
         setTimeout(() => { try { if (window.lucide) lucide.createIcons(); } catch(e) {} }, 50);
+
+        // SYSTÈME DE SOUND DESIGN HYBRIDE (Openverse & Earshot)
+        window.SFX_MAP = ${JSON.stringify(sfxMap || {})};
+        window.playSfx = function(name, volume = 0.5) {
+            try {
+                const map = window.SFX_MAP || {};
+                const src = map[name] || \`../01_Assets/SFX/\${name}.mp3\`;
+                const audio = new Audio(src);
+                audio.volume = Math.min(1, Math.max(0, volume));
+                audio.play().catch(() => {});
+            } catch(e) {}
+        };
 
         const tl = gsap.timeline({ paused: false });
         window.tl = tl;
