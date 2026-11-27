@@ -589,7 +589,15 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
      * \`tl.call(() => playSfx('ding', 0.5), null, <timecode>);\` lors de l'affichage d'un chiffre clé ou validation.
      * \`tl.call(() => playSfx('keyboard', 0.35), null, <timecode>);\` lors de l'affichage de code ou frappe terminal.
    - Les bruitages sont automatiquement pré-chargés et joués au millième de seconde près sans latence.
-11. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
+11. SCÈNES 3D & COMPOSANTS THREE.JS (MODÈLES .GLB TEMPS RÉEL) :
+    - Tu disposes de **Three.js (r128)** et **GLTFLoader** chargés nativement dans la page !
+    - Des modèles 3D prêts à l'emploi sont disponibles dans \`../01_Assets/3D/\` (ex: \`antiquecamera.glb\`, etc.).
+    - Pour intégrer un objet 3D cinématique (produit, mock-up, objet héroïque) :
+      * Place un canvas transparent : \`<canvas id="three_scene_${sceneIndex}" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>\`
+      * Initialise Three.js avec \`alpha: true\`, un éclairage studio 3 points et un sol d'ombre de contact douce.
+      * RÈGLE D'OR DE CHARGEMENT & TIMELINE : Attache les mouvements du modèle (rotation, scale) et de la caméra directement à la timeline GSAP \`tl\` (ex: \`tl.to(mesh.rotation, { y: Math.PI * 2, duration: 4, ease: "none" }, ${scenePlan.timeStart})\`).
+    - RÈGLE DE GOUVERNANCE BLENDER : Le rendu vidéo 3D se fait TOUJOURS dans Three.js. L'IA a l'interdiction formelle de lancer ou d'appeler Blender (MCP ou CLI) d'elle-même sans demande explicite de l'utilisateur. Blender est réservé à la préparation d'assets hors-ligne quand l'utilisateur l'ordonne.
+12. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
    - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
    - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
@@ -1643,6 +1651,9 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Iconify Web Component (200 000+ logos & icônes officielles) -->
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <!-- Three.js r128 & GLTFLoader (Rendu 3D WebGL temps réel 60 FPS sans Blender) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         // Configuration Tailwind avec Design Tokens shadcn/ui
         if (typeof tailwind !== 'undefined') {

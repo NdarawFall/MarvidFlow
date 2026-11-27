@@ -97,7 +97,9 @@ heygen-new/
 │   ├── render.cjs              # Moteur de capture headless Puppeteer & rendu MP4 FFmpeg
 │   ├── image2threejs.cjs       # Générateur procédural 3D Three.js sans GLB, extraction Sharp & prévisualisation
 │   ├── fetch_3d_model.cjs      # Téléchargement de modèles 3D .glb réalistes (Poly Haven / Khronos)
-│   ├── generate_voice.cjs      # Synthèse vocale IA réaliste (ElevenLabs / HeyGen)
+│   ├── blender_tool.cjs        # Utilitaire CLI Blender d'exportation vers 01_Assets/3D/ (SUR DEMANDE EXPLICITE)
+│   ├── blender_export_glb.py   # Script interne Blender CLI (bpy) d'optimisation et export glTF 2.0 binaire (.glb)
+│   ├── generate_voice.cjs      # Synthèse vocale IA réaliste (ElevenLabs / Edge TTS)
 │   ├── generate_music.py       # Génération de pistes musicales procédurales
 │   ├── sfx.py                  # Moteur d'effets sonores et bruitages procéduraux
 │   ├── fetch_sfx.cjs           # Moteur hybride de bruitages : recherche Openverse (CC0) et fallback procédural Earshot

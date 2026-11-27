@@ -254,6 +254,10 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 
 
 
+   * **Règle 48 : Intégration 3D Temps Réel & Garde Stricte Blender** :
+     - **Rendu 3D temps réel par défaut via Three.js** : Tout élément ou scène 3D intégrée dans une composition vidéo utilise le moteur WebGL Three.js avec des modèles `.glb` / `.gltf` préexistants dans `01_Assets/3D/` (éclairage studio 3 points, fond transparent `alpha: true`, synchronisation GSAP pure sur la timeline maîtresse `tl` pour 60 FPS constants et scrubbing à 0ms).
+     - **Garde stricte Blender** : **L'IA ne doit JAMAIS lancer ou appeler Blender (que ce soit via le MCP Blender 3.6 LTS ou le script Blender CLI `07_Scripts/blender_tool.cjs`) sans que l'utilisateur ne le demande explicitement** (ex: pour convertir un asset 3D lourd, décimer un maillage ou générer un modèle 3D sur demande). Par défaut, l'IA privilégie Three.js et les modèles déjà optimisés dans `01_Assets/3D/`.
+
 ---
 
 ## 2. Boîte à Outils de l'IA (`07_Scripts/`)
@@ -275,3 +279,5 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 | `generate_bg.cjs` | Générateur universel d'arrière-plans animés (SaaS avec néons lissés, gradients, waves, aurora, grid) | `node 07_Scripts/generate_bg.cjs --style saas [--bg "#ffffff"] [--accent "#e11d48"]` |
 | `remove_bg.cjs` | Détourage automatique d'images | `node 07_Scripts/remove_bg.cjs <image>` |
 | `fetch_3d_model.cjs` | Téléchargement de modèles 3D réalistes (.glb/.gltf) avec fallback multi-sources | `node 07_Scripts/fetch_3d_model.cjs --query "<mot_cle>"` |
+| `blender_tool.cjs` | Utilitaire CLI Blender pour exporter / convertir des modèles vers `01_Assets/3D/` (**DÉCLENCHÉ UNIQUEMENT SUR DEMANDE EXPLICITE**) | `node 07_Scripts/blender_tool.cjs convert <fichier> [sortie.glb]` |
+| `blender_export_glb.py` | Script interne Blender CLI (`bpy`) d'optimisation et export glTF 2.0 binaire (.glb) | `blender --background --python 07_Scripts/blender_export_glb.py -- <in> <out>` |
