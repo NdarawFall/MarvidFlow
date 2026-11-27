@@ -11,7 +11,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Statut-En_développement_actif-f59e0b?style=flat" alt="En développement actif" />
-  <img src="https://img.shields.io/badge/Open_Source-Licence_ISC-22c55e?style=flat" alt="Open Source ISC" />
+  <img src="https://img.shields.io/badge/Open_Source-Licence_MIT-22c55e?style=flat" alt="Open Source MIT" />
   <img src="https://img.shields.io/badge/Node.js-18%2B-339933?style=flat&logo=node.js&logoColor=white" alt="Node.js 18+" />
   <img src="https://img.shields.io/badge/GSAP-3.15-88CE02?style=flat&logo=greensock&logoColor=white" alt="GSAP 3.15" />
   <img src="https://img.shields.io/badge/Three.js-0.186-000000?style=flat&logo=three.js&logoColor=white" alt="Three.js" />
@@ -103,7 +103,7 @@ pip install numpy scipy
 
 - Ce packaging final n'est **pas encore terminé** pour le moment, car je me concentre d'abord sur mon examen et la finalisation du cœur applicatif.
 - Toutefois, la structure Electron (`electron-main.cjs` et `electron-builder` dans `package.json`) est déjà présente dans le dépôt.
-- **Ce projet étant Open Source (licence ISC)**, si vous souhaitez tester la version bureau dès maintenant ou compiler votre propre exécutable Electron, vous pouvez tout à fait le faire librement :
+- **Ce projet étant Open Source (licence MIT)**, si vous souhaitez tester la version bureau dès maintenant ou compiler votre propre exécutable Electron, vous pouvez tout à fait le faire librement :
 
 ```bash
 # Lancer l'application en fenêtre bureau Electron
@@ -317,4 +317,4 @@ pip install edge-tts
 ## 📄 Licence & Auteur
 
 Projet Open Source conçu et développé par **Ndaraw Fall**.  
-Distribué sous licence **ISC** — n'hésitez pas à cloner, tester, explorer ou forker le projet !
+Distribué sous licence **[MIT](LICENSE)** — n'hésitez pas à cloner, tester, explorer ou forker le projet !

@@ -23,7 +23,7 @@
     "threejs"
   ],
   "author": "NdarawFall",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
