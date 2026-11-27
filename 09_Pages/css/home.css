@@ -258,6 +258,14 @@
             gap: 4px;
         }
 
+        .sidebar-nav-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 6px 4px;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
         .sidebar-nav-item {
             display: flex;
             align-items: center;
