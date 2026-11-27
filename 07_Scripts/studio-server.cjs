@@ -2946,7 +2946,7 @@ server.listen(PORT, () => {
     console.log(`======================================================\n`);
 
     if (!process.env.IS_ELECTRON && !process.env.NO_BROWSER) {
-        const startCmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`;
+        const startCmd = process.platform === 'win32' ? `start "" "${url}"` : process.platform === 'darwin' ? `open "${url}"` : `xdg-open "${url}"`;
         exec(startCmd, (err) => {
             if (err) console.log(`Ouvrez manuellement votre navigateur sur ${url}`);
         });
