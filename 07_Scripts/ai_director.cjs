@@ -405,7 +405,10 @@ function buildFallbackScene(sceneIndex, totalScenes, scenePlan, format, accentCo
         tl.from('#scene_${sceneIndex} img, #scene_${sceneIndex} svg', { scale: 0.88, opacity: 0, duration: 0.6, ease: 'back.out(1.4)' }, ${(start + 0.4).toFixed(2)});
         `}
         ${sceneIndex < totalScenes ? `
-        tl.to('#scene_${sceneIndex}', { opacity: 0, y: -20, duration: 0.35, ease: 'power2.in' }, ${outTime.toFixed(2)});
+        // Transition sortie avec Whip Pan & Motion Blur directionnel SVG
+        tl.to('#scene_${sceneIndex}', { opacity: 0, x: -600, duration: 0.35, ease: 'power2.in' }, ${outTime.toFixed(2)});
+        tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '24,0' }, duration: 0.18, ease: 'power2.in', yoyo: true, repeat: 1 }, ${outTime.toFixed(2)});
+        tl.call(() => { try { if (window.playSfx) window.playSfx('whoosh', 0.4); } catch(e) {} }, null, ${outTime.toFixed(2)});
         tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${end.toFixed(2)});
         ` : ''}
     `;
@@ -461,7 +464,7 @@ function inspectRelevantToolsAndSkills(prompt, customScript = '') {
 
     // 6. Typographie & Mouvements de Caméra
     skills.push('text_animation (double typographie fashion light + bold, révélation mot par mot cinématique)');
-    skills.push('Camera (mouvements justifiés, règle des tiers, transitions motivées portal/zoom/slide)');
+    skills.push('Camera (mouvements justifiés, règle des tiers, transitions motivées portal/zoom/slide, flou de mouvement SVG déterministe)');
 
     return {
         tools,
@@ -597,7 +600,18 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
       * Initialise Three.js avec \`alpha: true\`, un éclairage studio 3 points et un sol d'ombre de contact douce.
       * RÈGLE D'OR DE CHARGEMENT & TIMELINE : Attache les mouvements du modèle (rotation, scale) et de la caméra directement à la timeline GSAP \`tl\` (ex: \`tl.to(mesh.rotation, { y: Math.PI * 2, duration: 4, ease: "none" }, ${scenePlan.timeStart})\`).
     - RÈGLE DE GOUVERNANCE BLENDER : Le rendu vidéo 3D se fait TOUJOURS dans Three.js. L'IA a l'interdiction formelle de lancer ou d'appeler Blender (MCP ou CLI) d'elle-même sans demande explicite de l'utilisateur. Blender est réservé à la préparation d'assets hors-ligne quand l'utilisateur l'ordonne.
-12. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
+12. FLOU DE MOUVEMENT DE CAMÉRA & WHIP PAN (CAMERA MOTION BLUR DÉTERMINISTE) :
+    - Le filtre SVG haute performance \`<feGaussianBlur id="cameraBlurFilter" stdDeviation="0,0">\` est branché nativement sur \`#cameraRig\` !
+    - Lors d'une transition rapide (Whip Pan, Balayage de scène, Crash Zoom ou Secousse d'impact), couple TOUJOURS le mouvement GSAP avec l'animation de l'attribut \`stdDeviation\` :
+      * Whip Pan horizontal (sortie ou balayage latéral) :
+        \`tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '26,0' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 }, <timecode_transition>);\`
+      * Whip Pan vertical / Pedestal (montée ou descente rapide) :
+        \`tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '0,22' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 }, <timecode_transition>);\`
+      * Crash Zoom / Impact choc :
+        \`tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '16,16' }, duration: 0.14, ease: 'power2.in', yoyo: true, repeat: 1 }, <timecode_impact>);\`
+    - Accompagne toujours le coup de fouet d'un whoosh sonore : \`tl.call(() => playSfx('whoosh', 0.4), null, <timecode_transition>);\`.
+    - Zéro saccade : ce filtre SVG utilise l'accélération matérielle native et est 100% déterministe au rendu (frame-by-frame Puppeteer seek-safe).
+13. GESTION DU TEMPS & TIMELINE MAÎTRESSE :
    - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
    - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
    - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
@@ -1804,13 +1818,15 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             vertical-align: middle;
         }
 
-        /* CAMÉRA GLOBALE (Travelling continu) */
+        /* CAMÉRA GLOBALE (Travelling continu & Flou de Mouvement Directionnel) */
         #cameraRig {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             transform-origin: center center;
+            filter: url(#cameraMotionBlur);
+            will-change: transform, filter;
         }
 
         /* SOUS-TITRES DYNAMIQUES (Style Hormozi) */
@@ -1883,6 +1899,15 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     </style>
 </head>
 <body>
+
+    <!-- FILTRE SVG CAMERA MOTION BLUR DÉTERMINISTE 60FPS -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+        <defs>
+            <filter id="cameraMotionBlur">
+                <feGaussianBlur id="cameraBlurFilter" in="SourceGraphic" stdDeviation="0,0" />
+            </filter>
+        </defs>
+    </svg>
 
     <div id="stage" data-duration="${totalVideoDuration.toFixed(1)}" data-fps="30" data-width="${width}" data-height="${height}">
         
@@ -1981,6 +2006,20 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                 audio.volume = Math.min(1, Math.max(0, volume));
                 audio.play().catch(() => {});
             } catch(e) {}
+        };
+
+        // HELPER FLOU DE MOUVEMENT DE CAMÉRA DÉTERMINISTE (Directional Whip-Pan & Crash Zoom)
+        window.applyCameraMotionBlur = function(type = 'horizontal', duration = 0.32, startTime = 0, intensity = 26) {
+            const filterEl = document.getElementById('cameraBlurFilter');
+            if (!filterEl || typeof tl === 'undefined') return;
+            let stdVal = \`\${intensity},0\`;
+            if (type === 'vertical') stdVal = \`0,\${intensity}\`;
+            else if (type === 'zoom' || type === 'both') stdVal = \`\${Math.round(intensity * 0.65)},\${Math.round(intensity * 0.65)}\`;
+            tl.fromTo('#cameraBlurFilter',
+                { attr: { stdDeviation: '0,0' } },
+                { attr: { stdDeviation: stdVal }, duration: duration / 2, ease: 'power2.in', yoyo: true, repeat: 1 },
+                startTime
+            );
         };
 
         const tl = gsap.timeline({ paused: false });

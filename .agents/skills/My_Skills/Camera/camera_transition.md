@@ -98,21 +98,29 @@ Une transition ne s'insère **QUE** dans ces 3 cas précis :
 
 ## 🎬 4. Les 5 Grands Types de Transition (Catalogue Prêt à l'Emploi)
 
-### 1. Whip Pan (Le Coup de Fouet Cinétique)
-> **Usage :** Transition ultra dynamique entre deux scènes d'un tutoriel ou d'un comparatif.
+### 1. Whip Pan (Le Coup de Fouet Cinétique avec Flou SVG Déterministe)
+> **Usage :** Transition ultra dynamique entre deux scènes avec flou de mouvement directionnel précis (axe X horizontal ou axe Y vertical).
 ```javascript
-// Sortie Scène 1 à droite à toute vitesse avec flou
+// Sortie Scène 1 à gauche à toute vitesse
 tl.to("#scene1", { 
     x: -1920, 
-    filter: "blur(20px)", 
     duration: 0.35, 
     ease: "power3.in" 
 }, tOut);
 
+// Flou de mouvement directionnel horizontal sur la caméra (SVG filter stdDeviation sur l'axe X)
+tl.fromTo('#cameraBlurFilter', 
+    { attr: { stdDeviation: '0,0' } }, 
+    { attr: { stdDeviation: '28,0' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 }, 
+    tOut
+);
+// Bruitage whoosh synchronisé
+tl.call(() => playSfx('whoosh', 0.45), null, tOut);
+
 // Entrée Scène 2 depuis la droite
 tl.fromTo("#scene2", 
-    { x: 1920, filter: "blur(20px)" }, 
-    { x: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 
+    { x: 1920 }, 
+    { x: 0, duration: 0.45, ease: "power3.out" }, 
     tOut + 0.15
 );
 ```
@@ -169,6 +177,67 @@ tl.to("#flashOverlay", { opacity: 0, duration: 0.25, ease: "power2.out" }, tOut 
 ```javascript
 tl.set("#scene1", { display: "none", visibility: "hidden" }, tCut);
 tl.set("#scene2", { display: "flex", visibility: "visible" }, tCut);
+```
+
+---
+
+## 🌪️ 4.bis. FLOU DE MOUVEMENT DE CAMÉRA DÉTERMINISTE 60 FPS (SVG `<feGaussianBlur>`)
+
+> ⚠️ **POURQUOI LE CSS CLASSIQUE `filter: blur(...)` EST BANNI SUR LES TRANSITIONS CAMÉRA :**
+> 1. **Omnidirectionnel & Artificiel** : Le blur CSS standard est circulaire. Au lieu de donner une traînée de vitesse cinématique (*streaks* horizontaux lors d'un whip pan), il rend l'image simplement myope et floue sur tous les axes.
+> 2. **Lourd pour le GPU & Risque de Saccades** : Le blur CSS recalcule un raster bitmap complet à chaque frame sur des résolutions HD (1920x1080), causant des drops de FPS sous headless Chromium / Puppeteer.
+
+### A. L'Architecture Déterministe SVG
+Chaque composition MarvidFlow intègre un filtre SVG dynamique à accélération matérielle native :
+```html
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+        <filter id="cameraMotionBlur">
+            <feGaussianBlur id="cameraBlurFilter" in="SourceGraphic" stdDeviation="0,0" />
+        </filter>
+    </defs>
+</svg>
+```
+Le conteneur maître `#cameraRig` est lié à ce filtre en CSS :
+```css
+#cameraRig {
+    filter: url(#cameraMotionBlur);
+    will-change: transform, filter;
+}
+```
+Quand `stdDeviation="0,0"`, le filtre SVG a un overhead nul ($0$ ms).
+
+### B. Les 3 Profils de Flou Directionnel GSAP
+1. **Whip Pan Horizontal (Transitions de scènes gauche/droite)** :
+   ```javascript
+   tl.fromTo('#cameraBlurFilter',
+       { attr: { stdDeviation: '0,0' } },
+       { attr: { stdDeviation: '26,0' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 },
+       tTransition
+   );
+   ```
+2. **Whip Pan Vertical / Pedestal (Transitions haut/bas)** :
+   ```javascript
+   tl.fromTo('#cameraBlurFilter',
+       { attr: { stdDeviation: '0,0' } },
+       { attr: { stdDeviation: '0,22' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 },
+       tTransition
+   );
+   ```
+3. **Crash Zoom / Impact Choc (Accélération radiale)** :
+   ```javascript
+   tl.fromTo('#cameraBlurFilter',
+       { attr: { stdDeviation: '0,0' } },
+       { attr: { stdDeviation: '16,16' }, duration: 0.14, ease: 'power2.in', yoyo: true, repeat: 1 },
+       tImpact
+   );
+   ```
+
+### C. Helper Global Disponible dans le Runtime
+Un helper global est disponible dans chaque page pour simplifier l'appel :
+```javascript
+window.applyCameraMotionBlur('horizontal', 0.32, tTransition, 26);
+// Types acceptés : 'horizontal', 'vertical', 'zoom'
 ```
 
 ---

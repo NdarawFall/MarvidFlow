@@ -1,6 +1,6 @@
 ---
 name: Camera
-description: Mouvements de caméra cinématographiques, transitions de scènes et navigation 3D Three.js en GSAP seek-safe (slow push-in, crash zoom, whip pan, pull-back, dolly parallaxe 3D, camera shake d'impact, orbital 3D, vertigo effect).
+description: Mouvements de caméra cinématographiques, transitions de scènes et navigation 3D Three.js en GSAP seek-safe (slow push-in, crash zoom, whip pan avec flou de mouvement SVG déterministe 60 FPS, pull-back, dolly parallaxe 3D, camera shake d'impact, orbital 3D, vertigo effect).
 ---
 
 # CAMERA & DYNAMIC MOVEMENTS — VibeEditor
@@ -8,6 +8,7 @@ description: Mouvements de caméra cinématographiques, transitions de scènes e
 Ce skill est divisé en **deux guides spécialisés** :
 
 1. 👉 **Transitions 2D, Cadrage & Mouvements dans la Scène : [`camera_transition.md`](./camera_transition.md)**
+   - **Flou de Mouvement de Caméra Déterministe 60 FPS (SVG `<feGaussianBlur>`)** : Remplacement du CSS blur omnidirectionnel par un filtre SVG ultra-rapide piloté en GSAP (`#cameraBlurFilter` sur l'attribut `stdDeviation`). Permet des whip-pans horizontaux nets, verticaux ou des crash-zooms cinématiques avec zéro drop de framerate et scrubbing fluide.
    - **Règle d'Or du Cadrage & Zoom Intelligent** : Interdiction du zoom aveugle / centré par défaut. La caméra cible impérativement le sujet d'intérêt (card, visage, métrique, logo) avec marge de sécurité (80-120px) sans jamais couper le sujet.
    - **Tracking & Accompagnement cinétique** : Suivi fluide des carousels, défilements Top 10 et actions mobiles (saut, course) pour maintenir l'élément au cœur du regard.
    - **Zooms d'expressions faciales** : Punch-in cinématique ciblé sur les visages lors des réactions (choc, rire, tension) pour décupler l'impact émotionnel.

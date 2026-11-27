@@ -258,6 +258,15 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
      - **Rendu 3D temps réel par défaut via Three.js** : Tout élément ou scène 3D intégrée dans une composition vidéo utilise le moteur WebGL Three.js avec des modèles `.glb` / `.gltf` préexistants dans `01_Assets/3D/` (éclairage studio 3 points, fond transparent `alpha: true`, synchronisation GSAP pure sur la timeline maîtresse `tl` pour 60 FPS constants et scrubbing à 0ms).
      - **Garde stricte Blender** : **L'IA ne doit JAMAIS lancer ou appeler Blender (que ce soit via le MCP Blender 3.6 LTS ou le script Blender CLI `07_Scripts/blender_tool.cjs`) sans que l'utilisateur ne le demande explicitement** (ex: pour convertir un asset 3D lourd, décimer un maillage ou générer un modèle 3D sur demande). Par défaut, l'IA privilégie Three.js et les modèles déjà optimisés dans `01_Assets/3D/`.
 
+   * **Règle 49 : Flou de Mouvement de Caméra & Transitions Whip Pan Déterministes (SVG Filter feGaussianBlur)** :
+     - **Filtre SVG Directionnel Haute Performance** : Un filtre SVG `<filter id="cameraMotionBlur"><feGaussianBlur id="cameraBlurFilter" in="SourceGraphic" stdDeviation="0,0" /></filter>` est branché nativement sur le conteneur principal `#cameraRig` avec `will-change: transform, filter;`.
+     - **Pilotage Déterministe sur la Timeline GSAP `tl`** : Lors d'une transition rapide (Whip Pan, Balayage de scène, Crash Zoom ou Secousse d'impact), le flou de mouvement DOIT être animé directement via l'attribut `stdDeviation` :
+       * *Whip Pan Horizontal* (transition gauche/droite) : `tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '26,0' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 }, tTransition);`
+       * *Whip Pan Vertical / Pedestal* (transition haut/bas) : `tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '0,22' }, duration: 0.16, ease: 'power2.in', yoyo: true, repeat: 1 }, tTransition);`
+       * *Crash Zoom / Impact Choc* : `tl.fromTo('#cameraBlurFilter', { attr: { stdDeviation: '0,0' } }, { attr: { stdDeviation: '16,16' }, duration: 0.14, ease: 'power2.in', yoyo: true, repeat: 1 }, tImpact);`
+     - **Synchronisation avec le Sound Design** : Accompagner systématiquement chaque whip-pan cinématique d'un whoosh sonore via `tl.call(() => playSfx('whoosh', 0.45), null, tTransition);`.
+     - **Zéro Saccade & Déterminisme 100%** : Contrairement au CSS `blur()` omnidirectionnel lourd, le filtre SVG directionnel préserve la netteté perpendiculaire au mouvement, exploite l'accélération matérielle du navigateur et garantit un rendu image-par-image (`render.cjs`) parfaitement net et stable à 60 FPS.
+
 ---
 
 ## 2. Boîte à Outils de l'IA (`07_Scripts/`)
