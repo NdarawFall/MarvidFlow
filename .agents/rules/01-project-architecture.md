@@ -153,7 +153,8 @@ heygen-new/
 ├── Clients/                    # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
 │   ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
 │   └── README.md               # Guide d'organisation des rushes par client
-└── Docs/                       # Documentation officielle du projet et guides utilisateurs
+└── Docs/                       # Documentation officielle du projet, guides et captures d'écran
+    ├── images/                          # Captures d'écran officielles du studio (dashboard, studio, clients, assets, reseaux, create_video)
     ├── DOCUMENTATION_CREATION_VIDEO.md  # Guide complet de création vidéo
     └── MARVIDFLOW_AI_COACH_SKILL.md     # Master prompt / Skill IA pour le brainstorming externe
 ```
