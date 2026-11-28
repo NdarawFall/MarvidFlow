@@ -71,6 +71,7 @@ function parseArgs() {
         lufs: null,
         tp: null,
         lra: null,
+        ar: 48000,
         singlePass: false
     };
 
@@ -84,6 +85,7 @@ function parseArgs() {
         else if (arg === '--lufs' && next) { config.lufs = parseFloat(next); i++; }
         else if (arg === '--tp' && next) { config.tp = parseFloat(next); i++; }
         else if (arg === '--lra' && next) { config.lra = parseFloat(next); i++; }
+        else if (arg === '--ar' && next) { config.ar = parseInt(next, 10) || 48000; i++; }
         else if (arg === '--single-pass') { config.singlePass = true; }
         else if (!config.input && !arg.startsWith('-')) { config.input = arg; }
     }
@@ -137,9 +139,10 @@ async function runPass1(ffmpegPath, inputPath, targetLufs, targetTp, targetLra) 
     });
 }
 
-async function runPass2(ffmpegPath, inputPath, outputPath, targetLufs, targetTp, targetLra, pass1Data, isVideo) {
+async function runPass2(ffmpegPath, inputPath, outputPath, targetLufs, targetTp, targetLra, pass1Data, isVideo, sampleRate = 48000) {
     return new Promise((resolve, reject) => {
-        const filterStr = pass1Data
+        const useLinear = pass1Data && !Number.isNaN(parseFloat(pass1Data.input_i)) && Number.isFinite(parseFloat(pass1Data.target_offset));
+        const filterStr = useLinear
             ? `loudnorm=I=${targetLufs}:TP=${targetTp}:LRA=${targetLra}:measured_I=${pass1Data.input_i}:measured_TP=${pass1Data.input_tp}:measured_LRA=${pass1Data.input_lra}:measured_thresh=${pass1Data.input_thresh}:offset=${pass1Data.target_offset}:linear=true`
             : `loudnorm=I=${targetLufs}:TP=${targetTp}:LRA=${targetLra}`;
 
@@ -147,7 +150,8 @@ async function runPass2(ffmpegPath, inputPath, outputPath, targetLufs, targetTp,
             '-y',
             '-hide_banner',
             '-i', inputPath,
-            '-af', filterStr
+            '-af', filterStr,
+            '-ar', String(sampleRate)
         ];
 
         if (isVideo) {
@@ -229,8 +233,8 @@ async function main() {
         console.log(`⚡ Mode passe unique activé.`);
     }
 
-    console.log(`\n🎛️ Étape 2/2 : Application du mastering EBU R128 linéaire...`);
-    await runPass2(ffmpegPath, inputResolved, config.out, config.lufs, config.tp, config.lra, pass1Data, isVideo);
+    console.log(`\n🎛️ Étape 2/2 : Application du mastering EBU R128 linéaire (${config.ar} Hz)...`);
+    await runPass2(ffmpegPath, inputResolved, config.out, config.lufs, config.tp, config.lra, pass1Data, isVideo, config.ar);
 
     console.log(`\n✅ Normalisation terminée avec succès !`);
     console.log(`✨ Le volume est maintenant parfaitement calibré à ${config.lufs} LUFS sans saturation.`);

@@ -282,17 +282,25 @@ La mise en scène ne doit **JAMAIS** être un carrousel de slides ou de pavés t
 ---
 
 ## ⚡ 17. Physique, Cadence & Continuité Temporelle Vox
-* **Cadence Vive (3 à 5 Secondes par Séquence) :**
-  * Une séquence ne doit durer que **3 à 5 secondes au maximum**.
-  * Dès que la voix off a fini de traiter un élément (ex: l'Exode et ses 8 millions), la séquence **COUPE IMMÉDIATEMENT** vers le plan suivant. Zéro stagnation passive !
+* **Compréhension Naturelle (Script Étoffé ou Animations Douces, Zéro Trou de Voix) :**
+  * **Ne JAMAIS sacrifier la compréhension au détriment de la durée**, et **ne JAMAIS découper la voix off en trous artificiels** (ce qui casse le naturel et désynchronise le montage). Pour laisser au spectateur le temps d'assimiler : soit **allonger et enrichir le texte du script** dès la rédaction pour un débit naturel plus respiré, soit **épurer et adoucir les animations** avec moins d'éléments simultanés à l'écran.
+  * **Audio Maîtrisé (Musique Adaptée & SFX Discrets)** : Choisir et télécharger une vraie musique adaptée au thème (`fetch_music.cjs --query "..."`, jamais toujours la même piste ni de synthèse bâclée) et maintenir les SFX très discrets sous la voix (`build_soundtrack.cjs`, `impact <= -30 dBFS`, `whoosh <= -33 dBFS`, `ui <= -36 dBFS`).
 * **Continuité Temporelle Absolue (Zéro Écran Blanc ni Trou Temporel) :**
   * Le premier plan doit être visible dès **t = 0.00s pile**. Ne jamais démarrer à 0.5s ou 1.0s en laissant un écran vide.
   * Aucun trou temporel entre les plans : `shotsData[i].start = shotsData[i-1].end`.
   * La transition sortante d'un plan et l'arrivée du suivant se chevauchent de manière continue pour qu'à aucun millième de seconde l'écran ne devienne un fond blanc désert.
-* **Concordance Absolue Parole / Image :**
-  * Si la voix cite Hitler, on montre Hitler ; dès qu'elle cite le Maréchal Pétain, on coupe vers Pétain ; quand elle cite Churchill, on montre Churchill.
+* **Concordance Parole / Image & Fidélité Chronologique :**
+  * Si la voix cite Hitler, on montre Hitler ; dès qu'elle cite Pétain, on coupe vers Pétain.
+  * **Âge & Époque Exacte obligatoires** : Lorsque le récit évoque la jeunesse, les débuts ou une date précise d'une personnalité (ex: *Elon Musk jeune / en 2008*), sourcer impérativement une **archive fidèle à cette date exacte** plutôt qu'un portrait moderne anachronique.
 * **L'Effet Pendule Continu (*Pendulum Bell Sway*) :**
   * Les cartes, stickers et tirages photos sont ancrés en haut (`transform-origin: 50% 0%`) et oscillent continuellement (`rotate: -1.8deg <-> +1.8deg`, durée: 1.8s, `yoyo: true, repeat: -1`, avec flottement vertical `y: -4px <-> +4px`).
+* **Logos Clés en Grand, Illustration Totale des Marques Citées, Card `cover` (`overflow: hidden`) & Carte SVG Sans Saccade :**
+  * **Toujours illustrer les marques citées :** Dès que le script ou la voix nomme une entreprise/marque (ex: *eBay, PayPal, Compaq, NASA*), télécharger impérativement son logo officiel (`brandfetch.cjs`) et l'afficher en **grande taille lisible** ; si le logo n'existe pas ou si la mise en scène s'y oppose, assumer un design typographique éditorial propre (jamais de mention ignorée ou de logo bricolé).
+  * **Aucune image coupée ni débordante dans sa card :** Tout portrait logé dans une card éditoriale doit être enfant direct de `.card { overflow: hidden; }` en `width: 100%; height: 100%; object-fit: cover;` avec zoom (`scale >= 1.05`), pour supprimer tout bord blanc/coupé latéral sans jamais sortir du cadre.
+  * **Cartes animées fluides & tracés sans dérive :** Ne jamais appliquer `vector-effect: non-scaling-stroke` sur des centaines de polygones zoomés (pré-rastériser la carte de fond sur `<canvas>` 2× et ne garder que tracés + pins dans un `<svg>` léger au-dessus avec `ease: 'sine.out'`). Partager les exactes coordonnées `(cx, cy)` entre `<path>` et `<circle>`, dessiner les pins après le `<path>`, et répéter `svgOrigin` dans `fromVars` ET `toVars` de `fromTo()`.
+  * **Fluidité vidéo CapCut (`<video>`) :** Jamais de filtre SVG plein écran (`filter: url(#...)`) ni `mix-blend-mode` sur `<video>`, garder les scènes cachées via `visibility: hidden` (pas `display: none`) et ré-encoder avec `-bf 0 -tune fastdecode -g 15 -movflags +faststart`.
+  * **Hiérarchie Workflow / Écosystème :** Dans toute scène centrée sur un logo ou un hub produit, **afficher le logo/hub central EN PREMIER** (cœur du sujet), puis animer les connexions et les éléments périphériques **un par un** en cascade.
+  * **Vérification du contraste WCAG :** Toujours passer la composition dans `node 07_Scripts/check-contrast.cjs <fichier.html>` avant livraison pour garantir un contraste lisible sur chaque scène.
 
 ---
 

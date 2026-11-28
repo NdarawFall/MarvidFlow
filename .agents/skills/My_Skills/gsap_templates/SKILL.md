@@ -465,3 +465,34 @@ Quand l'IA génère une vidéo avec des interfaces ou des cartes :
 2. **Copier les blocs HTML et CSS exacts** en adaptant les libellés et l'accent couleur (`#ef4444`, `#f59e0b`, `#06b6d4`, etc.).
 3. **Placer les séquences GSAP sur la timeline maîtresse `tl`**.
 
+---
+
+## ⚙️ Règle Infaillible de Rotation SVG (Roues, Engrenages, Objectifs, Cercles)
+
+> [!CAUTION]
+> **ZÉRO ROTATION SVG AVEC `transformOrigin` — UTILISER IMPÉRATIVEMENT `svgOrigin`** :
+> Sur un élément SVG centré en `(0, 0)`, GSAP calcule `transformOrigin` par rapport au coin haut-gauche `(-R, -R)` de `.getBBox()` (ou `{0, 0}` si un parent est en `display: none`), injectant une orbite parasite pouvant dépasser 250 px ! Utiliser **`svgOrigin: '0 0'`** (ou `'cx cy'` en coordonnées SVG) qui force GSAP à écrire `transform="matrix(cos, sin, -sin, cos, 0, 0)"` avec **0.0 px de dérive**.
+
+1. **Enveloppe Pivot Centrée sur `(0, 0)`** :
+   ```html
+   <g transform="translate(360, 420)">
+       <g id="monEngrenage">
+           <!-- Tout tracé centré mathématiquement autour de (0, 0) -->
+           <circle cx="0" cy="0" r="170" .../>
+       </g>
+   </g>
+   ```
+2. **Tween GSAP avec `svgOrigin: '0 0'` OBLIGATOIRE (ou `'cx cy'` pour un élément direct)** :
+   ```javascript
+   tl.set('#monEngrenage', { svgOrigin: '0 0' }, 0)
+     .to('#monEngrenage', {
+         rotation: 360,
+         svgOrigin: '0 0',
+         duration: 2.0,
+         ease: 'none'
+     }, t);
+   ```
+3. **Dents / Pointillés Symétriques sur Circonférence ($2\pi R / N$)** :
+   - Ne jamais choisir des `stroke-dasharray` arbitraires. Pour $N$ dents sur un cercle de rayon $R$, poser `step = (2 * Math.PI * R) / N`, puis `dash = step * 0.58` et `gap = step * 0.42` afin qu'aucune couture asymétrique ne déforme la rotation.
+
+

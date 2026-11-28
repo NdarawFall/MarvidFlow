@@ -342,7 +342,7 @@ function downloadThumbnail({ url, outputPath = null }) {
 }
 
 // Téléchargement d'une vidéo complète ou d'un extrait précis
-function downloadClip({ url, start, end, outputPath, format = 'mp4' }) {
+function downloadClip({ url, start, end, outputPath, format = 'mp4', mute = false, maxHeight = 1080 }) {
     return new Promise((resolve, reject) => {
         const cleanUrl = sanitizeYoutubeUrl(url);
         if (!cleanUrl) return reject(new Error('URL YouTube invalide'));
@@ -377,8 +377,12 @@ function downloadClip({ url, start, end, outputPath, format = 'mp4' }) {
             args.push('--force-keyframes-at-cuts');
         }
 
-        // Format standardisé 1080p max en MP4
-        args.push('-f', 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best');
+        // Sélection vidéo robuste (évite le piège du flux audio seul sur --download-sections)
+        const h = parseInt(maxHeight, 10) || 1080;
+        const fmtSelector = mute
+            ? `bv*[height<=${h}][vcodec^=avc1]/bv*[height<=${h}][ext=mp4]/bv*[height<=${h}]/b[height<=${h}]`
+            : `bv*[height<=${h}][vcodec^=avc1]+ba[ext=m4a]/bv*[height<=${h}]+ba/b[height<=${h}][ext=mp4]/b[height<=${h}]/bv*+ba`;
+        args.push('-f', fmtSelector);
         args.push('--merge-output-format', 'mp4');
         args.push('-o', targetOut);
         args.push(cleanUrl);
@@ -410,6 +414,32 @@ function downloadClip({ url, start, end, outputPath, format = 'mp4' }) {
             if (code !== 0 && !fs.existsSync(targetOut)) {
                 return reject(new Error(`yt-dlp a échoué (code ${code}). Logs : ${logOutput.slice(-400)}`));
             }
+            // Contrôle strict : vérifier la présence d'un vrai flux Vidéo (interdit les fichiers audio-seuls) + ré-encodage fluide H.264 sans B-frames (CapCut-grade scrub/playback)
+            try {
+                const { spawnSync } = require('child_process');
+                const probe = spawnSync(ffmpegPath, ['-i', targetOut], { encoding: 'utf8' });
+                if (!/Video:/i.test(probe.stderr || '')) {
+                    try { fs.unlinkSync(targetOut); } catch (e) {}
+                    return reject(new Error(`Le fichier téléchargé ne contient aucun flux vidéo (flux audio seul détecté).`));
+                }
+                const fastTmp = targetOut + '.fast.mp4';
+                const encArgs = [
+                    '-y', '-i', targetOut,
+                    '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+                    '-c:v', 'libx264', '-preset', 'fast', '-crf', '20',
+                    '-tune', 'fastdecode', '-bf', '0', '-g', '15',
+                    '-pix_fmt', 'yuv420p', '-movflags', '+faststart'
+                ];
+                if (mute) encArgs.push('-an');
+                else encArgs.push('-c:a', 'aac', '-b:a', '128k');
+                encArgs.push(fastTmp);
+                const encRes = spawnSync(ffmpegPath, encArgs, { encoding: 'utf8' });
+                if (encRes.status === 0 && fs.existsSync(fastTmp) && fs.statSync(fastTmp).size > 1000) {
+                    fs.renameSync(fastTmp, targetOut);
+                } else if (fs.existsSync(fastTmp)) {
+                    try { fs.unlinkSync(fastTmp); } catch (e) {}
+                }
+            } catch (e) {}
             resolve({
                 success: true,
                 filePath: targetOut,
@@ -542,8 +572,10 @@ Exemples :
         const start = getArg('--start');
         const end = getArg('--end');
         const out = getArg('--out');
+        const mute = args.includes('--mute');
+        const maxHeight = getArg('--max-height') || 1080;
 
-        downloadClip({ url, start, end, outputPath: out })
+        downloadClip({ url, start, end, outputPath: out, mute, maxHeight })
             .then(res => {
                 console.log(`\n🎉 Vidéo prête : ${res.relativePath}`);
             })

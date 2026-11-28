@@ -19,11 +19,92 @@ const { spawnSync } = require('child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const SFX_DIR = path.resolve(ROOT_DIR, '01_Assets', 'SFX');
+const BUNDLED_SFX_DIR = path.resolve(ROOT_DIR, '.agents', 'skills', 'media-use', 'audio', 'assets', 'sfx');
 const SFX_PY = path.resolve(__dirname, 'sfx.py');
+
+function getFfmpegPath() {
+    try {
+        const installer = require('@ffmpeg-installer/ffmpeg');
+        if (installer && installer.path && fs.existsSync(installer.path)) return installer.path;
+    } catch (e) {}
+    return 'ffmpeg';
+}
+
+function isValidAudioFile(filePath) {
+    try {
+        if (!fs.existsSync(filePath) || fs.statSync(filePath).size < 800) return false;
+        const ff = getFfmpegPath();
+        const res = spawnSync(ff, ['-v', 'error', '-i', filePath, '-f', 'null', '-'], { encoding: 'utf8', timeout: 5000 });
+        if (res.error) return fs.statSync(filePath).size > 2000;
+        return res.status === 0;
+    } catch (e) {
+        return false;
+    }
+}
 
 // Création du dossier SFX s'il n'existe pas
 if (!fs.existsSync(SFX_DIR)) {
     fs.mkdirSync(SFX_DIR, { recursive: true });
+}
+
+// Catalogue local CC0/CC-BY déjà inclus dans .agents/skills/media-use/audio/assets/sfx/
+const BUNDLED_RECIPES = [
+    ['whoosh-cinematic', 'whoosh-cinematic.mp3'],
+    ['cinematic whoosh', 'whoosh-cinematic.mp3'],
+    ['whoosh-short', 'whoosh-short.mp3'],
+    ['whoosh', 'whoosh-short.mp3'],
+    ['swoosh', 'whoosh-short.mp3'],
+    ['swipe', 'whoosh-short.mp3'],
+    ['transition', 'whoosh-short.mp3'],
+    ['impact-bass-2', 'impact-bass-2.mp3'],
+    ['impact-bass-1', 'impact-bass-1.mp3'],
+    ['impact', 'impact-bass-1.mp3'],
+    ['thump', 'impact-bass-1.mp3'],
+    ['hit', 'impact-bass-1.mp3'],
+    ['bass', 'impact-bass-2.mp3'],
+    ['boom', 'impact-bass-2.mp3'],
+    ['riser', 'riser.mp3'],
+    ['swell', 'riser.mp3'],
+    ['click-soft', 'click-soft.mp3'],
+    ['tick', 'click-soft.mp3'],
+    ['clock', 'click-soft.mp3'],
+    ['gear', 'click-soft.mp3'],
+    ['click', 'click.mp3'],
+    ['tap', 'click-soft.mp3'],
+    ['button', 'click.mp3'],
+    ['key-press', 'key-press.mp3'],
+    ['typing', 'typing.mp3'],
+    ['keyboard', 'typing.mp3'],
+    ['clack', 'click-soft.mp3'],
+    ['pop', 'pop.mp3'],
+    ['bubble', 'pop.mp3'],
+    ['badge', 'pop.mp3'],
+    ['chime', 'chime.mp3'],
+    ['ding', 'chime.mp3'],
+    ['bell', 'chime.mp3'],
+    ['notification', 'notification.mp3'],
+    ['ping', 'ping.mp3'],
+    ['radar', 'ping.mp3'],
+    ['sonar', 'ping.mp3'],
+    ['glitch-2', 'glitch-2.mp3'],
+    ['glitch-3', 'glitch-3.mp3'],
+    ['glitch', 'glitch-1.mp3'],
+    ['sparkle', 'sparkle.mp3'],
+    ['error', 'error.mp3']
+];
+
+function matchBundledSfx(query) {
+    if (!fs.existsSync(BUNDLED_SFX_DIR)) return null;
+    const q = String(query || '').toLowerCase().trim();
+    for (const [key, filename] of BUNDLED_RECIPES) {
+        if (q === key || q.includes(key)) {
+            const candidate = path.join(BUNDLED_SFX_DIR, filename);
+            if (fs.existsSync(candidate)) {
+                return { filename, fullPath: candidate, title: `${key} (Bundled CC0/CC-BY)` };
+            }
+        }
+    }
+    return null;
 }
 
 // Dictionnaire de mapping vers les recettes de synthèse procédurale Earshot (sfx.py)
@@ -196,44 +277,75 @@ function matchEarshotRecipe(query) {
  * @param {string} [customOutPath] - Chemin optionnel de destination
  * @returns {Promise<{path: string, source: 'cache'|'openverse'|'earshot', title: string}>}
  */
-async function getOrFetchSfx(query, customOutPath = null) {
+async function getOrFetchSfx(query, customOutPath = null, options = {}) {
+    const { force = false, preferOpenverse = false } = options || {};
     const slug = slugify(query);
     const defaultMp3 = path.resolve(SFX_DIR, `${slug}.mp3`);
     const defaultWav = path.resolve(SFX_DIR, `${slug}.wav`);
     const targetPath = customOutPath || defaultMp3;
 
-    // 1. Vérification du cache local
-    if (fs.existsSync(targetPath) && fs.statSync(targetPath).size > 500) {
-        return { path: targetPath, source: 'cache', title: slug };
-    }
-    if (!customOutPath) {
-        if (fs.existsSync(defaultWav) && fs.statSync(defaultWav).size > 500) {
-            return { path: defaultWav, source: 'cache', title: slug };
+    // 1. Vérification du cache local valide (unless --force)
+    if (!force) {
+        if (isValidAudioFile(targetPath)) {
+            return { path: targetPath, source: 'cache', title: slug };
         }
-        if (fs.existsSync(defaultMp3) && fs.statSync(defaultMp3).size > 500) {
-            return { path: defaultMp3, source: 'cache', title: slug };
+        if (!customOutPath) {
+            if (isValidAudioFile(defaultMp3)) {
+                return { path: defaultMp3, source: 'cache', title: slug };
+            }
+            if (isValidAudioFile(defaultWav)) {
+                return { path: defaultWav, source: 'cache', title: slug };
+            }
         }
     }
 
-    // 2. Recherche Openverse (Real SFX)
+    // 2. Catalogue local curé haute propreté (sauf si preferOpenverse explicite)
+    if (!preferOpenverse) {
+        const bundled = matchBundledSfx(query);
+        if (bundled) {
+            const bundledOut = customOutPath || defaultMp3;
+            fs.copyFileSync(bundled.fullPath, bundledOut);
+            if (isValidAudioFile(bundledOut)) {
+                console.log(`✅ [SFX Bundled CC0/CC-BY] "${query}" -> ${path.basename(bundledOut)} (depuis ${bundled.filename})`);
+                return { path: bundledOut, source: 'bundled', title: bundled.title };
+            }
+        }
+    }
+
+    // 3. Recherche Openverse (Real SFX)
     console.log(`🔍 [SFX] Recherche d'un son réel sur Openverse pour : "${query}"...`);
     const openverseMatch = await searchOpenverse(query);
     if (openverseMatch && openverseMatch.url) {
         try {
             console.log(`⬇️ [SFX Openverse] Téléchargement : "${openverseMatch.title}" (${openverseMatch.source})...`);
             await downloadFile(openverseMatch.url, targetPath);
-            if (fs.existsSync(targetPath) && fs.statSync(targetPath).size > 500) {
+            if (isValidAudioFile(targetPath)) {
                 console.log(`✅ [SFX Openverse] Enregistré avec succès dans : ${path.basename(targetPath)}`);
                 return { path: targetPath, source: 'openverse', title: openverseMatch.title };
             }
+            try { fs.unlinkSync(targetPath); } catch (e) {}
+            console.warn(`⚠️ [SFX Openverse] Fichier audio invalide ou vide. Bascule vers fallback...`);
         } catch (downloadErr) {
-            console.warn(`⚠️ [SFX Openverse] Échec du téléchargement (${downloadErr.message}). Bascule vers Earshot...`);
+            console.warn(`⚠️ [SFX Openverse] Échec du téléchargement (${downloadErr.message}). Bascule vers fallback...`);
         }
     } else {
-        console.log(`ℹ️ [SFX] Aucun résultat direct Openverse. Bascule vers la synthèse procédurale Earshot...`);
+        console.log(`ℹ️ [SFX] Aucun résultat direct Openverse. Bascule vers fallback...`);
     }
 
-    // 3. Fallback Earshot (Synthèse procédurale par code DSP)
+    // Fallback catalogue curé si preferOpenverse avait échoué
+    if (preferOpenverse) {
+        const bundled = matchBundledSfx(query);
+        if (bundled) {
+            const bundledOut = customOutPath || defaultMp3;
+            fs.copyFileSync(bundled.fullPath, bundledOut);
+            if (isValidAudioFile(bundledOut)) {
+                console.log(`✅ [SFX Bundled CC0/CC-BY] Fallback propre : ${path.basename(bundledOut)}`);
+                return { path: bundledOut, source: 'bundled', title: bundled.title };
+            }
+        }
+    }
+
+    // 4. Fallback Earshot (Synthèse procédurale adoucie par code DSP)
     const recipe = matchEarshotRecipe(query);
     const earshotTarget = targetPath.endsWith('.mp3') ? targetPath.replace(/\.mp3$/, '.wav') : targetPath;
     console.log(`⚡ [SFX Earshot] Synthèse procédurale DSP (recette: "${recipe}")...`);
@@ -279,17 +391,25 @@ if (require.main === module) {
         process.exit(0);
     }
 
+    const force = args.includes('--force') || args.includes('-f');
+    const preferOpenverse = args.includes('--openverse');
     const batchArg = getArg('--batch');
     if (batchArg) {
         const items = batchArg.split(',').map(s => s.trim()).filter(Boolean);
-        console.log(`🚀 [SFX] Téléchargement du lot :`, items);
-        ensureSfxCollection(items).then(map => {
+        console.log(`🚀 [SFX] Récupération du lot :`, items);
+        (async () => {
+            const map = {};
+            for (const name of items) {
+                const res = await getOrFetchSfx(name, null, { force, preferOpenverse });
+                const relPath = path.relative(path.resolve(ROOT_DIR, '04_Videos'), res.path).replace(/\\/g, '/');
+                map[name] = relPath.startsWith('.') ? relPath : `../${relPath}`;
+            }
             console.log('✅ Lot de bruitages prêt :', map);
-        }).catch(err => console.error(err));
+        })().catch(err => { console.error(err); process.exit(1); });
     } else {
         const query = getArg('--query') || 'whoosh';
         const out = getArg('--out');
-        getOrFetchSfx(query, out).then(info => {
+        getOrFetchSfx(query, out, { force, preferOpenverse }).then(info => {
             console.log(`\n🎉 Bruitage disponible :`, info);
         }).catch(err => {
             console.error('❌ Erreur:', err.message);

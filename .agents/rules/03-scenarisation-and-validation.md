@@ -47,7 +47,8 @@ Avant tout codage, l'IA doit structurer sa proposition comme suit :
 | ... | ... | ... | ... | ... | ... |
 
 ### C. Inventaire des Outils, Scripts & Assets Prévus
-* **Audio & Musique** : Nom du morceau choisi, BPM, moments clés de synchronisation.
+* **Audio & Musique** : Nom d'une vraie musique **spécifiquement sélectionnée et téléchargée pour ce sujet** (`fetch_music.cjs --query "..."`, jamais une piste recyclée par défaut ni une synthèse générique), BPM, moments clés de synchronisation, et calibrage SFX discret sous la voix (`build_soundtrack.cjs`).
+* **Rythme & Compréhension** : Script narratif suffisamment développé pour rester naturel et fluide (zéro trou artificiel de voix off) OU animations douces et épurées pour laisser le temps de comprendre.
 * **Techno visuelle** : 3D Three.js, SVG animé, Charts, particules, mockups.
 * **Direction Artistique** : Palette 60/30/10 adaptée au sujet, polices 80/20.
 

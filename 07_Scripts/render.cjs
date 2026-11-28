@@ -283,11 +283,25 @@ async function main() {
     browserWs.close();
     chrome.kill();
 
-    // Muxing audio si une piste master existe
+    // Muxing audio si une piste master existe (WAV, MP3 ou balise <audio> déclarée dans le HTML)
     const possibleAudioTracks = [
         path.resolve(__dirname, '..', '01_Assets', 'Audio_Mix', baseVideoName.replace(/\.html$/i, '_master_soundtrack.wav')),
+        path.resolve(__dirname, '..', '01_Assets', 'Audio_Mix', baseVideoName.replace(/\.html$/i, '_master_soundtrack.mp3')),
         path.resolve(__dirname, '..', '01_Assets', 'Audio_Mix', 'air_senegal_master_soundtrack.wav')
     ];
+    try {
+        const htmlRaw = fs.readFileSync(HTML_FILE, 'utf8');
+        const audioSrcMatches = htmlRaw.match(/<audio[^>]+src=["']([^"']+)["']/ig) || [];
+        for (const tag of audioSrcMatches) {
+            const m = tag.match(/src=["']([^"']+)["']/i);
+            if (m && m[1] && !m[1].startsWith('http') && !m[1].startsWith('data:')) {
+                const resolvedAudio = path.resolve(path.dirname(HTML_FILE), m[1]);
+                if (!possibleAudioTracks.includes(resolvedAudio)) {
+                    possibleAudioTracks.push(resolvedAudio);
+                }
+            }
+        }
+    } catch (e) {}
     let matchedAudio = possibleAudioTracks.find(p => fs.existsSync(p));
 
     if (matchedAudio) {

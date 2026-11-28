@@ -134,6 +134,7 @@ heygen-new/
 │   ├── generate_all_style_thumbnails.cjs # Batch de vignettes de styles
 │   ├── audit-build-security.cjs# Audit de conformité de sécurité et dépendances
 │   ├── check-architecture.cjs  # Gardien automatisé de conformité de 01-project-architecture.md
+│   ├── check-contrast.cjs      # Vérificateur automatisé du contraste WCAG 2.1 des compositions HTML
 │   ├── cleanup-scratch.cjs     # Nettoyage automatique du dossier scratch/
 │   ├── audio_sync_helper.js    # Synchronisation audio/vidéo fine
 │   ├── channels.json           # Registre des chaînes créées

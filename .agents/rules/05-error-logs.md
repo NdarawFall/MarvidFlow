@@ -197,7 +197,7 @@ Ce document répertorie les erreurs, pièges et régressions commis par l'IA sur
   - **Points d'Ancrage SVG 100% Infaillibles** :
     - Encadrer tout élément rotatif SVG dans un groupe pivot maître : `<g transform="translate(centerX, centerY)">`.
     - Placer l'élément enfant relativement à `(0, 0)` : `<g id="secondHand"><line x1="0" y1="20" x2="0" y2="-120" ... /></g>`.
-    - Dans GSAP, animer le groupe enfant avec `transformOrigin: "0px 0px"`. Zéro décalage, pivot mathématique absolu.
+    - Dans GSAP, animer le groupe enfant avec `svgOrigin: "0 0"` (jamais `transformOrigin`, qui utilise le coin haut-gauche `(-R, -120)` de `getBBox()`). Zéro décalage, pivot mathématique absolu.
   - **Gestion Rapprochée / Zoom Caméra** :
     - Ne JAMAIS zoomer sur un bloc UI complet qui occupe déjà > 60% de la hauteur de l'écran sous peine de masquer du texte.
     - Pour mettre en valeur un détail (ex: une ligne spécifique), animer un highlight localisé (halo lumineux, bordure néon, scale localisé de 1.04 max) SANS zoom de conteneur global.
@@ -288,4 +288,59 @@ Ce document répertorie les erreurs, pièges et régressions commis par l'IA sur
   - **Délégation Totale au Player (HyperFrames / Studio Contract)** :
     - En mode Studio (`isIframeMode === true`), le code de la composition ne doit JAMAIS appeler `video.play()`, `video.pause()` ni réassigner `video.currentTime`. Le Studio pilote automatiquement la lecture et les arrêts dès que la tête de lecture franchit `data-start` et `data-end`.
     - Les appels de secours (`tl.call`) ou les recalages fins ne doivent s'exécuter qu'en mode autonome (`if (!isIframeMode)`).
+
+---
+
+### [2026-11-27] — Rotation SVG Hors-Axe / Aléatoire (Roues, Engrenages, Objectifs) & Calibrage SFX Trop Fort
+* **Problème / Symptôme** :
+  1. Lors d'une animation de rotation sur des cercles, roues ou engrenages SVG (`#s1GearBig`, `#s1GearSmall`), les éléments quittaient leur axe géométrique central (dérive orbitale jusqu'à 298 px sur Chromium) au lieu de tourner proprement sur place, et les dents `stroke-dasharray` présentaient un joint asymétrique.
+  2. Les effets sonores (`sfx.py` : `click`, `thump`, `whoosh`, `crash`, `heartbeat`) sonnaient beaucoup trop fort et agressifs par rapport à la musique de fond.
+* **Cause technique** :
+  1. Les tweens `tl.to('#rotor', { rotation: ... })` utilisaient `transformOrigin` (ou l'omettaient) au lieu de **`svgOrigin`** : sur un groupe SVG centré en `(0, 0)`, `getBBox()` démarre à `(-R, -R)`. GSAP interprète `transformOrigin: "0px 0px"` par rapport au coin haut-gauche de `getBBox()` (`(-220, -220)` sur `r=220`), et `"50% 50%"` échoue dès qu'un parent est en `display: none` (`getBBox() == {0,0,0,0}`), injectant dans les deux cas une translation orbitale parasite `(e, f)` dans la matrice SVG. De plus, `stroke-dasharray="36 22"` sur `r=220` ne divisait pas $2\pi R$ par un entier exact.
+  2. **Musique synthétique "dégueulasse" & SFX toujours trop forts** : utilisation de `generate_music.py` (oscillateurs synthétiques basiques) au lieu d'une vraie musique instrumentale/orchestrale via `fetch_music.cjs`, mixage bricolé en Python dans `scratch/` au lieu d'utiliser/corriger `07_Scripts/build_soundtrack.cjs` + `fetch_sfx.cjs`, et calibration basée sur le `mean_volume` global des SFX (qui, à cause des traînes silencieuses, remontait les pics transitoires à `-0.3 dBFS`, soit **+20 dB au-dessus d'un passage musical calme à `-21 dB`**).
+* **Règle à respecter impérativement** :
+  - **Axe de Rotation Infaillible (0.0 px de dérive)** :
+    - Tout objet rotatif SVG (roue, engrenage, objectif, aiguille, anneau) doit être centré mathématiquement sur `(0, 0)` à l'intérieur d'un groupe porteur `<g transform="translate(cx, cy)"><g id="rotor">...</g></g>`, et **CHAQUE** tween GSAP `rotation` DOIT utiliser **`svgOrigin: "0 0"`** (ou **`svgOrigin: "cx cy"`** en coordonnées user SVG si non enveloppé). **Interdiction absolue de `transformOrigin: "0px 0px"` ou `"50% 50%"` en CSS sur un élément SVG** : seul `svgOrigin` écrit `transform="matrix(..., 0, 0)"` indépendamment de `getBBox()` et de `display: none`.
+    - Pour des crans/dents en pointillés, calculer impérativement un nombre entier exact de dents : `dash + gap = (2 * Math.PI * r) / N`.
+    - Contrôler automatiquement `getBoundingClientRect()` et l'attribut SVG `transform` aux temps `t=0`, `t=mid`, `t=end` avant validation finale : le centre `(cx, cy)` de l'objet en rotation pure ne doit dériver d'aucun pixel.
+  - **Musique Réelle & Pipeline Audio du Projet (`07_Scripts/`)** :
+    - Toujours utiliser **`node 07_Scripts/fetch_music.cjs`** (vrais morceaux orchestraux/cinématiques/documentaires) et **`node 07_Scripts/fetch_sfx.cjs`** (bruitages réels CC0/CC-BY / Openverse avant le fallback adouci `sfx.py --peak 0.35`). **Ne jamais utiliser `generate_music.py`** sur un documentaire ou film cinématique.
+    - Toujours assembler et mixer via **`node 07_Scripts/build_soundtrack.cjs`** (`--music`, `--music-start`, `--sfx <json>`, `--clips`/`--voice`, `--out`, `--also-wav`), jamais par script temporaire dans `scratch/`.
+  - **Calibration SFX par True Peak Cible (Jamais par `mean_volume` Global)** :
+    - Normaliser le lit musical cible d'abord (`-16 LUFS` sans voix off ; ducké `-18 à -22 dB` sous voix).
+    - Calibrer chaque SFX par **`targetPeakDb - max_volume` mesuré** (jamais via `mean_volume` qui surestime les transitoires) : `ui` pic max **`-22.5 dBFS`**, `whoosh` pic max **`-18.5 dBFS`**, `impact` pic max **`-15.0 dBFS`**, passe-bas doux et limiteur `alimiter=limit=0.90`. Contrôler par tranches de 10s (`volumedetect`) qu'aucun pic SFX ne dépasse le niveau cible.
+
+---
+
+### [2026-11-27] — Débordement Portrait Hors Card, Décalage Ligne-à-Pin Carte, Lag Vidéo Studio & Logos Clés Trop Petits
+* **Problème / Symptôme** :
+  1. Scène 1 (Vox) : le portrait détouré sortait visuellement du cadre/card au lieu d'être contenu dedans.
+  2. Scène 2 (Carte TopoJSON) : les lignes de trajectoire (`#mapArc1`, `#mapArc2`) ne touchaient pas exactement le centre des points cibles (`#pinPretoria`, `#pinKingston`, `#pinSilicon`), décalés en haut à gauche.
+  3. Lecture des `<video>` saccadée / avec lags dans le Studio au lieu d'une fluidité instantanée type CapCut.
+  4. Logos de marques clés (`PayPal`, `Twitter -> X`, `SpaceX`, `Tesla`) rendus trop petits dans les cartes.
+* **Cause technique** :
+  1. `<img class="s1-cutout">` avait été placé en élément frère à l'extérieur de `.s1-paper-card` (qui possédait `overflow: hidden`) avec une hauteur supérieure à la card.
+  2. Les groupes pins possédaient `transform="translate(cx, cy)"` sur le nœud même animé par GSAP avec `svgOrigin: "0 0"`, décalant la transformation SVG des cercles par rapport aux sommets absolus des `<path>` du `<svg viewBox="0 0 1920 1080">`.
+  3. Quatre goulets GPU/décodeur cumulés : (a) `filter: url(#cameraMotionBlur)` appliqué en permanence sur le `#cameraRig` 1920×1080 et `mix-blend-mode: multiply` plein écran au-dessus des `<video>` (désactive les plans matériels DirectComposition de Chrome), (b) `display: none` sur les scènes vidéo au lieu de `visibility: hidden`, (c) `studio.js` lançait toutes les `<video>` dès `t = 0` sans gérer leur fenêtre `[data-start, data-end]` dans `syncAudioDuringPlayback`, (d) clips H.264 avec B-frames ralentissant le scrub/loop.
+  4. Tailles CSS timides (`30px–52px`) sur les logos au lieu d'une mise en avant héroïque.
+* **Règle à respecter impérativement** :
+  - **Contention stricte & Cadrage sans tranche coupée en Card** : Toute image/portrait destiné à une card éditoriale doit être placé **à l'intérieur DOM** de `.card { overflow: hidden; }` en `width: 100%; height: 100%; object-fit: cover; object-position: center 14%;` avec léger zoom (`scale: 1.06 -> 1.12`) afin que les bords coupés latéraux de la photo disparaissent au ras du cadre sans jamais déborder.
+  - **Illustration Obligatoire des Marques Citées** : Chaque marque évoquée par la narration ou le script (eBay, PayPal, Compaq, NASA...) doit voir son logo officiel téléchargé (`brandfetch.cjs`) et affiché bien visible en grand (fallback typographique éditorial assumé uniquement si logo indisponible ou incompatible avec le design).
+  - **Cartes SVG Sans Saccade au Démarrage** : Retirer `vector-effect: non-scaling-stroke` sur les polygones de fond, pré-rastériser la carte statique une fois sur `<canvas>` 2× avec `will-change: transform`, isoler tracés + pins dans un `<svg>` séparé et démarrer les tracés en `sine.out` (avec tolérance `renderAt` >= `0.35s`).
+  - **Rigging SVG exact Pin ↔ Trajectoire** : Ne JAMAIS mélanger `transform="translate(cx, cy)"` et `svgOrigin: "0 0"` sur un élément animé GSAP ; poser directement `cx/cy` sans `translate` et répéter **`svgOrigin: "cx cy"` dans `fromVars` ET `toVars`** d'un `fromTo()` (sinon GSAP injecte `matrix(1,0,0,1,-R,-R)`!), partager exactement les sommets du `<path>`, peindre les pins après le tracé et valider `distance < 1.0 px` dans Chromium.
+  - **Fluidité Vidéo CapCut** : Zéro filtre SVG ou `mix-blend-mode` sur le conteneur des `<video>` ; conserver les scènes en GPU avec `visibility: hidden` ; ré-encoder les B-rolls via `youtube_clip.cjs` en H.264 `-tune fastdecode -bf 0 -g 15 -movflags +faststart` ; ne décoder dans `studio.js` que les `<video>` dans leur fenêtre `[data-start, data-end]` sans micro-seek 60 FPS (tolérance `0.45s`).
+  - **Logos Clés en Grand** : Afficher tout logo narrativement important en grand format (`height: 75px–130px` pour icône, `width: 220px–450px` pour wordmark).
+
+### [2026-11-28] Pacing, Découpage Voix Off, SFX Trop Forts, Musique Répétée & Chronologie Portraits
+* **Problèmes observés** :
+  1. Le rythme initial (66s) était trop dense pour laisser digérer les scènes, mais **découper artificiellement la voix off avec des silences/trous forcés** rend le débit peu naturel et risque de désynchroniser parole et visuel.
+  2. Les **SFX restaient trop forts** sous la voix (et couvraient la narration) car `build_soundtrack.cjs` appliquait un `loudnorm` global post-mixage remontant les SFX pendant les pauses, les plafonds étaient trop hauts (`-21` à `-28 dBFS`) et `ai_director.cjs` utilisait `playSfx(..., 0.5)`.
+  3. `ai_director.cjs` utilisait toujours la même musique par défaut (ou ne téléchargeait pas de piste adaptée via recherche), et la musique générée synthétiquement était de qualité insuffisante.
+  4. Portrait anachronique (~2015) utilisé en Scène 1 alors que la narration parlait de 2008/des débuts.
+* **Règles à respecter impérativement** :
+  - **Compréhension sans hacher la voix off** : Ne JAMAIS créer de trous artificiels dans la voix off. Pour laisser le temps de comprendre, soit **rallonger/étoffer le script naturel dès l'écriture**, soit **simplifier et adoucir les animations visuelles** avec moins d'éléments simultanés.
+  - **SFX strictement subordonnés à la voix** : Dans `build_soundtrack.cjs`, pré-normaliser la voix à `-14 LUFS` **avant** le mixage, appliquer du ducking (`sidechaincompress`) sur la musique (`musicVol: 0.10`), et plafonner les SFX sous voix à **`-30 dBFS` (impact), `-33 dBFS` (whoosh), `-36 dBFS` (UI)** sans re-pompage loudnorm post-mix ; dans `ai_director.cjs`, brider `playSfx` (`<= 0.18`).
+  - **Musique originale adaptée à chaque vidéo** : Toujours analyser le thème pour chercher et télécharger un vrai morceau cohérent via `fetch_music.cjs --query "..."` (Openverse CC + catalogue Incompetech avec exclusion de la piste précédente) au lieu de réutiliser toujours le même fichier ou de synthétiser une musique bâclée.
+  - **Archives & Portraits fidèles à l'époque exacte** : Sourcer systématiquement un portrait/document correspondant à l'âge et à l'année citée (ex : `elon_2008_interview-7421.jpg` en scène d'ouverture 2008).
+
 

@@ -56,6 +56,8 @@ Hook (0–3 s) → Montée (3–20 s) → Chute / payoff (20–30 s) → Boucle 
 | Image fixe minimale | 1.2 s (avec Ken Burns) | 2 s |
 | B-roll vidéo | 1.5–3 s | 2–5 s |
 - Couper **sur le début d'un mot** ou sur un mot accentué ; un visuel qui illustre un mot apparaît **0.1–0.25 s avant** ce mot (le cerveau lit l'image puis entend le mot).
+- **Priorité à la compréhension sans coupure de voix artificielle** : Ne jamais sacrifier la compréhension pour respecter un chrono arbitraire, ni hacher une voix off continue par des trous de silence artificiels. Pour donner le temps de comprendre : **allonger et développer naturellement le script narratif** ou **alléger les écrans (moins d'éléments, animations plus douces)** en parfaite synchro avec la voix continue.
+- **Musique sur-mesure & SFX discrets** : Réfléchir à l'émotion exacte du récit et télécharger un vrai morceau adapté (`fetch_music.cjs --query "..."`, sans réutiliser la même boucle ni créer de synthèse médiocre) ; maintenir tous les SFX clairement en dessous de la voix (`<= -30 dBFS` sous `-14 LUFS`, via `build_soundtrack.cjs`).
 - **J-cut / L-cut** : l'audio de la scène suivante démarre 150–300 ms avant l'image (ou inversement) pour fluidifier.
 - Accélérer en approchant du climax (plans de plus en plus courts), ralentir pour la chute.
 - Ne jamais couper dans un mouvement de fond d'une manière qui casse la direction (gauche→droite puis cut droite→gauche sans raison).
@@ -69,9 +71,9 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 | Une évolution dans le temps | Courbe / barres animées | `chart.js` |
 | Un lieu, un pays, un trajet | Carte animée + drapeau | `fetch_map.cjs`, `fetch_flag.cjs` |
 | Un club / équipe de football | Logo officiel HD PNG/SVG | `fetch_football_logo.cjs` |
-| Une entreprise, une marque | Logo officiel sur sa couleur | `brandfetch.cjs` |
+| Une entreprise, une marque citée (voix/script) | **Toujours illustrer** par son logo officiel téléchargé et affiché en grand (ou typographie éditoriale assumée si logo absent) | `brandfetch.cjs` |
 | Une affirmation à prouver / une source | Capture de l'article avec phrase surlignée | `record_web.cjs` + `highlight` |
-| Une personne | Photo détourée ou plan de stock | `remove_bg.cjs`, `coverr.cjs` |
+| Une personne | Photo détourée ou archive **fidèle à l'âge et à la date exacte du récit** | `remove_bg.cjs`, `coverr.cjs` |
 | Une action concrète (courir, payer, taper) | B-roll littéral | `coverr.cjs` |
 | Un concept abstrait (inflation, peur, IA) | Métaphore visuelle, 3D, motion | `three` |
 | Un mot-clé à retenir | Texte seul (1–4 mots) | `text_animation` |

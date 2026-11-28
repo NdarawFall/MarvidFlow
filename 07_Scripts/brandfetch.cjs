@@ -28,21 +28,28 @@ function save(buf,dest){
   return dest;
 }
 
-// Iconify logos collection (SVG couleur haute qualite)
-// Liste des logos: https://icon-sets.iconify.design/logos/
+// Iconify logos collection (logos, thesvg-color, simple-icons SVG haute qualite)
 function fromIconify(domain){
-  var slug=domain.replace(/\.com$|\.net$|\.org$|\.io$/,'').toLowerCase().replace(/[\s_]/g,'-');
-  var url='https://api.iconify.design/logos/'+slug+'.svg';
-  console.log('[Iconify] '+url);
-  return httpGet(url).then(function(r){
-    if(r.s===200&&r.t.indexOf('svg')!==-1&&r.b.length>100){
-      var dest=save(r.b,path.join(LOGOS_DIR,slug+'.svg'));
-      console.log('[OK] 01_Assets/Logos/'+path.basename(dest)+' (SVG couleur)');
-      return dest;
-    }
-    console.log('[Info] Iconify: logo non trouve pour  +slug+ ');
-    return null;
-  }).catch(function(e){console.log('[Info] Iconify erreur: '+e.message);return null;});
+  var slug=domain.replace(/\.(?:com|net|org|io|gov|fr|co|ai|dev|app)$/i,'').toLowerCase().replace(/[\s_]/g,'-');
+  var collections=['logos','thesvg-color','simple-icons'];
+  return collections.reduce(function(p,col){
+    return p.then(function(found){
+      if(found) return found;
+      var url='https://api.iconify.design/'+col+'/'+slug+'.svg';
+      console.log('[Iconify:'+col+'] '+url);
+      return httpGet(url).then(function(r){
+        if(r.s===200&&r.t.indexOf('svg')!==-1&&r.b.length>100){
+          var dest=save(r.b,path.join(LOGOS_DIR,slug+'.svg'));
+          console.log('[OK] 01_Assets/Logos/'+path.basename(dest)+' (SVG '+col+')');
+          return dest;
+        }
+        return null;
+      }).catch(function(){return null;});
+    });
+  }, Promise.resolve(null)).then(function(res){
+    if(!res) console.log('[Info] Iconify: logo non trouve pour '+slug);
+    return res;
+  });
 }
 
 // Google Favicons (PNG, universel - fonctionne pour tous les sites)

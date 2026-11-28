@@ -93,8 +93,12 @@ Un seul système de texte « parlé » à l'écran à la fois : si un titre appa
    - Si le fond de la vidéo est clair, le logo doit être sombre.
    - Ratio de contraste minimal : 4.5:1 pour le texte courant, 7:1 pour les logos et titrages clés.
 
-2. **Taille et Impact des Logos** :
-   - Ne jamais reléguer un logo officiel dans une boîte miniature timide. Les logos doivent être **grands, affirmés et immédiatement identifiables** (largeur typique 300px–450px selon le ratio, hauteur 90px–140px).
+2. **Illustration Systématique des Marques Évoquées, Taille Héroïque & Fallback Assumé (Règle Vidéo Générale)** :
+   - **Tout nom de marque cité par le script/voix DOIT être illustré** : télécharger son logo officiel via `07_Scripts/brandfetch.cjs` (ex: *eBay, PayPal, Compaq, NASA*) et l'afficher **en grand et bien lisible** (`height: 44px–140px` / `width: 180px–450px`) afin que le spectateur l'identifie instantanément sans se demander *« c'est qui ? »*.
+   - **Si logo indisponible ou incompatible avec le design** : utiliser un traitement éditorial typographique propre et assumé (texte seul stylisé) — **jamais** de logo dessiné/bricolé à la main ni de miniature timide `24px–32px`.
+
+3. **Contention Stricte & Cadrage sans Tranches Coupées des Portraits en Card (`overflow: hidden`)** :
+   - Lorsqu'un portrait ou visuel est présenté dans une card éditoriale, placer `<img ...>` **à l'intérieur DOM** de `.card { overflow: hidden; }` en **`width: 100%; height: 100%; object-fit: cover; object-position: center 14%;`** avec zoom léger (`scale: 1.05 -> 1.12`) : cela remplit toute la largeur du cadre (zéro tranche verticale de découpe visible sur les côtés) sans jamais dépasser les bordures.
 
 3. **Design Lisse des Cartes (Zéro Bordure Colorée Artificielle)** :
    - Les cartes doivent être lisses, sobres et élégantes.
@@ -192,9 +196,11 @@ tl.fromTo('.panel',{clipPath:'inset(0 100% 0 0 round 24px)'},{clipPath:'inset(0 
 | Piège | Parade |
 |---|---|
 | `getBBox()` = 0 ou NaN → division par zéro | Ne jamais mesurer un élément `display:none` ; utiliser `visibility:hidden` + opacité, ou `pathLength="1"` pour les tracés |
-| Rotation SVG autour de (0,0) | `transformBox:'fill-box'; transformOrigin:'50% 50%'` ou `svgOrigin:'x y'` |
+| Rotation SVG autour de (0,0) ou décalage pin/ligne | NE JAMAIS combiner `transform="translate(x,y)"` avec `svgOrigin:'0 0'` sur un élément SVG animé, ET toujours répéter `svgOrigin` dans `fromVars` ET `toVars` d'un `fromTo()` (`fromTo(el, { scale: 0, svgOrigin: 'x y' }, { scale: 1, svgOrigin: 'x y' })` — sinon GSAP cuit une translation `-R, -R` dans la matrice!). Partager les coordonnées exactes `(x,y)` entre `<path>` et `<circle>`, dessiner les pins après les tracés, et vérifier `distance < 1.0 px` dans Chromium |
+| Portrait ou cutout qui sort de sa card ou montre ses bords coupés | Placer `<img>` à l'intérieur de la `.card` avec `overflow: hidden`, `width:100%; height:100%; object-fit:cover; object-position:center 14%;` et zoom `scale: 1.06 -> 1.12` |
+| Tracé carte SVG qui saccade au démarrage pendant un zoom | Retirer `vector-effect: non-scaling-stroke` des polygones de fond, pré-rastériser la carte sur `<canvas>` 2× avec `will-change: transform`, isoler tracés + pins dans un petit `<svg>` léger au-dessus et animer le tracé en `ease: 'sine.out'` (sans caler `renderAt` en dessous de `0.35s`) |
 | Texte qui déborde (titres longs, 9:16) | `fitText` ci-dessous, puis couper à 2 lignes |
-| `display:none` sur conteneurs avec `<video>` → gel GPU / stutter | Maintien permanent en mémoire GPU : `display:flex; position:absolute; inset:0; visibility:hidden; opacity:0; pointer-events:none;` et bascule `visibility:visible` synchronisée |
+| `display:none` / filtres SVG ou `mix-blend-mode` sur `<video>` → lag & stutter | Maintien permanent en mémoire GPU : `visibility:hidden; opacity:0; pointer-events:none` (jamais `display:none`) ; **INTERDICTION** d'appliquer un `filter: url(#...)` SVG plein écran ou `mix-blend-mode` au-dessus d'une balise `<video>` ; encoder en H.264 sans B-frames (`-bf 0 -tune fastdecode -g 15 -movflags +faststart`) et mettre en pause toute `<video>` hors de sa fenêtre `[data-start, data-end]` |
 | Vidéos B-roll désynchronisées en rendu | Piloter `video.currentTime` depuis la timeline (`onUpdate`) et attendre `seeked` ; `muted playsinline preload="auto"` ; l'audio vient du mixage FFmpeg, jamais de la balise |
 | `object-fit` oublié → étirement | `object-fit:cover` partout sauf logos (`contain`) |
 | Images énormes → rendu lent | `sharp` : max 2× la taille d'affichage, WebP/PNG |
@@ -418,10 +424,10 @@ Dans toute scène active, au moins 2 de ces 3 moteurs doivent être en action :
 3. **Apparition Séquentielle Cadencée** :
    - Les informations se déploient au fur et à mesure de l'écoute de la voix off, mot par mot, chiffre par chiffre.
 
-### 17.2 L'Exception Unique : Le Plateau Cognitif Réfléchi ("Holding Phase")
-- Lorsqu'une scène nécessite une attention de lecture extrême (ex: compréhension d'un benchmark complexe, lecture d'un mot-clé choc ou punchline financière majeure), une **Holding Phase** est autorisée.
-- *Durée strictement calibrée* : **1.2s à 1.8s maximum**.
-- *Maintien de la vie* : Même pendant que la caméra fige son zoom (`ease: 'none'`), les micro-lumières d'ambiance et les indicateurs système continuent de respirer discrètement. La caméra ne s'arrête que pour laisser le cerveau imprimer l'information, puis la scène enchaîne sur sa transition dynamique.
+### 17.2 Priorité à la Compréhension : Rythme Fluide, Écran Épuré & Exactitude Historique
+- Ne jamais sacrifier la compréhension pour respecter un chrono arbitraire, MAIS **ne jamais insérer de coupures/trous de silence artificiels dans la voix off**.
+- Pour laisser au spectateur le temps d'assimiler confortablement : soit **étoffer et allonger le script lui-même** de façon naturelle et fluide, soit concevoir des **animations plus douces avec moins d'éléments simultanés à l'écran** afin que la lecture reste naturelle en synchrone avec la narration continue.
+- *Audio & Chronologie* : Télécharger une vraie musique adaptée au sujet (`fetch_music.cjs --query "..."`, jamais toujours le même morceau ni une musique générée approximative), garder les SFX strictement subordonnés à la voix (`<= -30 dBFS`), et vérifier que toute archive ou portrait correspond chronologiquement **à l'âge et à la date précise** mentionnés dans la scène.
 
 ---
 
@@ -433,6 +439,7 @@ L'animation visuelle obéit au fonctionnement cognitif du cerveau humain. Deux m
 1. **Le Mode Séquencé / Ordonné (Standard Absolu par Défaut — 90% des cas)** :
    - **Quand il y a une voix off** : L'animation visuelle DOIT suivre scrupuleusement la voix off (mot par mot, phrase par phrase). L'élément visuel (mot-clé, carte, métrique, diagramme) apparaît à l'instant où l'auditeur l'entend. L'œil confirme ce que l'oreille perçoit.
    - **Quand il n'y a pas de voix off** : L'animation DOIT suivre un ordre hiérarchique rigoureux de lecture humaine (de haut en bas, de gauche à droite : Titre d'accroche $\rightarrow$ Sujet / Carte Bento $\rightarrow$ Chiffre clé / Détail $\rightarrow$ Action / Conclusion).
+   - **Scènes Workflow / Réseau / Écosystème** : Si la scène repose sur un **logo, produit ou hub central**, ce **sujet central DOIT apparaître EN PREMIER** ; les flux rayonnent ensuite depuis le centre et **les éléments périphériques s'affichent un par un** (jamais les satellites avant le cœur du débat).
    - **Raison neuro-visuelle** : Le regard humain ne peut lire et imprimer qu'une seule information à la fois. Si 4 éléments s'animent en même temps, le regard hésite, se fatigue et ne retient rien.
 
 2. **Le Mode Simultané (L'Exception Ciblée d'Ambiance)** :

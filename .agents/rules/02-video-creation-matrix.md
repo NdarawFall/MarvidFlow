@@ -57,9 +57,9 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
     - Cartes UI : Roulis 3D perspective (`rotateX: 15deg`, `rotateY: -10deg`), pop élastique avec inertie (`back.out(1.5)`).
     - Icônes : Rotation élastique (`rotation: -25deg` vers `0deg`), cascades.
     - Graphiques & terrains : Tracé dynamique séquentiel (`strokeDashoffset`).
-15. **Rigueur de la Physique 2D & Points d'Ancrage SVG Infaillibles** :
+15. **Rigueur de la Physique 2D & Points d'Ancrage SVG Infaillibles (Zéro Dérive d'Axe)** :
     - Pour les objets en mouvement/rebond : séparer le conteneur de translation $Y$ (rebond, squash & stretch) de l'élément SVG interne (rotation axiale à `center center`). L'ombre au sol doit rester strictement au sol.
-    - Pour les éléments rotatifs (aiguilles, jauges) : encapsuler dans un groupe pivot maître centré `<g transform="translate(cx, cy)">` et animer avec `transformOrigin: "0px 0px"`. Ne jamais utiliser `svgOrigin: "0 0"`.
+    - **LOI ABSOLUE DE ROTATION & ANCRAGE SVG (Roues, Engrenages, Objectifs, Aiguilles, Pins)** : Encapsuler impérativement dans un groupe pivot maître centré `<g transform="translate(cx, cy)"><g id="rotor">...</g></g>` où toute la géométrie est centrée sur `(0, 0)`, **ET passer explicitement `svgOrigin: "0 0"` (ou `svgOrigin: "cx cy"` sans groupe translate) dans CHAQUE `gsap.set` / `gsap.to` / `fromVars` ET `toVars` d'un `tl.fromTo()`** (car omettre `svgOrigin` dans le `fromVars` d'un `fromTo()` pousse GSAP à fixer un décalage permanent `(-R, -R)`!). **NE JAMAIS utiliser `transformOrigin: "0px 0px"` ni `"50% 50%"` en CSS sur un élément SVG** : seul **`svgOrigin`** utilise directement l'origine utilisateur SVG `(0, 0)` à `0.0 px` de dérive même sous `display: none`. Pour les dents en `stroke-dasharray`, forcer un diviseur entier exact de $2\pi R$. Vérifier par script que `(cx, cy)` via `getBoundingClientRect()` et la distance pin $\leftrightarrow$ tracé reste `< 1.0 px`.
 16. **Charte Stricte : 3 Couleurs Max Uniques (Règle 60-30-10)** :
     - 60% Primaire (fond sombre / ambiance dominante), 30% Secondaire (surfaces `#131b2e`, bordures, texte blanc/gris), 10% Accent Unique (ex: Ambre Doré `#f59e0b` ou Cyan Électrique) appliqué aux dégradés, jauges et surbrillances.
 17. **Typographie Stable (Zéro Reflow) & Centrage Carte Finale** :
@@ -79,14 +79,13 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
       - *Shimmer Buttons* avec onde lumineuse rotative.
       - *Split-Words Kinetic Titles* pour les titres majeurs.
     - Cartes animées de façon séquentielle une à une à la suite avec fondus directionnels et easings calibrés (`power3.out`, `back.out(1.5)`).
-    - Ne jamais réutiliser la même boucle musicale préexistante ; composer une bande-son originale sur mesure adaptée au rythme.
+    - **Choix Musical Cinématique Réel (Interdiction du Synthé "Dégueulasse" hors fallback)** : Toujours privilégier une vraie musique instrumentale adaptée à l'émotion via **`node 07_Scripts/fetch_music.cjs --mood <war|dramatic|epic|somber|suspense|tech|sports|chill>`** (ou piste importée) et ne jamais recycler une boucle hors-sujet. Ne JAMAIS utiliser `generate_music.py` sur des documentaires/films cinématiques ou historiques (réservé uniquement aux fonds synthétiques minimalistes sans autre option).
 21. **Intégration Vidéo HTML5 & B-Roll (Contrat Studio & Zéro Saccade)** :
     - Toute balise `<video>` DOIT comporter `data-start="T_DEBUT" data-end="T_FIN" data-duration="DUREE" muted loop playsinline preload="auto"`.
     - Non-ingérence JS en mode Studio (`isIframeMode === true`) : le Studio gère automatiquement `play()`, `pause()` et le scrubbing.
-22. **Interdiction Formelle de Dessiner un Logo (Obligation de Téléchargement Officiel)** :
-    - **L'IA ne doit JAMAIS dessiner ou inventer un logo de marque en code** (aucun bricolage ou approximation SVG faite maison).
-    - Tout logo doit être **téléchargé sous sa forme officielle** (SVG vectoriel officiel ou PNG transparent haute définition) dans `01_Assets/Logos/` via `node 07_Scripts/brandfetch.cjs <domaine>` ou sourcing officiel certifié.
-    - **Si le téléchargement est impossible**, l'IA doit impérativement **s'arrêter et prévenir l'utilisateur** afin que celui-ci fournisse lui-même l'asset logo officiel.
+22. **Illustration Obligatoire de Toute Marque Citée & Interdiction de Dessiner un Logo** :
+    - **Illustration systématique (Voix / Script → Écran)** : Dès qu'une vidéo cite une entreprise, marque ou institution (ex: *eBay, PayPal, Compaq, NASA, Tesla*), l'IA DOIT télécharger son logo officiel dans `01_Assets/Logos/` (`node 07_Scripts/brandfetch.cjs <domaine>` ou Iconify/Wikimedia) et **l'afficher en grand** pour que le spectateur le reconnaisse immédiatement. Si aucun logo officiel n'existe ou que la composition ne l'autorise pas, utiliser un traitement typographique sobre assumé (jamais de mention isolée sans contexte visuel ni d'approximation SVG dessinée par l'IA).
+    - **L'IA ne doit JAMAIS dessiner ou inventer un logo de marque en code** (aucun bricolage ou approximation SVG faite maison). Si nécessaire, prévenir l'utilisateur si un logo introuvable doit être fourni.
 
 23. **Règle Stricte des Couleurs de Texte & Titres à l'Écran (2 Couleurs Max)** :
     - **Le titre ou tout bloc de texte affiché à l'écran ne doit JAMAIS avoir plus de 2 couleurs.** Interdiction formelle d'utiliser 3 couleurs ou plus sur un même bloc typographique (bannissement du texte arc-en-ciel / multicolore).
@@ -220,10 +219,13 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
      - **PAS D'ANALYSE AVEUGLE DE FICHIERS INUTILES** : L'IA ne doit pas analyser d'images ou d'assets si elle ne les utilise pas ou ne peut pas en tirer une information utile.
      - **SANITISATION MÉCANIQUE** : Tout code produit passe par le sanitizer automatique pour garantir l'absence totale de boutons web, d'étiquettes PowerPoint et de valeurs `NaN`.
 
-   * **Règle 44 : Audio Mix Infaillible — Voix Constante, Ducking Automatique & Fondu Musique Obligatoire** :
+   * **Règle 44 : Audio Mix Infaillible — Voix Constante, Équilibre SFX/Musique & Fondu Obligatoire** :
      - **Volume Voix Constant dès 0s (Parade au Bug `amix`)** : La voix off ne doit JAMAIS commencer faible pour monter ensuite. L'assemblage séquentiel de clips voix avec `amix` sans `normalize=0` divise le volume par le nombre d'entrées actives (atténuation jusqu'à -14 dB au début). **Obligation formelle d'assembler la voix avec `07_Scripts/build_soundtrack.cjs` (filtre `concat` natif avec tampons de silence parfaits)** pour un volume 100% stable dès la première milliseconde (-14 LUFS, True Peak -1.0 dBTP).
      - **Ducking Musique Automatique** : La musique de fond s'atténue de -10 à -14 dB (-18 à -22 dB sous la voix) dès que la voix parle, et remonte doucement (-10 à -12 dB) lors des pauses respiratoires (> 0.8s), de l'intro et de l'outro.
-     - **Fondu de Sortie Musique Obligatoire (`afade=t=out`)** : Toute piste musicale DOIT impérativement comporter un fondu de sortie progressif de 2.0s à 2.5s avant la fin de la vidéo. Aucune vidéo ne doit s'achever sur une coupure audio sèche.
+     - **Sources Musicales & Bruitages Réels Prioritaires** : Obtenir la musique via `node 07_Scripts/fetch_music.cjs` (`01_Assets/Musiques/`) et les bruitages via `node 07_Scripts/fetch_sfx.cjs` (catalogue CC0/CC-BY propre / Openverse avant fallback adouci `sfx.py --peak 0.35`).
+     - **Outillage Unifié Obligatoire (`build_soundtrack.cjs` + `normalize_audio.cjs`)** : Toujours utiliser **`node 07_Scripts/build_soundtrack.cjs`** (avec `--clips`/`--voice`, `--music`, `--music-start`, `--sfx <json>`) plutôt que des scripts Python/FFmpeg jetables dans `scratch/`.
+     - **Équilibre SFX vs Musique (Calibration par True Peak `max_volume`, Jamais par `mean_volume` Global)** : Les SFX percussifs ayant une traîne silencieuse qui baisse artificiellement `mean_volume` de 15 à 30 dB, calibrer impérativement chaque SFX par son **pic maximal mesuré (`targetPeakDb - max_volume`)** relativement au lit musical (`-16 LUFS` sans voix / `-18 à -22 dB` sous la voix) : `ui` (`click-soft`, `pop`, `chime`) pic max **`-22.5 dBFS`**, `whoosh` pic max **`-18.5 dBFS`**, `impact` (`impact-bass`, `heartbeat`) pic max **`-15.0 dBFS`** avec passe-bas doux et `alimiter=limit=0.90`.
+     - **Fondu de Sortie Musique Obligatoire (`afade=t=out`)** : Toute piste musicale DOIT impérativement comporter un fondu de sortie progressif de 2.0s à 2.5s avant la fin de la vidéo, exportée en `.mp3` 192 kbps (`normalize_audio.cjs --ar 48000`). Aucune vidéo ne doit s'achever sur une coupure audio sèche.
 
    * **Règle 45 : Zéro Scène Morte — Vitalité Cinématique Continue vs Plateau Cognitif Réfléchi** :
      - **INTERDICTION FORMELLE DES SCÈNES MORTES SANS VIE** : Une scène vidéo ne doit jamais rester statique et figée.
@@ -267,6 +269,19 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
      - **Synchronisation avec le Sound Design** : Accompagner systématiquement chaque whip-pan cinématique d'un whoosh sonore via `tl.call(() => playSfx('whoosh', 0.45), null, tTransition);`.
      - **Zéro Saccade & Déterminisme 100%** : Contrairement au CSS `blur()` omnidirectionnel lourd, le filtre SVG directionnel préserve la netteté perpendiculaire au mouvement, exploite l'accélération matérielle du navigateur et garantit un rendu image-par-image (`render.cjs`) parfaitement net et stable à 60 FPS.
 
+   * **Règle 50 : Compréhension Avant le Chrono (Script Naturel ou Animations Douces, Zéro Trou de Voix)** :
+     - **Zéro Coupure Artificielle de Voix Off** : Ne jamais sacrifier la compréhension pour une durée courte arbitraire, mais **interdiction formelle de hacher une voix off par des silences artificiels** (trous non naturels risquant un décalage audio/visuel).
+     - **Deux Levers Naturels pour Laisser Assimiler** : Soit **rédiger et rallonger le script narratif dès le départ** avec des phrases fluides et posées couvrant naturellement la durée voulue, soit **alléger la densité visuelle et adoucir les animations** (moins d'éléments simultanés à l'écran) pour que le spectateur comprenne sans coupure de narration.
+
+   * **Règle 51 : Exactitude Chronologique des Archives + Sélection Musicale Sur-Mesure & SFX Discrets** :
+     - **Chronologie & Âge des Portraits** : Tout portrait ou photo d'archive DOIT correspondre à **la date et à l'âge exacts** mentionnés par la scène (ex: photo de jeunesse/2008 si la scène parle de 2008, jamais de portrait moderne anachronique).
+     - **Fin des Musiques Répétées / Synthèses Bâclées** : Analyser le thème et l'émotion de chaque projet pour **télécharger une vraie musique adaptée et variée** (`07_Scripts/fetch_music.cjs --query "..."` via Openverse / catalogue Incompetech en excluant la piste précédente). Ne jamais générer une piste synthétique approximative quand une vraie musique adaptée est téléchargeable.
+     - **SFX Subordonnés à la Voix (`build_soundtrack.cjs`)** : Sous voix off pré-normalisée à `-14 LUFS` (+ ducking `sidechaincompress` sur la musique), les SFX doivent rester strictement en retrait (`impact <= -30 dBFS`, `whoosh <= -33 dBFS`, `ui <= -36 dBFS`) pour ne jamais masquer la parole.
+
+   * **Règle 52 : Hiérarchie d'Animation Workflow / Réseau (Sujet ou Logo Central d'Abord)** :
+     - Dans toute scène de type *Workflow*, *Architecture*, *Écosystème* ou *Réseau* centrée sur un logo, un produit ou un sujet principal, **le hub/logo central DOIT impérativement apparaître EN PREMIER** (c'est le cœur du débat).
+     - Les lignes de flux partent ensuite du centre vers l'extérieur (ou s'animent séquentiellement) et **les nœuds/éléments périphériques s'affichent un par un** en cascade rythmée, jamais avant le sujet central.
+
 ---
 
 ## 2. Boîte à Outils de l'IA (`07_Scripts/`)
@@ -274,8 +289,9 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 | Script | Rôle | Commande |
 | :--- | :--- | :--- |
 | `studio-server.cjs` | Serveur local de l'application Studio (port 3000) | `node 07_Scripts/studio-server.cjs` |
+| `check-contrast.cjs` | Vérificateur automatisé du contraste WCAG 2.1 des compositions HTML | `node 07_Scripts/check-contrast.cjs 04_Videos/<fichier>.html` |
 | `ai_director.cjs` | Orchestrateur IA du pipeline complet de création | `node 07_Scripts/ai_director.cjs --prompt "..."` |
-| `build_soundtrack.cjs` | Assemblage et mixage de bande-son master (voix stable, ducking musique, fondu de fin, -14 LUFS) | `node 07_Scripts/build_soundtrack.cjs --out <sortie_wav> [--clips <json> \| --voice <v>] [--music <m>]` |
+| `build_soundtrack.cjs` | Assemblage et mixage de bande-son master (voix stable, ducking musique, mixage SFX par True Peak, mode instrumental `--music-start`, fondu de fin, LUFS) | `node 07_Scripts/build_soundtrack.cjs --out <sortie.mp3> [--clips <json> \| --voice <v>] [--music <m>] [--sfx <json>]` |
 | `render.cjs` | Rendu MP4 headless via Puppeteer et FFmpeg (**SUR DEMANDE EXPLICITE UNIQUEMENT**) | `node 07_Scripts/render.cjs <chemin_html> [format]` |
 | `generate_voice.cjs` | Synthèse vocale IA ElevenLabs réaliste | `node 07_Scripts/generate_voice.cjs "<texte>" <sortie_mp3>` |
 | `youtube_clip.cjs` | Recherche, extraction et transcription d'extraits vidéo YouTube | `node 07_Scripts/youtube_clip.cjs --download <url> --start 00:01:10 --end 00:01:25` |
@@ -283,8 +299,9 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 | `brandfetch.cjs` | Extraction de logos officiels de marques (SVG / PNG) | `node 07_Scripts/brandfetch.cjs <domaine>` |
 | `fetch_map.cjs` | Génération de cartes géographiques HD sans watermark (5 styles: dark, voyager, light, satellite, osm) | `node 07_Scripts/fetch_map.cjs --query "Paris, France" [--style dark]` |
 | `fetch_flag.cjs` | Téléchargement de drapeaux nationaux & territoriaux (SVG vectoriel & PNG gratuits) | `node 07_Scripts/fetch_flag.cjs <pays>` |
-| `fetch_music.cjs` | Téléchargement de musiques libres de droit par genre / ambiance | `node 07_Scripts/fetch_music.cjs <genre> <dossier_sortie>` |
-| `normalize_audio.cjs` | Normalisation sonore aux normes broadcast (-14 LUFS) | `node 07_Scripts/normalize_audio.cjs <entree> <sortie>` |
+| `fetch_music.cjs` | Téléchargement de vraies musiques libres de droit (`war`, `dramatic`, `epic`, `somber`, `suspense`, `tech`, `sports`, `chill`) | `node 07_Scripts/fetch_music.cjs --mood <mood>` |
+| `fetch_sfx.cjs` | Récupération de bruitages propres (CC0/CC-BY, Openverse, fallback `sfx.py --peak 0.35`) | `node 07_Scripts/fetch_sfx.cjs --batch "click-soft,whoosh-short,impact-bass-1"` |
+| `normalize_audio.cjs` | Normalisation sonore 48 kHz aux normes broadcast (-14 LUFS) | `node 07_Scripts/normalize_audio.cjs --input <in> --out <out> --ar 48000` |
 | `generate_bg.cjs` | Générateur universel d'arrière-plans animés (SaaS avec néons lissés, gradients, waves, aurora, grid) | `node 07_Scripts/generate_bg.cjs --style saas [--bg "#ffffff"] [--accent "#e11d48"]` |
 | `remove_bg.cjs` | Détourage automatique d'images | `node 07_Scripts/remove_bg.cjs <image>` |
 | `fetch_3d_model.cjs` | Téléchargement de modèles 3D réalistes (.glb/.gltf) avec fallback multi-sources | `node 07_Scripts/fetch_3d_model.cjs --query "<mot_cle>"` |

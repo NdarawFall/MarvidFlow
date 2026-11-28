@@ -183,6 +183,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Générateur procédural de Sound Effects (SFX)")
     parser.add_argument('--type', type=str, choices=list(SFX_REGISTRY.keys()), default='whoosh', help="Type d'effet sonore")
     parser.add_argument('--out', type=str, default='sfx_test.wav', help="Fichier de sortie (.wav)")
+    parser.add_argument('--peak', type=float, default=0.35, help="Plafond d'amplitude maximal (0.0 - 1.0, défaut 0.35 pour éviter toute saturation)")
     parser.add_argument('--list', action='store_true', help="Lister tous les types de bruitages disponibles")
 
     args = parser.parse_args()
@@ -195,6 +196,11 @@ if __name__ == '__main__':
 
     func = SFX_REGISTRY[args.type]
     audio_data = func()
+    # Adoucissement passe-bas sur les sons secs/aigus (click, clack, ding, quindar, crash, step) pour zéro stridence
+    if args.type in ('click', 'clack', 'ding', 'quindar', 'crash', 'step'):
+        audio_data = lp(audio_data, 5200)
+    peak = max(0.02, min(1.0, float(args.peak)))
+    audio_data = norm(audio_data, p=peak)
     save_wav(args.out, audio_data)
-    print(f"Effet '{args.type}' généré avec succès dans : {args.out}")
+    print(f"Effet '{args.type}' généré avec succès dans : {args.out} (peak={peak})")
 

@@ -201,45 +201,105 @@
             }
         }
 
-        // Synchronisation audio fluide en cours de lecture continue (tolérance 1.2s, zéro saccade)
+        // Helper fluide (CapCut-grade) : ne décoder QUE les <video> dans [data-start, data-end] sans micro-seek 60fps
+        function syncMediaVideoWindow(v, timeInSeconds, isNowPlaying) {
+            try {
+                v.autoplay = false;
+                v.removeAttribute('autoplay');
+                const vStart = parseFloat(v.dataset.start || '0') || 0;
+                const vEnd = parseFloat(v.dataset.end || (duration || 9999).toString()) || 9999;
+                const dur = (Number.isFinite(v.duration) && v.duration > 0)
+                    ? v.duration
+                    : (parseFloat(v.dataset.duration || '0') || 0);
+                const rawOffset = Math.max(0, timeInSeconds - vStart);
+                const targetOffset = (v.loop && dur > 0)
+                    ? (rawOffset % dur)
+                    : (dur > 0 ? Math.min(dur, rawOffset) : rawOffset);
+
+                if (!isNowPlaying) {
+                    if (!v.paused) v.pause();
+                    if (Number.isFinite(targetOffset) && Math.abs((v.currentTime || 0) - targetOffset) > 0.02) {
+                        v.currentTime = targetOffset;
+                    }
+                    return;
+                }
+
+                const inRange = (timeInSeconds >= vStart && timeInSeconds <= vEnd) && !(duration > 0 && timeInSeconds >= duration);
+                if (!inRange) {
+                    if (!v.paused) v.pause();
+                    return;
+                }
+
+                if (Math.abs((v.playbackRate || 1) - playbackSpeed) > 0.01) {
+                    v.playbackRate = playbackSpeed;
+                }
+
+                if (v.paused && !v.ended) {
+                    if (Number.isFinite(targetOffset) && Math.abs((v.currentTime || 0) - targetOffset) > 0.12) {
+                        v.currentTime = targetOffset;
+                    }
+                    v.play().catch(() => {});
+                } else {
+                    const diff = Math.abs((v.currentTime || 0) - targetOffset);
+                    const wrappedDiff = (v.loop && dur > 0) ? Math.min(diff, Math.abs(dur - diff)) : diff;
+                    if (wrappedDiff > 0.45 && Number.isFinite(targetOffset)) {
+                        v.currentTime = targetOffset;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // Synchronisation audio & vidéo fluide en cours de lecture continue (tolérance anti-saccade, zéro décodage hors-champ)
         function syncAudioDuringPlayback(timeInSeconds) {
             try {
                 if (!previewFrame || !previewFrame.contentWindow) return;
                 const win = previewFrame.contentWindow;
+                const doc = previewFrame.contentDocument || win.document;
+                if (win.tl && typeof win.tl.timeScale === 'function' && !win.tl.paused()) {
+                    try {
+                        if (Math.abs(win.tl.timeScale() - playbackSpeed) > 0.01) {
+                            win.tl.timeScale(playbackSpeed);
+                        }
+                    } catch (e) {}
+                }
                 if (typeof win.renderAt === 'function') {
                     try { win.renderAt(timeInSeconds); } catch (e) {}
                 }
+                if (doc) {
+                    const videos = doc.querySelectorAll('video');
+                    videos.forEach(v => syncMediaVideoWindow(v, timeInSeconds, true));
+                }
                 if (typeof win.syncAudioTimeline === 'function') {
                     try { win.syncAudioTimeline(timeInSeconds, true); } catch (e) {}
-                } else {
-                    const doc = previewFrame.contentDocument || win.document;
-                    if (doc) {
-                        const audios = doc.querySelectorAll('audio');
-                        audios.forEach(a => {
-                            try {
-                                const aStart = parseFloat(a.dataset.start || '0') || 0;
-                                const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
-                                
-                                // Couper si la video a atteint ou depasse la fin
-                                if (timeInSeconds > aEnd || (duration > 0 && timeInSeconds >= duration)) {
-                                    if (!a.paused) a.pause();
-                                    return;
-                                }
+                } else if (doc) {
+                    const audios = doc.querySelectorAll('audio');
+                    audios.forEach(a => {
+                        try {
+                            const aStart = parseFloat(a.dataset.start || '0') || 0;
+                            const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
 
-                                if (timeInSeconds >= aStart && timeInSeconds < aEnd) {
-                                    const aOffset = Math.max(0, timeInSeconds - aStart);
-                                    if (Math.abs(a.currentTime - aOffset) > 0.4) {
-                                        a.currentTime = aOffset;
-                                    }
-                                    if (a.paused && !a.ended) {
-                                        a.play().catch(() => {});
-                                    }
-                                } else {
-                                    if (!a.paused) a.pause();
+                            // Couper si la video a atteint ou depasse la fin
+                            if (timeInSeconds > aEnd || (duration > 0 && timeInSeconds >= duration)) {
+                                if (!a.paused) a.pause();
+                                return;
+                            }
+
+                            if (timeInSeconds >= aStart && timeInSeconds < aEnd) {
+                                const aOffset = Math.max(0, timeInSeconds - aStart);
+                                if (Math.abs((a.playbackRate || 1) - playbackSpeed) > 0.01) {
+                                    a.playbackRate = playbackSpeed;
                                 }
-                            } catch (e) {}
-                        });
-                    }
+                                if (Math.abs(a.currentTime - aOffset) > 1.2) {
+                                    a.currentTime = aOffset;
+                                }
+                                if (a.paused && !a.ended) {
+                                    a.play().catch(() => {});
+                                }
+                            } else {
+                                if (!a.paused) a.pause();
+                            }
+                        } catch (e) {}
+                    });
                 }
             } catch (e) {}
         }
@@ -375,6 +435,13 @@
                 const win = previewFrame.contentWindow;
                 const doc = previewFrame.contentDocument || win.document;
 
+                if (win.tl && typeof win.tl.timeScale === 'function' && !win.tl.paused()) {
+                    try {
+                        if (Math.abs(win.tl.timeScale() - playbackSpeed) > 0.01) {
+                            win.tl.timeScale(playbackSpeed);
+                        }
+                    } catch (e) {}
+                }
                 if (typeof win.renderAt === 'function') {
                     try { win.renderAt(timeInSeconds); } catch (e) {}
                 }
@@ -411,38 +478,9 @@
                 }
 
                 if (doc) {
-                    // 2. Synchronisation précise des vidéos HTML5
+                    // 2. Synchronisation précise des vidéos HTML5 (décodage actif uniquement dans la fenêtre temporelle)
                     const videos = doc.querySelectorAll('video');
-                    videos.forEach(v => {
-                        try {
-                            v.autoplay = false;
-                            v.removeAttribute('autoplay');
-                            const vStart = parseFloat(v.dataset.start || '0') || 0;
-                            const vEnd = parseFloat(v.dataset.end || (duration || 9999).toString()) || 9999;
-                            const vOffset = Math.max(0, timeInSeconds - vStart);
-
-                            if (!isPlaying) {
-                                if (!v.paused) v.pause();
-                                if (Number.isFinite(v.duration) && v.duration > 0) {
-                                    v.currentTime = Math.min(v.duration, vOffset);
-                                } else if (Number.isFinite(vOffset)) {
-                                    v.currentTime = vOffset;
-                                }
-                            } else {
-                                const inRange = (timeInSeconds >= vStart && timeInSeconds <= vEnd);
-                                if (inRange) {
-                                    if (Math.abs(v.currentTime - vOffset) > 0.25) {
-                                        v.currentTime = vOffset;
-                                    }
-                                    if (v.paused && !v.ended) {
-                                        v.play().catch(() => {});
-                                    }
-                                } else {
-                                    if (!v.paused) v.pause();
-                                }
-                            }
-                        } catch (e) {}
-                    });
+                    videos.forEach(v => syncMediaVideoWindow(v, timeInSeconds, isPlaying));
 
                     // 3. Synchronisation audio
                     if (typeof win.syncAudioTimeline === 'function') {
@@ -549,23 +587,30 @@
                 // 2. Notifier explicitement le callback audio de l'iframe a t = 0
                 if (typeof win.syncAudioTimeline === 'function') {
                     try { win.syncAudioTimeline(0, true); } catch (e) {}
-                }
-
-                // 3. Reinitialiser et relancer toutes les balises <audio> et <video>
-                if (doc) {
+                } else if (doc) {
                     const audios = doc.querySelectorAll('audio');
                     audios.forEach(a => {
                         try {
-                            a.currentTime = 0;
-                            a.play().catch(() => {});
+                            const aStart = parseFloat(a.dataset.start || '0') || 0;
+                            const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
+                            if (0 >= aStart && 0 < aEnd) {
+                                a.currentTime = 0;
+                                a.play().catch(() => {});
+                            } else {
+                                if (!a.paused) a.pause();
+                                a.currentTime = 0;
+                            }
                         } catch (e) {}
                     });
+                }
 
+                // 3. Reinitialiser les balises <video> a t = 0 (demarrer uniquement celles actives a t=0)
+                if (doc) {
                     const videos = doc.querySelectorAll('video');
                     videos.forEach(v => {
                         try {
                             v.currentTime = 0;
-                            if (v.paused) v.play().catch(() => {});
+                            syncMediaVideoWindow(v, 0, true);
                         } catch (e) {}
                     });
 
@@ -634,19 +679,30 @@
                             try { tl.play(); } catch (e) {}
                         }
                     }
+                    const doc = previewFrame.contentDocument || win.document;
                     if (typeof win.syncAudioTimeline === 'function') {
                         try { win.syncAudioTimeline(time, true); } catch (e) {}
-                    }
-                    const doc = previewFrame.contentDocument || win.document;
-                    if (doc) {
+                    } else if (doc) {
                         const audios = doc.querySelectorAll('audio');
                         audios.forEach(a => {
-                            if (a.paused && !a.ended) a.play().catch(() => {});
+                            try {
+                                const aStart = parseFloat(a.dataset.start || '0') || 0;
+                                const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
+                                if (time >= aStart && time < aEnd) {
+                                    const aOffset = Math.max(0, time - aStart);
+                                    if (Math.abs(a.currentTime - aOffset) > 1.2) {
+                                        a.currentTime = aOffset;
+                                    }
+                                    if (a.paused && !a.ended) a.play().catch(() => {});
+                                } else {
+                                    if (!a.paused) a.pause();
+                                }
+                            } catch (e) {}
                         });
+                    }
+                    if (doc) {
                         const videos = doc.querySelectorAll('video');
-                        videos.forEach(v => {
-                            if (v.paused && !v.ended) v.play().catch(() => {});
-                        });
+                        videos.forEach(v => syncMediaVideoWindow(v, time, true));
                         if (typeof doc.getAnimations === 'function') {
                             doc.getAnimations().forEach(anim => {
                                 try { anim.play(); } catch (e) {}

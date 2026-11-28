@@ -79,11 +79,18 @@ Le dossier `scripts/` regroupe l'arsenal d'automatisation médico-légale :
 
 Lorsque ce style est utilisé dans un template HTML du studio (tel que `06_Templates/Story_vox_style.html`) :
 
-1. **Isolation stricte des scènes :**
-   - Toutes les scènes possèdent `display: none; position: absolute; inset: 0;`.
-   - L'activation d'une scène se fait exclusivement via GSAP : `tl.set('#scene_X', { display: 'flex' })` et se termine impérativement par `tl.set('#scene_X', { display: 'none' })`.
-   - **JAMAIS de `!important` sur `#scene_1`** ni en CSS ni en inline style.
+1. **Isolation GPU-Warm des scènes (`visibility: hidden`)** :
+   - **NE JAMAIS** utiliser `display: none` sur les scènes contenant des `<video>` : utiliser `display: block; position: absolute; inset: 0; visibility: hidden; opacity: 0; pointer-events: none;` et basculer via `tl.set('#scene_X', { visibility: 'visible', pointerEvents: 'auto', opacity: ... })` puis `{ visibility: 'hidden', pointerEvents: 'none', opacity: 0 }`.
+   - **JAMAIS de `!important` sur `#scene_1`** ni de filtre SVG (`filter: url(#...)`) ou `mix-blend-mode` plein écran superposé sur des `<video>`.
 2. **Synchronisation Studio & Règle de la Timeline Unique :**
+   - Toutes les animations doivent être rattachées directement à `tl` aux timestamps absolus. Zéro sous-timeline orpheline.
+   - Dans `window.renderAt(t)`, ne rappeler `tl.seek(t, false)` en lecture active que si `tl.paused() || Math.abs(tl.time() - t) > 0.12`.
+3. **Visibilité & Illustration de Toute Marque Citée + Cadrage Portrait en Card (`overflow: hidden`)** :
+   - **Illustrer systématiquement chaque marque évoquée** : Dès qu'une marque ou entreprise est citée par la voix ou le script (ex: *eBay, PayPal, Compaq, NASA, Tesla*), télécharger obligatoirement son logo officiel via `07_Scripts/brandfetch.cjs` (SVG `logos` / `thesvg-color` / `simple-icons` ou Wikimedia) et l'afficher **en grand format bien lisible** (`height: 44px–130px` selon wordmark vs icône) pour qu'elle soit immédiatement reconnue. Si le logo est réellement introuvable ou si le design ne s'y prête pas, adopter un **traitement éditorial typographique assumé** (jamais de logo approximatif bricolé ni de mention muette sans repère).
+   - **Portraits & visuels en Card sans tranche coupée (`overflow: hidden` + `cover`/zoom)** : Tout portrait logé dans une card éditoriale DOIT être **enfant DOM direct** de `.card { overflow: hidden; }` avec `width: 100%; height: 100%; object-fit: cover; object-position: center 14%;` et un zoom léger (`scale: 1.06 -> 1.12`) afin qu'aucun bord vertical brut de photo ne soit visible entre l'image et le cadre.
+4. **Rigueur Géométrique SVG & Cartes Fluides Sans Saccade (`svgOrigin` + Pré-Rastérisation)** :
+   - **Cartes vectorielles multi-pays animées au zoom** : NE JAMAIS laisser `vector-effect: non-scaling-stroke` sur des centaines de polygones pendant un zoom caméra (re-rastérisation CPU + saccade au démarrage de tracé). Séparer le fond cartographique statique (pré-rastérisé une fois sur `<canvas>` 2×) dans `#s2WorldCanvas` et isoler uniquement `#mapArc*` + pins dans un petit `<svg id="s2RouteSvg">` au-dessus, en lançant le tracé avec `ease: 'sine.out'` (jamais `inOut` bloqué dans un grand halo) et tolérance `0.35s` dans `renderAt`.
+   - **Zéro décalage pin ↔ ligne** : Les tracés (`#mapArc...`) et les pins ciblés partagent les **exactes coordonnées absolues `(cx, cy)`** du même `<svg viewBox>`, peints après le tracé. **INTERDICTION** de combiner `transform="translate(cx, cy)"` et `svgOrigin: "0 0"` sur un élément animé, et **OBLIGATION de répéter `svgOrigin` dans `fromVars` ET `toVars` d'un `fromTo()`**. Toujours vérifier `Math.hypot(pinCenter - pathEnd) < 1.0 px` dans Chromium.
    - Toutes les animations doivent être rattachées directement à `tl` aux timestamps absolus. Zéro sous-timeline orpheline.
    - Toujours initialiser la timeline GSAP avec détection du mode iframe et réveil défensif du Ticker global :
      ```javascript
@@ -131,10 +138,12 @@ Lorsque ce style est utilisé dans un template HTML du studio (tel que `06_Templ
      tl.to('#hl_text mark', { backgroundSize: '100% 75%', duration: 1.4, ease: 'power1.inOut' });
      ```
 
-4. **Rythme de Réalisation & Anti-PowerPoint :**
-   - **Interdiction de l'immobilité :** Une vidéo de reconstitution n'est jamais un diaporama. Dès que la dernière animation d'une scène se termine, on **COUPE immédiatement** vers la scène suivante.
-   - **Synchronisme Script-to-Screen :** Chaque mot fort du scénario (chiffre, lieu, composant, document, citation) déclenche une apparition visuelle dédiée à la seconde près.
-   - **Courbe d'apparition en S obligatoire :** Les apparitions d'éléments graphiques doivent systématiquement suivre une courbe *départ lent -> accélération centrale -> arrivée lente* avec amorti (`ease: "power3.inOut"` ou `power4.inOut`). Jamais de simple slide linéaire ou fondu isolé.
+4. **Rythme de Compréhension Naturel (Zéro Coupure de Voix Artificielle), Audio Équilibré & Chronologie :**
+   - **Compréhension sans trou dans la voix off** : Ne **JAMAIS** hacher ou découper une voix off par des silences artificiels ni créer de décalage audio/visuel. Pour laisser le temps de comprendre : soit **rédiger et rallonger le script narratif naturel** dès l'écriture pour qu'il porte un rythme posé, soit **adoucir les animations et alléger l'écran** (moins d'éléments simultanés) au fil de la parole continue.
+   - **Musique sur-mesure & SFX discrets sous la voix** : Analyser l'ambiance exacte du sujet et télécharger une **vraie musique adaptée** via `07_Scripts/fetch_music.cjs --query "..."` (catalogue Incompetech + recherche Openverse, jamais toujours le même morceau ni une musique synthétique générique bâclée). Les SFX mixés via `build_soundtrack.cjs` doivent rester strictement sous la voix (`impact -30 dBFS`, `whoosh -33 dBFS`, `ui -36 dBFS`) sans jamais la couvrir.
+   - **Cohérence historique & âge des personnages (`Era-Accurate Photos`)** : Lorsqu'une scène cite les débuts d'une personne ou une année précise (ex: *2008*, *enfance*, *fondation*), télécharger obligatoirement une photo d'archive correspondant à **son âge et à l'époque exacte** du récit (jamais un portrait plus âgé anachronique sur une scène rétrospective).
+   - **Synchronisme Script-to-Screen :** Chaque mot fort du scénario (chiffre, lieu, composant, document, citation) déclenche une apparition visuelle dédiée et douce, sans entasser trop d'éléments d'un coup.
+   - **Courbe d'apparition en S obligatoire :** Les apparitions d'éléments graphiques doivent systématiquement suivre une courbe *départ lent -> accélération centrale -> arrivée lente* avec amorti (`ease: "power3.inOut"` ou `power4.inOut`). Jamais de simple slide linéaire sec.
 
 ---
 

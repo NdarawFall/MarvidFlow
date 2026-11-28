@@ -560,12 +560,12 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
    - Si une interaction humaine (clic, pointage, déplacement d'un élément) intervient, utilise les SVG officiels :
      * 01_Assets/Icones/pointinghand_100160.svg (pour un clic ou pointage centré)
      * 01_Assets/Icones/openhand_100161.svg / closedhand_100189.svg (pour une saisie ou un déplacement)
-6. ICÔNES VECTORIELLES LUCIDE & LOGOS OFFICIELS (100% DISPONIBLES EN DIRECT) :
-   - Tu disposes de la librairie complète **Lucide Icons** chargée dans la page !
-   - Utilise simplement : \`<i data-lucide="zap"></i>\` ou toute autre icône de la suite : \`sparkles\`, \`check\`, \`shield-check\`, \`trending-up\`, \`terminal\`, \`cpu\`, \`rocket\`, \`layers\`, \`activity\`, \`database\`, \`lock\`, \`play\`, \`star\`, \`code\`, \`box\`, \`arrow-right\`, \`globe\`, \`bar-chart-2\`, etc.
-   - Tu peux leur donner des classes Tailwind de taille et couleur : \`class="w-6 h-6 text-emerald-400 stroke-[2]"\` ou \`class="w-5 h-5 text-indigo-400 inline-block mr-2"\`.
-   - Tu disposes aussi de **Iconify Web Component** pour les logos officiels : \`<iconify-icon icon="logos:claude-icon" width="28"></iconify-icon>\`, \`<iconify-icon icon="logos:openai-icon" width="28"></iconify-icon>\`, \`<iconify-icon icon="logos:stripe" width="32"></iconify-icon>\`, etc.
-   - RÈGLE D'OR DESIGN SAAS : Pour chaque métrique, badge de statut, bouton d'action ou liste de bénéfices, ACCOMPAGNE TOUJOURS le texte d'une icône Lucide ou d'un logo officiel. Zéro texte nu sans hiérarchie visuelle !
+6. ICÔNES VECTORIELLES LUCIDE & ILLUSTRATION OBLIGATOIRE DES MARQUES ÉVOQUÉES :
+   - Tu disposes de **Lucide Icons** (\`<i data-lucide="zap"></i>\`) et **Iconify** (\`<iconify-icon icon="thesvg-color:ebay" width="120"></iconify-icon>\`).
+   - **ILLUSTRATION SYSTÉMATIQUE** : Dès que le propos cite une marque ou entreprise (eBay, PayPal, NASA, Compaq, Stripe...), intègre le logo téléchargé depuis la liste d'assets **en grand format** (jamais minuscule), sinon adopte un design typographique éditorial sobre et assumé (jamais de logo dessiné à la main).
+   - **PORTRAIT EN CARD** : Place tout portrait détouré **à l'intérieur** de \`.card { overflow: hidden; }\` avec \`object-fit: cover\` et léger zoom (\`scale >= 1.05\`) pour masquer toute tranche de découpe latérale.
+   - **ZÉRO TEXTE NU SANS HIÉRARCHIE** : Chaque métrique ou carte s'appuie sur un repère visuel clair (logo officiel, drapeau ou icône Lucide).
+   - **RYTHME DE COMPRÉHENSION & CHRONOLOGIE** : Ne jamais compresser les scènes au détriment de la compréhension. Pour laisser le temps au spectateur d'assimiler sans couper la voix par des trous artificiels : alléger les scènes (peu d'éléments simultanés) avec des animations douces et posées calées sur une narration naturelle fluide. Vérifier aussi que toute photo de personnalité ou d'événement correspond à son âge et à l'année exacte mentionnée.
 7. CARTES ET COMPOSANTS UI :
    ${isLight ? `
    - Cartes claires modernes en verre dépoli (background: rgba(255, 255, 255, 0.90); backdrop-filter: blur(16px); border: 1px solid rgba(0, 0, 0, 0.10); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); color: #09090b;).
@@ -583,15 +583,15 @@ RÈGLES D'OR DE RÉALISATION ET DESIGN :
      * Un DASHBOARD DE MÉTRIQUES EXPLOSIVES (Hero Stats en grille 2 ou 3 colonnes) : ex: '⚡ 10x Faster', '🚀 99.9% Accuracy', '📊 12ms Latency' avec compteurs animés GSAP ou Anime.js.
      * Des cartes de flux ou de performance vivantes (barres de progression néon, badges 'PROD-READY', pastilles d'état vertes pulsantes).
      * Si du code ou prompt est montré : un terminal dark moderne ultra-compact (3 lignes max avec syntax highlighting et curseur clignotant).
-10. SOUND DESIGN ET BRUITAGES SFX (OPENVERSE & SYNTHÈSE EARSHOT) :
+10. SOUND DESIGN ET BRUITAGES SFX DISCRETS (OPENVERSE & SYNTHÈSE EARSHOT) :
    - Tu disposes de la fonction audio globale \`playSfx(nom, volume)\` connectée directement dans la timeline GSAP !
-   - Utilise les bruitages pour rythmer et donner vie aux transitions et interactions :
-     * \`tl.call(() => playSfx('whoosh', 0.4), null, <timecode>);\` lors d'une transition rapide ou entrée de carte.
-     * \`tl.call(() => playSfx('pop', 0.5), null, <timecode>);\` lors de l'apparition d'un badge ou pastille.
-     * \`tl.call(() => playSfx('click', 0.4), null, <timecode>);\` lors d'un clic de curseur main sur un bouton.
-     * \`tl.call(() => playSfx('ding', 0.5), null, <timecode>);\` lors de l'affichage d'un chiffre clé ou validation.
-     * \`tl.call(() => playSfx('keyboard', 0.35), null, <timecode>);\` lors de l'affichage de code ou frappe terminal.
-   - Les bruitages sont automatiquement pré-chargés et joués au millième de seconde près sans latence.
+   - Les SFX doivent rester DISCRETS (volume 0.12 à 0.22 max) et NE JAMAIS couvrir ou masquer la voix off ni la musique :
+     * \`tl.call(() => playSfx('whoosh', 0.16), null, <timecode>);\` lors d'une transition rapide ou entrée de carte.
+     * \`tl.call(() => playSfx('pop', 0.14), null, <timecode>);\` lors de l'apparition d'un badge ou pastille.
+     * \`tl.call(() => playSfx('click', 0.12), null, <timecode>);\` lors d'un clic de curseur main sur un bouton.
+     * \`tl.call(() => playSfx('ding', 0.14), null, <timecode>);\` lors de l'affichage d'un chiffre clé ou validation.
+     * \`tl.call(() => playSfx('keyboard', 0.10), null, <timecode>);\` lors de l'affichage de code ou frappe terminal.
+   - Les bruitages sont automatiquement pré-chargés et strictement subordonnés à la voix.
 11. SCÈNES 3D & COMPOSANTS THREE.JS (MODÈLES .GLB TEMPS RÉEL) :
     - Tu disposes de **Three.js (r128)** et **GLTFLoader** chargés nativement dans la page !
     - Des modèles 3D prêts à l'emploi sont disponibles dans \`../01_Assets/3D/\` (ex: \`antiquecamera.glb\`, etc.).
@@ -938,6 +938,20 @@ RÈGLES MAÎTRESSES DE CONCEPTION & TRANSITIONS (ANTI-RÉPÉTITION) :
 6. ZÉRO SCÈNE MORTE SANS VIE : Chaque scène doit posséder une impulsion continue (dérive caméra, micro-mouvements). Les éléments de cards sont animés en séquence décalée.
 7. AUDIO & FONDU MUSICAL : Voix stable et immédiate dès 0s, ducking de la musique et fondu de fin obligatoire sur la musique.
 
+9. ILLUSTRATION SYSTÉMATIQUE DES MARQUES, PRODUITS & SUJETS CITÉS :
+   - Dès que la voix off ou le script mentionne une marque ou entité reconnaissable (ex: PayPal, eBay, Compaq, NASA, Tesla, SpaceX, Stripe, OpenAI...), tu DOIS afficher son **logo officiel téléchargé** en **grand format bien lisible** pour que le spectateur l'identifie instantanément sans se demander « c'est qui ? ».
+   - Si aucun logo officiel n'existe pour l'entité ou si le style visuel ne s'y prête pas, adopte un **traitement éditorial typographique assumé et élégant** (jamais un logo approximatif bricolé ni une case vide).
+10. CADRAGE EN CARD, CARTES SVG FLUIDES & RIGGING SANS DÉRIVE :
+   - Portrait ou image en card : placer l'image À L'INTÉRIEUR de .card (overflow: hidden) avec object-fit: cover et léger zoom (scale >= 1.05) afin qu'aucun bord coupé brut n'apparaisse.
+   - Cartes SVG / trajectoires animées : ne jamais appliquer vector-effect: non-scaling-stroke sur des centaines de polygones zoomés (pré-rastériser la carte de fond sur canvas ou séparer le svg de routes), répéter svgOrigin dans fromVars ET toVars de fromTo() pour éviter tout décalage -R, -R.
+11. ZÉRO FILTRE SVG PLEIN ÉCRAN & ZÉRO display: none SUR balise video : utiliser visibility: hidden pour les scènes hors-champ afin de garantir une fluidité CapCut 60 FPS.
+12. COMPRÉHENSION AVANT LA DURÉE (SCRIPT FLUIDE OU ANIMATION DOUCE, ZÉRO TROU DE VOIX) :
+    - Ne JAMAIS sacrifier la compréhension pour rentrer dans une durée courte arbitraire, MAIS ne JAMAIS hacher ou couper une voix off par des silences artificiels ni créer de décalage entre parole et visuel.
+    - Pour laisser au spectateur le temps de comprendre naturellement : soit rédiger dès le départ une narration plus riche, développée et posée (rallonger le script et donc targetDuration de façon fluide), soit concevoir des animations plus douces avec moins d'éléments simultanés à l'écran.
+13. EXACTITUDE CHRONOLOGIQUE & ÂGE HISTORIQUE DES PHOTOS + MUSIQUE SUR-MESURE :
+    - Toute photo d'archive ou portrait d'une personnalité DOIT correspondre à l'âge et à l'année exacte évoquée dans la scène (ex : photo jeune ou d'époque pour 2008 ou les débuts, jamais un portrait anachronique ultérieur).
+    - Réfléchir au ton exact du sujet pour renseigner musicMood et musicQuery (mots-clés précis pour télécharger une vraie musique originale adaptée, jamais toujours la même boucle par défaut ni une synthèse bâclée).
+
 Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
 {
   "title": "Titre percutant de la vidéo",
@@ -945,6 +959,8 @@ Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
   "pitch": "Résumé en une phrase",
   "targetDuration": ${(promptDuration || 20.0).toFixed(1)},
   "visualStrategy": "${discoveredResources.visualStrategy}",
+  "musicMood": "tech|suspense|documentary|epic|chill|sports|dramatic|funny",
+  "musicQuery": "2 a 4 mots cles en anglais decrivant la musique ideale pour ce sujet",
   "background": {
     "type": "black",
     "global": "#000000",
@@ -1174,14 +1190,31 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     checkpoint.totalVideoDuration = totalVideoDuration;
     saveCheckpoint(checkpointPath, checkpoint);
 
-    // Musique d'ambiance
+    // Musique d'ambiance sur-mesure (réflexion thématique + téléchargement varié via fetch_music.cjs / Openverse, jamais la même boucle figée)
     let musicRelPath = '';
     if (hasMusic) {
-        const defaultMusicFile = path.join(ROOT_DIR, '01_Assets', 'Musiques', 'Fresh___Funky.mp3');
         if (payload.music) {
             musicRelPath = isChannel ? `${assetPrefix}/Musiques/${channelId}/${payload.music}` : `${assetPrefix}/Musiques/${payload.music}`;
-        } else if (fs.existsSync(defaultMusicFile)) {
-            musicRelPath = `${assetPrefix}/Musiques/Fresh___Funky.mp3`;
+        } else {
+            try {
+                const { fetchMusic } = require('./fetch_music.cjs');
+                const musicHistoryPath = path.join(require('os').tmpdir(), 'marvidflow_last_music.txt');
+                const lastMusic = fs.existsSync(musicHistoryPath) ? fs.readFileSync(musicHistoryPath, 'utf8').trim() : '';
+                const moodHint = (plan && (plan.musicQuery || plan.musicMood)) || (prompt || 'documentary inspiring');
+                const fetchedMusic = await fetchMusic({
+                    query: plan?.musicQuery || moodHint,
+                    mood: plan?.musicMood || 'documentary',
+                    openverse: Boolean(plan?.musicQuery),
+                    exclude: lastMusic ? [lastMusic] : []
+                });
+                if (fetchedMusic && fetchedMusic.relPath) {
+                    const fileName = path.basename(fetchedMusic.relPath);
+                    musicRelPath = `${assetPrefix}/Musiques/${fileName}`;
+                    try { fs.writeFileSync(musicHistoryPath, fileName, 'utf8'); } catch (_) {}
+                }
+            } catch (musicErr) {
+                console.warn('[Music Fetch Warning] :', musicErr.message);
+            }
         }
     }
 
@@ -1240,107 +1273,95 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
         }
 
         // =========================================================================
-        // LOGOS DE MARQUES & PRODUITS : Moteur de résolution universel et dynamique
-        // (Zéro dictionnaire restrictif : scan local + Iconify Logos + Simple-Icons + Brandfetch / Google Favicons HD)
+        // LOGOS DE MARQUES & PRODUITS : Moteur multi-marques (prompt + narration + script)
         // =========================================================================
+        const downloadedBrandLogos = [];
         let brandDomain = plan.toolsNeeded?.brandDomain || detectedDomain;
         const brandAliases = {
             'chatgpt': 'chatgpt.com',
             'openai': 'openai.com',
             'claude': 'anthropic.com',
-            'anthropic': 'anthropic.com'
+            'anthropic': 'anthropic.com',
+            'ebay': 'ebay.com',
+            'paypal': 'paypal.com',
+            'spacex': 'spacex.com',
+            'tesla': 'tesla.com',
+            'nasa': 'nasa.gov',
+            'twitter': 'twitter.com',
+            'apple': 'apple.com',
+            'google': 'google.com',
+            'microsoft': 'microsoft.com',
+            'amazon': 'amazon.com',
+            'meta': 'meta.com',
+            'netflix': 'netflix.com',
+            'nvidia': 'nvidia.com',
+            'stripe': 'stripe.com'
         };
 
         const localLogosDir = path.join(ROOT_DIR, '01_Assets', 'Logos');
-        const promptWords = normPromptPre.toLowerCase().split(/[^a-z0-9_-]+/).filter(w => w.length >= 3);
-        const stopWords = new Set(['cree', 'creer', 'video', 'style', 'pour', 'avec', 'dans', 'sur', 'une', 'des', 'les', 'par', 'fait', 'fais', 'montre', 'intro', 'presentation', 'tout', 'tous']);
+        const fullNarrativeText = `${normPromptPre} ${(plan.narration || '').toLowerCase()} ${(customScript || '').toLowerCase()}`;
+        const promptWords = [...new Set(fullNarrativeText.split(/[^a-z0-9_-]+/).filter(w => w.length >= 3))];
+        const stopWords = new Set(['cree', 'creer', 'video', 'style', 'pour', 'avec', 'dans', 'sur', 'une', 'des', 'les', 'par', 'fait', 'fais', 'montre', 'intro', 'presentation', 'tout', 'tous', 'plus', 'mais', 'sans', 'entre', 'vers']);
 
-        // 1. Scan dynamique des logos déjà présents localement dans 01_Assets/Logos/
-        if (fs.existsSync(localLogosDir)) {
-            const existingFiles = fs.readdirSync(localLogosDir);
-            for (const word of promptWords) {
-                if (stopWords.has(word)) continue;
-                const match = existingFiles.find(f => {
-                    const base = f.toLowerCase().replace(/\.[^.]+$/, '');
-                    return base === word || base === `${word}_symbol` || base === `${word}_logo` || base.startsWith(word + '_') || base.endsWith('_' + word);
-                });
-                if (match) {
-                    downloadedLogoPath = `${assetPrefix}/Logos/${match}`;
-                    logAndSaveStep('step_assets', `Logo officiel "${word}" détecté localement !`, 46, `Logo : ${downloadedLogoPath}`, 'success');
-                    break;
-                }
-            }
+        // Scanner toutes les marques mentionnées (d'abord alias connus + domaine principal, puis scan local & Iconify/brandfetch)
+        const brandTargets = new Set();
+        if (brandDomain) brandTargets.add(brandDomain);
+        promptWords.forEach(w => { if (brandAliases[w]) brandTargets.add(brandAliases[w]); });
+        if (brandTargets.size === 0) {
+            const candidateBrand = promptWords.find(w => !stopWords.has(w) && w.length >= 4);
+            if (candidateBrand) brandTargets.add(`${candidateBrand}.com`);
         }
 
-        // 2. Si non trouvé localement, identifier le domaine ou le nom de la marque
-        if (!downloadedLogoPath) {
-            if (!brandDomain) {
-                for (const word of promptWords) {
-                    if (brandAliases[word]) {
-                        brandDomain = brandAliases[word];
-                        break;
-                    }
-                }
-            }
-            if (!brandDomain) {
-                const candidateBrand = promptWords.find(w => !stopWords.has(w) && w.length >= 4);
-                if (candidateBrand) {
-                    brandDomain = `${candidateBrand}.com`;
-                }
-            }
-        }
+        const existingFiles = fs.existsSync(localLogosDir) ? fs.readdirSync(localLogosDir) : [];
+        for (const targetDom of brandTargets) {
+            const cSlug = targetDom.replace(/\.(?:com|net|org|io|gov|fr|co|ai|dev|app|so)$/i, '').toLowerCase().replace(/[\s_]/g, '-');
+            let matchedRel = '';
 
-        // 3. Téléchargement universel : Iconify logos + Simple-Icons (3000+ marques) + Brandfetch (Google Favicons 256px)
-        if (!downloadedLogoPath && (brandDomain || promptWords.length > 0)) {
-            const candidateSlugs = [];
-            if (brandDomain) {
-                candidateSlugs.push(brandDomain.replace(/\..+$/, '').toLowerCase().replace(/[\s_]/g, '-'));
-            }
-            promptWords.filter(w => !stopWords.has(w)).forEach(w => {
-                if (!candidateSlugs.includes(w)) candidateSlugs.push(w);
+            // 1. Scan local
+            const localMatch = existingFiles.find(f => {
+                const base = f.toLowerCase().replace(/\.[^.]+$/, '');
+                return base === cSlug || base === `${cSlug}_wordmark` || base === `${cSlug}_symbol` || base === `${cSlug}_logo` || base.startsWith(cSlug + '_') || f.toLowerCase().startsWith(targetDom.replace(/\./g, '_'));
             });
-
-            // A. Essai direct Iconify Logos puis Simple-Icons
-            for (const cSlug of candidateSlugs) {
+            if (localMatch) {
+                matchedRel = `${assetPrefix}/Logos/${localMatch}`;
+            } else {
+                // 2. Téléchargement Iconify logos -> thesvg-color -> simple-icons -> brandfetch.cjs
                 const targetSvgPath = path.join(ROOT_DIR, '01_Assets', 'Logos', `${cSlug}.svg`);
                 try {
                     let ok = await downloadIconifySvg(cSlug, targetSvgPath);
-                    if (!ok) {
-                        ok = await downloadIconifySimpleIcon(cSlug, targetSvgPath);
-                    }
+                    if (!ok) ok = await downloadIconifySimpleIcon(cSlug, targetSvgPath);
                     if (ok && fs.existsSync(targetSvgPath)) {
-                        downloadedLogoPath = `${assetPrefix}/Logos/${cSlug}.svg`;
-                        logAndSaveStep('step_assets', `Logo vectoriel SVG officiel "${cSlug}" téléchargé !`, 47, `Logo : ${downloadedLogoPath}`, 'success');
-                        break;
+                        matchedRel = `${assetPrefix}/Logos/${cSlug}.svg`;
                     }
                 } catch (e) { }
+
+                if (!matchedRel) {
+                    try {
+                        const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs').replace(/\\/g, '/');
+                        await execAsync(`node "${brandScript}" ${targetDom}`, 15000);
+                        const cleanDom = targetDom.replace(/\./g, '_');
+                        const candidates = [
+                            path.join(ROOT_DIR, '01_Assets', 'Logos', `${cSlug}.svg`),
+                            path.join(ROOT_DIR, '01_Assets', 'Logos', `${cSlug}_symbol.svg`),
+                            path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDom}_favicon.png`),
+                            path.join(ROOT_DIR, '01_Assets', 'Logos', `${cSlug}_favicon.png`)
+                        ];
+                        for (const cand of candidates) {
+                            if (fs.existsSync(cand)) {
+                                matchedRel = `${assetPrefix}/Logos/${path.basename(cand)}`;
+                                break;
+                            }
+                        }
+                    } catch (e) { }
+                }
             }
 
-            // B. Si toujours pas trouvé, appeler brandfetch.cjs (Iconify + Google Favicons 256px pour TOUS les domaines)
-            if (!downloadedLogoPath && brandDomain) {
-                try {
-                    const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs').replace(/\\/g, '/');
-                    await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
-                    const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$|\.app$|\.so$/, '').toLowerCase().replace(/[\s_]/g, '-');
-                    const cleanDomain = brandDomain.replace(/\./g, '_');
-
-                    const candidates = [
-                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
-                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_symbol.svg`),
-                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.png`),
-                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDomain}_favicon.png`),
-                        path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_favicon.png`)
-                    ];
-                    for (const cand of candidates) {
-                        if (fs.existsSync(cand)) {
-                            downloadedLogoPath = `${assetPrefix}/Logos/${path.basename(cand)}`;
-                            logAndSaveStep('step_assets', 'Logo officiel récupéré !', 48, `Logo : ${downloadedLogoPath}`, 'success');
-                            break;
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Erreur brandfetch:", e.message);
+            if (matchedRel) {
+                if (!downloadedLogoPath) downloadedLogoPath = matchedRel;
+                if (!downloadedBrandLogos.some(b => b.path === matchedRel)) {
+                    downloadedBrandLogos.push({ name: cSlug, path: matchedRel });
                 }
+                logAndSaveStep('step_assets', `Logo officiel "${cSlug}" prêt !`, 47, `Logo : ${matchedRel}`, 'success');
             }
         }
 
@@ -1406,6 +1427,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             done: true,
             downloaded: {
                 logo: downloadedLogoPath,
+                brandLogos: downloadedBrandLogos,
                 flag: downloadedFlagPath,
                 map: downloadedMapPath,
                 web: downloadedWebCapturePath,
@@ -1418,7 +1440,12 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     // Liste des assets formatée pour les prompts des scènes
     const availableAssetsList = [];
     if (downloadedWebCapturePath) availableAssetsList.push(`- Capture HD du site : "${downloadedWebCapturePath}"`);
-    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel de marque disponible : "${downloadedLogoPath}" -> Intègre ce logo de manière élégante et adaptée au style de la scène (dans l'en-tête, sur une carte d'interface, au centre en révélation héroïque ou en signature visuelle).`);
+    const mergedBrands = checkpoint.assets?.downloaded?.brandLogos || downloadedBrandLogos;
+    if (mergedBrands.length > 0) {
+        mergedBrands.forEach(b => availableAssetsList.push(`- Logo officiel "${b.name}" : "${b.path}" -> Afficher EN GRAND et bien visible dès que "${b.name}" est évoqué.`));
+    } else if (downloadedLogoPath) {
+        availableAssetsList.push(`- Logo officiel de marque disponible : "${downloadedLogoPath}" -> Afficher en grand et bien visible selon le style de la scène.`);
+    }
     if (downloadedFlagPath) availableAssetsList.push(`- Drapeau national : "${downloadedFlagPath}"`);
     if (downloadedMapPath) availableAssetsList.push(`- Carte géographique : "${downloadedMapPath}"`);
     downloadedFootballLogos.forEach(fb => availableAssetsList.push(`- Blason club "${fb.name}" : "${fb.path}"`));
@@ -1996,14 +2023,15 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
         try { if (window.lucide) lucide.createIcons(); } catch(e) {}
         setTimeout(() => { try { if (window.lucide) lucide.createIcons(); } catch(e) {} }, 50);
 
-        // SYSTÈME DE SOUND DESIGN HYBRIDE (Openverse & Earshot)
+        // SYSTÈME DE SOUND DESIGN HYBRIDE (Openverse & Earshot, calibré très discret sous la voix)
         window.SFX_MAP = ${JSON.stringify(sfxMap || {})};
-        window.playSfx = function(name, volume = 0.5) {
+        window.playSfx = function(name, volume = 0.16) {
             try {
                 const map = window.SFX_MAP || {};
                 const src = map[name] || \`../01_Assets/SFX/\${name}.mp3\`;
                 const audio = new Audio(src);
-                audio.volume = Math.min(1, Math.max(0, volume));
+                // Plafond strict pour éviter qu'un bruitage ne couvre la narration parlée
+                audio.volume = Math.min(0.18, Math.max(0, volume) * 0.32);
                 audio.play().catch(() => {});
             } catch(e) {}
         };
@@ -2115,28 +2143,49 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
 
         window.syncAudioTimeline = function(timeInSeconds, isPlaying) {
             initAudioContext();
+            const totalDur = ${totalVideoDuration.toFixed(1)};
+            if (timeInSeconds >= totalDur) {
+                if (voiceAudio && !voiceAudio.paused) voiceAudio.pause();
+                if (musicAudio && !musicAudio.paused) musicAudio.pause();
+                return;
+            }
             if (voiceAudio && voiceAudio.src) {
+                const vDur = (voiceAudio.duration && !Number.isNaN(voiceAudio.duration)) ? voiceAudio.duration : totalDur;
                 if (isPlaying) {
-                    if (timeInSeconds < voiceAudio.duration) {
-                        voiceAudio.currentTime = timeInSeconds;
-                        voiceAudio.play().catch(() => {});
-                    } else {
+                    if (timeInSeconds < vDur) {
+                        if (Math.abs(voiceAudio.currentTime - timeInSeconds) > 0.8) {
+                            voiceAudio.currentTime = Math.max(0, timeInSeconds);
+                        }
+                        if (voiceAudio.paused && !voiceAudio.ended) {
+                            voiceAudio.play().catch(() => {});
+                        }
+                    } else if (!voiceAudio.paused) {
                         voiceAudio.pause();
                     }
                 } else {
-                    voiceAudio.pause();
-                    voiceAudio.currentTime = timeInSeconds;
+                    if (!voiceAudio.paused) voiceAudio.pause();
+                    if (Math.abs(voiceAudio.currentTime - timeInSeconds) > 0.08) {
+                        voiceAudio.currentTime = Math.max(0, Math.min(timeInSeconds, vDur - 0.05));
+                    }
                 }
             }
 
             if (musicAudio && musicAudio.src) {
                 musicAudio.volume = VIDEO_CONFIG.audio.musicVolume || 0.15;
+                const mDur = (musicAudio.duration && !Number.isNaN(musicAudio.duration)) ? musicAudio.duration : 100;
+                const expectedM = timeInSeconds % mDur;
                 if (isPlaying) {
-                    musicAudio.currentTime = timeInSeconds % (musicAudio.duration || 100);
-                    musicAudio.play().catch(() => {});
+                    if (Math.abs(musicAudio.currentTime - expectedM) > 0.8) {
+                        musicAudio.currentTime = Math.max(0, expectedM);
+                    }
+                    if (musicAudio.paused && !musicAudio.ended) {
+                        musicAudio.play().catch(() => {});
+                    }
                 } else {
-                    musicAudio.pause();
-                    musicAudio.currentTime = timeInSeconds % (musicAudio.duration || 100);
+                    if (!musicAudio.paused) musicAudio.pause();
+                    if (Math.abs(musicAudio.currentTime - expectedM) > 0.08) {
+                        musicAudio.currentTime = Math.max(0, expectedM);
+                    }
                 }
             }
         };

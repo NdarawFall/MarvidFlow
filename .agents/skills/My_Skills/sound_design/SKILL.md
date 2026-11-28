@@ -106,6 +106,20 @@ Toujours aligner le texte final sur le **script approuvé** (il est la vérité 
 | Ambiance | −30 dB | |
 **Ducking** : la musique baisse de 10–14 dB pendant la voix (attaque 40 ms, relâchement 400–500 ms).
 
+### B2.bis Calibrage Spécifique Vidéo Sans Voix Off (Musique Réelle + SFX Calibrés par True Peak)
+> ⚠️ **PIÈGES CRITIQUES À ÉVITER IMPÉRATIVEMENT** :
+> 1. **Qualité musicale** : Toujours utiliser une vraie musique instrumentale/cinématique (`node 07_Scripts/fetch_music.cjs --mood <war|dramatic|epic|somber|suspense|tech|sports|chill>`), **JAMAIS** de boucle synthétique basique `generate_music.py` sur un documentaire ou film cinématique.
+> 2. **Bruitages & Scripts du projet** : Récupérer les SFX via `node 07_Scripts/fetch_sfx.cjs` (CC0/CC-BY propre ou Openverse) et assembler via **`node 07_Scripts/build_soundtrack.cjs --music ... --sfx cues.json --out ... --duration ...`**.
+> 3. **Le piège du `mean_volume` sur les transitoires** : Un `click`, `ping` ou `impact` a 70–85 % de traîne silencieuse ; si l'on calibre son gain d'après son `mean_volume`, l'attaque explose jusqu'à `-0.3 dBFS` (+20 dB au-dessus d'un passage musical calme à `-21 dB`).
+>
+> **Règle d'Or de Mixage Instrumental (implémentée nativement dans `build_soundtrack.cjs`) :**
+> 1. Normaliser la piste musicale cible d'abord (`--music-lufs -16`, `TP -2.0 dBTP`, `--music-start <sec>` sur le meilleur passage musical) avec fondu d'entrée (`0.4–1.0s`) et fondu de sortie (`2.2–2.8s`).
+> 2. Calibrer chaque SFX **par son `max_volume` réel mesuré (`targetPeakDb - max_volume`)** et filtre passe-bas doux :
+>    - **UI (`click-soft`, `typing`, `pop`, `chime`, `ping`)** : **`peak <= -22.5 dBFS`** (~ `-6.5 dB` sous le RMS musical — précision tactile sans claquement sec).
+>    - **Transitions (`whoosh-short`, `whoosh-cinematic`, `riser`)** : **`peak <= -18.5 dBFS`** (~ `-2.5 dB` sous le RMS musical — souffle fluide).
+>    - **Impacts (`impact-bass-1`, `impact-bass-2`, `heartbeat`, `rumble`)** : **`peak <= -15.0 dBFS`** (~ `+1 dB` max autour du RMS musical, passe-bas `3200 Hz` — assise grave maîtrisée sans jamais écraser la musique).
+> 3. Contrôler par tranches de 10 s (`volumedetect`) qu'aucune tranche ne présente de pic agressif hors musique (`max_volume` sous `-2.0 dBFS` et écart crête/moyenne maîtrisé).
+
 ### B3. Quel SFX pour quel événement
 | Événement visuel | SFX | Timing |
 |---|---|---|

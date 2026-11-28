@@ -293,13 +293,13 @@ async function fetchElevenLabsSubscription(apiKey) {
     };
 }
 
-async function generateElevenLabs({ text, apiKey, voiceId, modelId, outputPath }) {
+async function generateElevenLabs({ text, apiKey, voiceId, modelId, outputPath, _retriedPremade = false }) {
     const key = apiKey || process.env.ELEVENLABS_API_KEY || loadConfig().elevenlabs_api_key;
     if (!key) {
         throw new Error("Clé API ElevenLabs manquante. Renseignez-la dans Paramètres.");
     }
 
-    const voice = voiceId || loadConfig().elevenlabs_voice_id || '21m00Tcm4TlvDq8ikWAM';
+    const voice = voiceId || loadConfig().elevenlabs_voice_id || 'JBFqnCBsd6RMkjVDRZzb';
     const model = modelId || loadConfig().elevenlabs_model_id || 'eleven_multilingual_v2';
 
     const url = `https://api.elevenlabs.io/v1/text-to-speech/${voice}`;
@@ -322,6 +322,11 @@ async function generateElevenLabs({ text, apiKey, voiceId, modelId, outputPath }
 
     if (!response.ok) {
         const errorText = await response.text();
+        // Si la voix sélectionnée est une voix librairie payante (402), repli automatique sur voix premade George (multilingual_v2)
+        if (response.status === 402 && !_retriedPremade && voice !== 'JBFqnCBsd6RMkjVDRZzb') {
+            console.warn(`[ElevenLabs] Voix librairie (${voice}) non accessible en plan gratuit (402). Repli vers voix premade JBFqnCBsd6RMkjVDRZzb...`);
+            return generateElevenLabs({ text, apiKey: key, voiceId: 'JBFqnCBsd6RMkjVDRZzb', modelId: model, outputPath, _retriedPremade: true });
+        }
         throw new Error(`Erreur ElevenLabs [${response.status}] : ${errorText}`);
     }
 
